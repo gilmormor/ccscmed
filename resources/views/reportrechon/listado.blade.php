@@ -36,12 +36,12 @@
 					<table class="datos_cliente">
 						<!--<tr class="headt">-->
 						<tr class="headt">
-							<td style="width:10%"><strong>Cedula:</strong> </td><td style="width:70%">{{number_format($nm_empleado->emp_ced, 0, ",", ".")}}</td>
-							<td style="width:10%"><strong>T. Liber:</strong> </td><td style="width:10%">{{number_format($tasacamb, 2, ",", ".")}}</td>
+							<td style="width:10%"><strong>Cedula:</strong> </td><td style="width:50%">{{number_format($nm_empleado->emp_ced, 0, ",", ".")}}</td>
+							<td style="width:15%"><strong>Tasa Liberacion:</strong> </td><td style="width:10%">{{number_format($tasacamb, 2, ",", ".")}}</td>
 						</tr>
 						<tr class="headt">
-							<td style="width:10%"><strong>Nombre:</strong> </td><td style="width:70%">{{$nm_empleado->emp_nom}} {{$nm_empleado->emp_ape}}</td>
-							<td style="width:10%"><strong>T. Prom:</strong> </td><td style="width:10%">{{number_format($nm_control->cot_valordolar, 2, ",", ".")}}</td>
+							<td style="width:10%"><strong>Nombre:</strong> </td><td style="width:50%">{{$nm_empleado->emp_nom}} {{$nm_empleado->emp_ape}}</td>
+							<td style="width:15%"><strong>Tasa Promedio:</strong> </td><td style="width:10%">{{number_format($nm_control->cot_valordolar, 2, ",", ".")}}</td>
 						</tr>
 					</table>
 				</div>
