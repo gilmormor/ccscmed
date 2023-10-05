@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('seguridad/login', 'Seguridad\LoginController@index')->name('login');
 Route::post('seguridad/login', 'Seguridad\LoginController@login')->name('login-post');
 Route::get('seguridad/logout', 'Seguridad\LoginController@logout')->name('logout');
-Route::post('seguridad/sendpass', 'Seguridad\LoginController@sendpass')->name('sendpass_seguridad');
+Route::put('seguridad/sendpass', 'Seguridad\LoginController@sendpass')->name('sendpass_seguridad');
 
 Route::post('ajax-sesion', 'AjaxController@setSession')->name('ajax')->middleware('auth');
 
@@ -1393,5 +1393,10 @@ Route::get('dtefacturaanular/reporte', 'DteFacturaAnularController@reporte')->na
 Route::get('dtefacturaanular/exportPdf', 'DteFacturaAnularController@exportPdf')->name('dtefacturaanular_exportPdf');
 Route::get('dtefacturaanular/totalizarindex', 'DteFacturaAnularController@totalizarindex')->name('dtefacturaanular_totalizarindex');
 
-//RUTA ENVIAR CORREO PASSWORD USUARIO
-Route::post('enviarcorreopassusu', 'EnviarCorreoPassUsuController@enviar')->name('enviar_enviarcorreopassusu');
+
+/*RUTAS REPORTE RECIBO HONORARIOS*/
+Route::get('reportrechon', 'ReportRecHonController@index')->name('reportrechon');
+Route::get('reportrechon/reportrechonpage', 'ReportRecHonController@reportrechonpage')->name('reportrechonpage');
+Route::get('reportrechon/reporte', 'ReportRecHonController@reporte')->name('reportrechon_reporte');
+Route::get('reportrechon/exportPdf', 'ReportRecHonController@exportPdf')->name('reportrechon_exportPdf');
+Route::get('reportrechon/totalizarindex', 'ReportRecHonController@totalizarindex')->name('reportrechon_totalizarindex');

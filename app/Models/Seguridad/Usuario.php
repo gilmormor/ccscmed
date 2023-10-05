@@ -19,7 +19,7 @@ class Usuario extends Authenticatable
     use SoftDeletes;
     protected $remember_token = false;
     protected $table = 'usuario';
-    protected $fillable = ['usuario', 'nombre', 'email', 'password', 'foto'];
+    protected $fillable = ['usuario', 'nombre', 'email', 'password','pass', 'foto'];
 
     public static function setFotoUsuario($foto,$usuario, $actual = false){
         //dd($foto);

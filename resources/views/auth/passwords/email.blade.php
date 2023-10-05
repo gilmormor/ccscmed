@@ -30,15 +30,16 @@
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="{{route('inicio')}}"><img src="{{asset("assets/$theme/dist/img/LOGO-PLASTISERVI1.png?timestamp=" . time())}}" style="max-width:90%;width:auto;height:auto;"></a>
+    <a href="{{route('inicio')}}"><img src="{{asset("assets/$theme/dist/img/logo_large.png?timestamp=" . time())}}" style="max-width:90%;width:auto;height:auto;"></a>
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
     <p class="login-box-msg">Recuperar Clave</p>
-    
+    @include('includes.mensaje')    
     <form action="{{route('sendpass_seguridad')}}" method="POST" autocomplete="off">
-      @csrf
+      @csrf @method("put")
       <div class="form-group has-feedback">
+        <input type="password" name="password" id="password" style='display:none;'/>
         <input type="email" id="email" name="email" class="form-control" value="{{old('email')}}" placeholder="email" required>
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>

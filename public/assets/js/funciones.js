@@ -97,15 +97,15 @@ function notificaciones(){
                 return 0;
             }
             if (respuesta.mensaje == "ok") {
-                Biblioteca.notificaciones('El registro fue procesado con exito', 'Plastiservi', 'success');
+                Biblioteca.notificaciones('El registro fue procesado con exito', 'CCSC', 'success');
             } else {
                 if (respuesta.mensaje == "sp"){
-                    Biblioteca.notificaciones('Registro no tiene permiso procesar.', 'Plastiservi', 'error');
+                    Biblioteca.notificaciones('Registro no tiene permiso procesar.', 'CCSC', 'error');
                 }else{
                     if(respuesta.mensaje=="img"){
     
                     }else{
-                        Biblioteca.notificaciones('El registro no pudo ser procesado, hay recursos usandolo', 'Plastiservi', 'error');
+                        Biblioteca.notificaciones('El registro no pudo ser procesado, hay recursos usandolo', 'CCSC', 'error');
                     }
                 }
             }

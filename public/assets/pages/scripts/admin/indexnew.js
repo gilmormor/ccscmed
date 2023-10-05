@@ -119,27 +119,27 @@ function ajaxRequest(data,url,funcion,form = false) {
             if(funcion=='eliminar'){
                 if (respuesta.mensaje == "ok") {
                     form.parents('tr').remove();
-                    Biblioteca.notificaciones('El registro fue procesado correctamente.', 'Plastiservi', 'success');
+                    Biblioteca.notificaciones('El registro fue procesado correctamente.', 'CCSC', 'success');
                 } else {
                     if (respuesta.mensaje == "sp"){
-                        Biblioteca.notificaciones('Usuario no tiene permiso para eliminar.', 'Plastiservi', 'error');
+                        Biblioteca.notificaciones('Usuario no tiene permiso para eliminar.', 'CCSC', 'error');
                     }else{
                         if(respuesta.mensaje == "cr"){
-                            Biblioteca.notificaciones('No puede ser procesado: ID tiene registros relacionados en otras tablas.', 'Plastiservi', 'error');
+                            Biblioteca.notificaciones('No puede ser procesado: ID tiene registros relacionados en otras tablas.', 'CCSC', 'error');
                         }else{
                             if(respuesta.mensaje == "ne"){
-                                Biblioteca.notificaciones('No tiene permiso para eliminar.', 'Plastiservi', 'error');
+                                Biblioteca.notificaciones('No tiene permiso para eliminar.', 'CCSC', 'error');
                             }else{
                                 
                                 switch (respuesta.id) {
                                     case 0:
-                                        Biblioteca.notificaciones(respuesta.mensaje, 'Plastiservi', respuesta.tipo_alert);
+                                        Biblioteca.notificaciones(respuesta.mensaje, 'CCSC', respuesta.tipo_alert);
                                         break;
                                     case 1:
-                                        Biblioteca.notificaciones(respuesta.mensaje, 'Plastiservi', respuesta.tipo_alert);
+                                        Biblioteca.notificaciones(respuesta.mensaje, 'CCSC', respuesta.tipo_alert);
                                         break;
                                     default:
-                                        Biblioteca.notificaciones('El registro no pudo ser procesado, hay recursos usandolo.', 'Plastiservi', 'error');
+                                        Biblioteca.notificaciones('El registro no pudo ser procesado, hay recursos usandolo.', 'CCSC', 'error');
                                 }
                             }
                         }
@@ -153,7 +153,7 @@ function ajaxRequest(data,url,funcion,form = false) {
                                 "</a>";
                     form.parents('td').html(aux_texto);
                 }
-                Biblioteca.notificaciones(respuesta.mensaje, 'Plastiservi', respuesta.tipo_alert);
+                Biblioteca.notificaciones(respuesta.mensaje, 'CCSC', respuesta.tipo_alert);
             }
             if(funcion=='verUsuario'){
                 $('#myModal .modal-body').html(respuesta);
@@ -163,25 +163,25 @@ function ajaxRequest(data,url,funcion,form = false) {
                 switch (respuesta.mensaje) {
                     case 'ok':
                         form.parents('tr').remove();
-                        Biblioteca.notificaciones('El registro fue procesado con exito', 'Plastiservi', 'success');    
+                        Biblioteca.notificaciones('El registro fue procesado con exito', 'CCSC', 'success');    
                         break;
                     case 'sp':
                         form.parents('tr').remove();
-						Biblioteca.notificaciones('Registro no tiene permiso procesar.', 'Plastiservi', 'error');
+						Biblioteca.notificaciones('Registro no tiene permiso procesar.', 'CCSC', 'error');
                         break;
                     case 'MensajePersonalizado':
-                        Biblioteca.notificaciones(respuesta.menper, 'Plastiservi', 'error');
+                        Biblioteca.notificaciones(respuesta.menper, 'CCSC', 'error');
                         break;
                     default:
                         switch (respuesta.id) {
                             case 0:
-                                Biblioteca.notificaciones(respuesta.mensaje, 'Plastiservi', respuesta.tipo_alert);
+                                Biblioteca.notificaciones(respuesta.mensaje, 'CCSC', respuesta.tipo_alert);
                                 break;
                             case 1:
-                                Biblioteca.notificaciones(respuesta.mensaje, 'Plastiservi', respuesta.tipo_alert);
+                                Biblioteca.notificaciones(respuesta.mensaje, 'CCSC', respuesta.tipo_alert);
                                 break;
                             default:
-                                Biblioteca.notificaciones('El registro no pudo ser procesado, hay recursos usandolo', 'Plastiservi', 'error');
+                                Biblioteca.notificaciones('El registro no pudo ser procesado, hay recursos usandolo', 'CCSC', 'error');
                                 break;
                             }
                 }

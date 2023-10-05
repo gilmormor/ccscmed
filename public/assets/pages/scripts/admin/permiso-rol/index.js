@@ -33,7 +33,7 @@ function ajaxRequestI (url, data,funcion) {
                 if(data.estado == 1){
                     tipoMensaje = 'success';
                 }
-                Biblioteca.notificaciones(respuesta.respuesta, 'Plastiservi', tipoMensaje);    
+                Biblioteca.notificaciones(respuesta.respuesta, 'CCSC', tipoMensaje);    
             }
             if(funcion == "encabezadotabla"){
                 //console.log(respuesta);

@@ -74,12 +74,12 @@ function ajaxRequest(data,url,funcion) {
 			if(funcion=='aprobarcotvend'){
 				if (respuesta.mensaje == "ok") {
 					$("#fila"+data['nfila']).remove();
-					Biblioteca.notificaciones('El registro fue procesado con exito', 'Plastiservi', 'success');
+					Biblioteca.notificaciones('El registro fue procesado con exito', 'CCSC', 'success');
 				} else {
 					if (respuesta.mensaje == "sp"){
-						Biblioteca.notificaciones('Registro no tiene permiso procesar.', 'Plastiservi', 'error');
+						Biblioteca.notificaciones('Registro no tiene permiso procesar.', 'CCSC', 'error');
 					}else{
-						Biblioteca.notificaciones('El registro no pudo ser procesado, hay recursos usandolo', 'Plastiservi', 'error');
+						Biblioteca.notificaciones('El registro no pudo ser procesado, hay recursos usandolo', 'CCSC', 'error');
 					}
 				}
 			}

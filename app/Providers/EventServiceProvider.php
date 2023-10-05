@@ -13,6 +13,7 @@ use App\Events\GuardarFacturaDespacho;
 use App\Events\GuardarGuiaDespacho;
 use App\Events\InicioSesionUsuario;
 use App\Events\Notificacion;
+use App\Events\SolicitarSendPassUsuario;
 use App\Listeners\BitFinSesionUsuario;
 use App\Listeners\BitInicioSesionUsuario;
 use App\Listeners\CerrarSolDespNotificacion;
@@ -76,7 +77,7 @@ class EventServiceProvider extends ServiceProvider
         AprobarRechazoNotaVenta::class => [
             NotifyMailAprobarRechazoNotaVenta::class,
         ],
-        MailSendPassUsuario::class => [
+        SolicitarSendPassUsuario::class => [
             NotifyMailSendPassUsuario::class,
         ]
     ];

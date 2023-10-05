@@ -16,7 +16,6 @@
 @section('scripts')
     <script src="{{autoVer("assets/pages/scripts/admin/usuario/crear.js")}}" type="text/javascript"></script>
 @endsection
-
 @section('contenido')
 <div class="row">
     <div class="col-lg-12">
@@ -33,6 +32,7 @@
             </div>
             <form action="{{route('actualizarclave_usuario')}}" id="form-general" class="form-horizontal" method="POST" autocomplete="off">
                 @csrf @method("put")
+                <input type="hidden" name="pass" id="pass">
                 <div class="form-group">
                     <label for="passwordant" class="col-lg-3 control-label requerido">Contraseña anterior</label>
                     <div class="col-lg-8">

@@ -98,7 +98,7 @@ function ajaxRequest(data,url,funcion) {
                     $("#cliente_id").val(data.id);
                     $("#descripcion").focus();
                 } else {
-                    Biblioteca.notificaciones('Cliente: '+data.razonsocial+' ya está bloqueado.', 'Plastiservi', 'error');
+                    Biblioteca.notificaciones('Cliente: '+data.razonsocial+' ya está bloqueado.', 'CCSC', 'error');
                     $("#rut").val('');
 				}
 			}
@@ -108,16 +108,16 @@ function ajaxRequest(data,url,funcion) {
 			}
 			if(funcion=='aprobarnvsup'){
 				if (respuesta.mensaje == "ok") {
-					Biblioteca.notificaciones('El registro fue actualizado correctamente', 'Plastiservi', 'success');
+					Biblioteca.notificaciones('El registro fue actualizado correctamente', 'CCSC', 'success');
 					// *** REDIRECCIONA A UNA RUTA*** 
 					var loc = window.location;
     				window.location = loc.protocol+"//"+loc.hostname+"/notaventaaprobar";
 					// ****************************** 
 				} else {
 					if (respuesta.mensaje == "sp"){
-						Biblioteca.notificaciones('Registro no puso se actualizado.', 'Plastiservi', 'error');
+						Biblioteca.notificaciones('Registro no puso se actualizado.', 'CCSC', 'error');
 					}else{
-						Biblioteca.notificaciones('El registro no puso se actualizado, hay recursos usandolo', 'Plastiservi', 'error');
+						Biblioteca.notificaciones('El registro no puso se actualizado, hay recursos usandolo', 'CCSC', 'error');
 					}
 				}
 			}

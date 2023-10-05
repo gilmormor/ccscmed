@@ -2433,7 +2433,7 @@ function crearEditarAcuTec(i){
 	$("#at_unidadmedida_id").val($("#unidadmedida_id" + i).val())
 	$("#at_unidadmedida_nombre").val($("#at_unidadmedida_id option:selected").html())
 	$(".selectpicker").selectpicker('refresh');
-	embalajePlastiservi();
+	embalajeCCSC();
     $("#myModalAcuerdoTecnico").modal('show');
 }
 
@@ -2965,7 +2965,7 @@ function ajaxRequestGeneral(data,url,funcion) {
 				if (respuesta.id != 0) {
                     //genpdfFAC(respuesta.nrodocto,"_U");
                     $("#fila"+respuesta.nfila).remove();
-					Biblioteca.notificaciones('El registro fue procesado con exito', 'Plastiservi', 'success');
+					Biblioteca.notificaciones('El registro fue procesado con exito', 'CCSC', 'success');
 				} else {
                     swal({
 						title: respuesta.title,
@@ -2976,14 +2976,14 @@ function ajaxRequestGeneral(data,url,funcion) {
 						},
 					}).then((value) => {
 					});
-					//Biblioteca.notificaciones(respuesta.mensaje, 'Plastiservi', respuesta.tipo_alert);
+					//Biblioteca.notificaciones(respuesta.mensaje, 'CCSC', respuesta.tipo_alert);
 				}
 			}
 			if(funcion=='anulardte'){
 				if (respuesta.id == 1) {
                     //genpdfND(respuesta.nrodocto,"_U");
                     $("#fila"+datatemp.nfila).remove();
-					Biblioteca.notificaciones('El registro fue procesado con exito', 'Plastiservi', 'success');
+					Biblioteca.notificaciones('El registro fue procesado con exito', 'CCSC', 'success');
 				} else {
                     swal({
 						title: respuesta.title,
@@ -2993,7 +2993,7 @@ function ajaxRequestGeneral(data,url,funcion) {
 							confirm: "Cerrar"
 						},
 					});
-					//Biblioteca.notificaciones(respuesta.mensaje, 'Plastiservi', respuesta.tipo_alert);
+					//Biblioteca.notificaciones(respuesta.mensaje, 'CCSC', respuesta.tipo_alert);
 				}
 			}
 		},

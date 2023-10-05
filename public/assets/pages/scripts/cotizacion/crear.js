@@ -590,13 +590,13 @@ function ajaxRequest(data,url,funcion) {
 			if(funcion=='eliminar'){
 				if (respuesta.mensaje == "ok" || data['id']=='0') {
 					$("#fila"+data['nfila']).remove();
-					Biblioteca.notificaciones('El registro fue eliminado correctamente', 'Plastiservi', 'success');
+					Biblioteca.notificaciones('El registro fue eliminado correctamente', 'CCSC', 'success');
 					totalizar();
 				} else {
 					if (respuesta.mensaje == "sp"){
-						Biblioteca.notificaciones('Registro no tiene permiso para eliminar.', 'Plastiservi', 'error');
+						Biblioteca.notificaciones('Registro no tiene permiso para eliminar.', 'CCSC', 'error');
 					}else{
-						Biblioteca.notificaciones('El registro no pudo ser eliminado, hay recursos usandolo', 'Plastiservi', 'error');
+						Biblioteca.notificaciones('El registro no pudo ser eliminado, hay recursos usandolo', 'CCSC', 'error');
 					}
 				}
 			}
@@ -606,7 +606,7 @@ function ajaxRequest(data,url,funcion) {
 			}
 			if(funcion=='aprobarcotsup'){
 				if (respuesta.mensaje == "ok") {
-					Biblioteca.notificaciones('El registro fue actualizado correctamente', 'Plastiservi', 'success');
+					Biblioteca.notificaciones('El registro fue actualizado correctamente', 'CCSC', 'success');
 					// *** REDIRECCIONA A UNA RUTA*** 
 					var loc = window.location;
 					if($("#aprobstatus").val()== "2"){
@@ -618,7 +618,7 @@ function ajaxRequest(data,url,funcion) {
 					// ****************************** 
 				} else {
 					if (respuesta.mensaje == "sp"){
-						Biblioteca.notificaciones('Registro no puso se actualizado.', 'Plastiservi', 'error');
+						Biblioteca.notificaciones('Registro no puso se actualizado.', 'CCSC', 'error');
 					}else{
 						if($("#aprobstatus").val()== "5"){
 							if(respuesta.id !== undefined && respuesta.id == 0){
@@ -636,7 +636,7 @@ function ajaxRequest(data,url,funcion) {
 									}
 								});	
 							}else{
-								Biblioteca.notificaciones('El registro no puso se actualizado, hay recursos usandolo', 'Plastiservi', 'error');
+								Biblioteca.notificaciones('El registro no puso se actualizado, hay recursos usandolo', 'CCSC', 'error');
 							}	
 						}
 					}
@@ -1626,7 +1626,7 @@ function ocultarMostrarFiltro(aux_nfila){
 	$(".kv-file-remove").hide();
 }
 
-function embalajePlastiservi(){
+function CCSC(){
 	let aux_val = $("#at_embalajeplastservi").val();
 	if(aux_val == "1" || aux_val == ""){
 		$(".embalaje").prop("disabled", true);

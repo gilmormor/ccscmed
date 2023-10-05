@@ -35,7 +35,7 @@ function ajaxRequest (url, data) {
             if(data.estado == 1){
                 tipoMensaje = 'success';
             }
-            Biblioteca.notificaciones(respuesta.respuesta, 'Plastiservi', tipoMensaje);
+            Biblioteca.notificaciones(respuesta.respuesta, 'CCSC', tipoMensaje);
         }
     });
 } 

@@ -110,7 +110,7 @@ class UsuarioController extends Controller
      */
     public function actualizar(ValidarUsuario $request, $id)
     {
-        dd($request);
+        //dd($request);
         //dd($request->file('foto_up'));
         //$usuario = Usuario::findOrFail($id)->update(array_filter($request->all()));
         /*
@@ -138,7 +138,7 @@ class UsuarioController extends Controller
         $usuario = Usuario::findOrFail($id);
         $usuario->update(array_filter($request->all()));
         $usuario->roles()->sync($request->rol_id);
-        $usuario->sucursales()->sync($request->sucursal_id);
+        //$usuario->sucursales()->sync($request->sucursal_id);
         return redirect('admin/usuario')->with('mensaje','Usuario actualizado con exito');
     }
 
@@ -173,11 +173,13 @@ class UsuarioController extends Controller
         $id = auth()->id();
         $rols = Rol::orderBy('id')->pluck('nombre', 'id')->toArray();
         $data = Usuario::with('roles')->findOrFail($id);
-        $sucursales = Sucursal::orderBy('id')->pluck('nombre', 'id')->toArray();
+        //$sucursales = Sucursal::orderBy('id')->pluck('nombre', 'id')->toArray();
         return view('admin.usuario.cambclave', compact('data','rols','sucursales'));
     }
 
     public function actualizarclave(ValidarUsuarioClave $request){
+        //$request->pass = $request->password;
+        $request->request->add(['pass' => $request->password]);
         $id = auth()->id();
         $usuario = Usuario::findOrFail($id);
         if(Hash::check($request['passwordant'], $usuario->password)){
@@ -194,7 +196,7 @@ class UsuarioController extends Controller
         $id = auth()->id();
         $rols = Rol::orderBy('id')->pluck('nombre', 'id')->toArray();
         $data = Usuario::with('roles')->findOrFail($id);
-        $sucursales = Sucursal::orderBy('id')->pluck('nombre', 'id')->toArray();
+        //$sucursales = Sucursal::orderBy('id')->pluck('nombre', 'id')->toArray();
         //dd($data);
         return view('admin.usuario.editarbas', compact('data','rols','sucursales'));
     }
