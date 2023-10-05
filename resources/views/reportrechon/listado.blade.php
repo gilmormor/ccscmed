@@ -159,9 +159,9 @@
 				<td style='text-align:right;width: 7.7% !important;'></td>
 				<td style='text-align:right;width: 7.7% !important;'></td>
 				<td colspan="3" style='text-align:right;'><strong>Total Honorarios por pagar:</strong></td>
-				<td style='text-align:right;width: 7.7% !important;'><strong>{{number_format($totalHonxPagarBs, 2, ",", ".")}}&nbsp;&nbsp;</strong></td>
+				<td style='text-align:right;width: 7.7% !important;'>{{number_format($totalHonxPagarBs, 2, ",", ".")}}&nbsp;&nbsp;</td>
 				<td style='text-align:right;width: 7.7% !important;'></td>
-				<td style='text-align:right;width: 7.7% !important;'><strong>{{number_format($totalHonxPagarME, 2, ",", ".")}}&nbsp;&nbsp;</strong></td>
+				<td style='text-align:right;width: 7.7% !important;'>{{number_format($totalHonxPagarME, 2, ",", ".")}}&nbsp;&nbsp;</td>
 			</tr>
 			<tr>
 				<td style='text-align:center;width: 30.7% !important;'></td>
@@ -169,9 +169,9 @@
 				<td style='text-align:right;width: 7.7% !important;'></td>
 				<td style='text-align:right;width: 7.7% !important;'></td>
 				<td colspan="3" style='text-align:right;'><strong>Neto a pagar Ref ME:</strong></td>
-				<td style='text-align:right;width: 7.7% !important;'><strong>{{number_format($NetoPagarRefBs, 2, ",", ".")}}&nbsp;&nbsp;</strong></td>
+				<td style='text-align:right;width: 7.7% !important;'>{{number_format($NetoPagarRefBs, 2, ",", ".")}}&nbsp;&nbsp;</td>
 				<td style='text-align:right;width: 7.7% !important;'></td>
-				<td style='text-align:right;width: 7.7% !important;'><strong>{{number_format($NetoPagarRefME, 2, ",", ".")}}&nbsp;&nbsp;</strong></td>
+				<td style='text-align:right;width: 7.7% !important;'>{{number_format($NetoPagarRefME, 2, ",", ".")}}&nbsp;&nbsp;</td>
 			</tr>
 			<tr>
 				<td style='text-align:center;width: 30.7% !important;'></td>
@@ -179,9 +179,9 @@
 				<td style='text-align:right;width: 7.7% !important;'></td>
 				<td style='text-align:right;width: 7.7% !important;'></td>
 				<td colspan="3" style='text-align:right;'><strong>Total Moneda Extranjera:</strong></td>
-				<td style='text-align:right;width: 7.7% !important;'><strong>{{number_format($aux_anticipobs, 2, ",", ".")}}&nbsp;&nbsp;</strong></td>
+				<td style='text-align:right;width: 7.7% !important;'>{{number_format($aux_anticipobs, 2, ",", ".")}}&nbsp;&nbsp;</td>
 				<td style='text-align:right;width: 7.7% !important;'></td>
-				<td style='text-align:right;width: 7.7% !important;'><strong>{{number_format($aux_anticipodll, 2, ",", ".")}}&nbsp;&nbsp;</strong></td>
+				<td style='text-align:right;width: 7.7% !important;'>{{number_format($aux_anticipodll, 2, ",", ".")}}&nbsp;&nbsp;</td>
 			</tr>
 
 		</table>
