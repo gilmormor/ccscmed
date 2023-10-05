@@ -42,7 +42,7 @@ class Nm_MovHist extends Model
 
     public static function consultarecibo($request){
         $user = Usuario::findOrFail(auth()->id());
-        $sql = "SELECT nm_conceptos.`*`, nm_movhist.`*`,nm_movhismonext.`*`
+        $sql = "SELECT nm_conceptos.*, nm_movhist.*,nm_movhismonext.*
         FROM nm_empleados INNER JOIN nm_movhist 
         ON nm_empleados.emp_ced = nm_movhist.emp_ced 
         AND nm_movhist.emp_codh=nm_empleados.emp_codh AND nm_movhist.gru_cod = nm_empleados.gru_cod
