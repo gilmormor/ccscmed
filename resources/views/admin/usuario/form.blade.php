@@ -44,6 +44,22 @@
             </select>
         </div>
     </div>
+    <div class="form-group">
+        <label for="sucursal_id" class="col-lg-3 control-label requerido">Sucursal</label>
+        <div class="col-lg-8">
+            <select name="sucursal_id[]" id="sucursal_id" class="form-control select2" multiple required>
+                @foreach($sucursales as $id => $nombre)
+                    <option
+                        value="{{$id}}"
+                        {{is_array(old('sucursal_id')) ? (in_array($id, old('sucursal_id')) ? 'selected' : '') : (isset($data) ? ($data->sucursales->firstWhere('id', $id) ? 'selected' : '') : '')}}
+                        >
+                        {{$nombre}}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+
 </div>
 <div class="col-xs-12 col-sm-6">
     <div class="form-group">
@@ -54,3 +70,4 @@
         </div>
     </div>
 </div>
+

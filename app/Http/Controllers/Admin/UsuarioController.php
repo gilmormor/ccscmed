@@ -97,8 +97,8 @@ class UsuarioController extends Controller
     {
         $rols = Rol::orderBy('id')->pluck('nombre', 'id')->toArray();
         $data = Usuario::with('roles')->findOrFail($id);
-        //$sucursales = Sucursal::orderBy('id')->pluck('nombre', 'id')->toArray();
-        return view('admin.usuario.editar', compact('data','rols'));
+        $sucursales = Sucursal::orderBy('id')->pluck('nombre', 'id')->toArray();
+        return view('admin.usuario.editar', compact('data','rols','sucursales'));
     }
 
     /**
@@ -138,7 +138,7 @@ class UsuarioController extends Controller
         $usuario = Usuario::findOrFail($id);
         $usuario->update(array_filter($request->all()));
         $usuario->roles()->sync($request->rol_id);
-        //$usuario->sucursales()->sync($request->sucursal_id);
+        $usuario->sucursales()->sync($request->sucursal_id);
         return redirect('admin/usuario')->with('mensaje','Usuario actualizado con exito');
     }
 
