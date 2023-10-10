@@ -1,6 +1,6 @@
 @extends("theme.$theme.layout")
 @section('titulo')
-Recibo Honorarios
+Enviar Recibo Honorarios
 @endsection
 
 <?php
@@ -10,7 +10,7 @@ Recibo Honorarios
 @section("scripts")
     <script src="{{autoVer("assets/pages/scripts/general.js")}}" type="text/javascript"></script>
     <script src="{{autoVer("assets/pages/scripts/admin/index.js")}}" type="text/javascript"></script>
-    <script src="{{autoVer("assets/pages/scripts/reportrechon/index.js")}}" type="text/javascript"></script>
+    <script src="{{autoVer("assets/pages/scripts/reportrechonsendemail/index.js")}}" type="text/javascript"></script>
 @endsection
 
 @section('contenido')
@@ -19,7 +19,7 @@ Recibo Honorarios
         @include('includes.mensaje')
         <div class="box box-primary box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">Reporte Honorarios</h3>
+                <h3 class="box-title">Enviar por correo Recibo Honorarios</h3>
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
                 </div>
@@ -49,8 +49,8 @@ Recibo Honorarios
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-3 col-sm-12 text-center">
-                            <button type='button' id='btnpdf2' name='btnpdf2' class='btn btn-success tooltipsC' title="Reporte PDF">
-                                <i class='glyphicon glyphicon-print'></i> Reporte
+                            <button type='button' id='sendemail' name='sendemail' class='btn btn-success tooltipsC' title="Enviar email">
+                                <i class='glyphicon glyphicon-envelope'></i> Enviar
                             </button>
                         </div>
                     </form>
@@ -63,4 +63,5 @@ Recibo Honorarios
 
 @include('generales.modalpdf')
 @include('generales.verpdf')
+@include('generales.buscarnmempleado')
 @endsection

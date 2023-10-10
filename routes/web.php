@@ -1400,3 +1400,13 @@ Route::get('reportrechon/reportrechonpage', 'ReportRecHonController@reportrechon
 Route::get('reportrechon/reporte', 'ReportRecHonController@reporte')->name('reportrechon_reporte');
 Route::get('reportrechon/exportPdf', 'ReportRecHonController@exportPdf')->name('reportrechon_exportPdf');
 Route::get('reportrechon/totalizarindex', 'ReportRecHonController@totalizarindex')->name('reportrechon_totalizarindex');
+
+//ENVIAR BUSCAR EMPLEADO
+Route::get('nmempleado/nmepleadobuscarpage', 'NmEmpleadoController@nmepleadobuscarpage')->name('nmempleado_nmepleadobuscarpage');
+
+
+//ENVIAR CORREO POR LOTE RECIBO HONORARIOS
+Route::get('reportrechonsendemail', 'ReportRecHonSendEmailController@index')->name('reportrechonsendemail');
+Route::get('reportrechonsendemail/reporte', 'ReportRecHonSendEmailController@reporte')->name('reportrechonsendemail_reporte');
+Route::get('reportrechonsendemail/exportPdf', 'ReportRecHonSendEmailController@exportPdf')->name('reportrechonsendemail_exportPdf');
+Route::post('reportrechonsendemail/sendemail', 'ReportRecHonSendEmailController@sendemail')->name('reportrechonsendemail_sendemail');
