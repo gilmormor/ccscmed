@@ -8,6 +8,8 @@ use App\Events\AvisoRevisionAcuTec;
 use App\Events\AvisoRevisionNotaVenta;
 use App\Events\CerrarSolDesp;
 use App\Events\DevolverSolDesp;
+use App\Events\EnviarEmailRecHon;
+use App\Events\EnviarRecHon;
 use App\Events\FinSesionUsuario;
 use App\Events\GuardarFacturaDespacho;
 use App\Events\GuardarGuiaDespacho;
@@ -23,9 +25,11 @@ use App\Listeners\NotifyMailAcuTecAprobarRechazar;
 use App\Listeners\NotifyMailAprobarRechazoNotaVenta;
 use App\Listeners\NotifyMailAvisoRevisionAcuTec;
 use App\Listeners\NotifyMailAvisoRevisionNotaVenta;
+use App\Listeners\NotifyMailEnviarRecHon;
 use App\Listeners\NotifyMailGuardarFacturaDespacho;
 use App\Listeners\NotifyMailGuardarGuiaDespacho;
 use App\Listeners\NotifyMailSendPassUsuario;
+use App\Listeners\NotifyRecHonSendEmail;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -79,6 +83,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         SolicitarSendPassUsuario::class => [
             NotifyMailSendPassUsuario::class,
+        ],
+        EnviarRecHon::class => [
+            NotifyMailEnviarRecHon::class,
         ]
     ];
 
