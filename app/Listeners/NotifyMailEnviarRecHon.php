@@ -92,8 +92,7 @@ class NotifyMailEnviarRecHon
                 $asunto = $empresa->nombre . " Recibo Honorarios " . $cuerpo;
         
 
-                Mail::to($aux_email)
-                        ->send(new MailEnviarRecHon($notificaciones,$asunto,$cuerpo,$nm_empleado,$pdfPath));
+                Mail::to($aux_email)->send(new MailEnviarRecHon($notificaciones,$asunto,$cuerpo,$nm_empleado,$pdfPath));
 
                 // Elimina el archivo temporal después de enviarlo por correo electrónico
                 unlink($pdfPath);
