@@ -93,7 +93,6 @@ class NotifyMailEnviarRecHon
         
 
                 Mail::to($aux_email)
-                        ->bcc('gilmormor@hotmail.com')
                         ->send(new MailEnviarRecHon($notificaciones,$asunto,$cuerpo,$nm_empleado,$pdfPath));
 
                 // Elimina el archivo temporal después de enviarlo por correo electrónico
