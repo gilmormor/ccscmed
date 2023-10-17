@@ -95,7 +95,7 @@ class NotifyMailEnviarRecHon
                 Mail::to($aux_email)->send(new MailEnviarRecHon($notificaciones,$asunto,$cuerpo,$nm_empleado,$pdfPath));
 
                 // Elimina el archivo temporal después de enviarlo por correo electrónico
-                unlink($pdfPath);
+                //unlink($pdfPath);
 
                 //return $pdf->stream("ReciboHonorarios.pdf");
             }else{
