@@ -32,9 +32,11 @@ class ReportRecHonSendEmailController extends Controller
         FROM nm_movhist INNER JOIN nm_empleados
         ON nm_movhist.emp_ced = nm_empleados.emp_ced
         where nm_movhist.mov_nummon=$request->mov_nummon
-        AND nm_empleados.emp_email != '' AND !ISNULL(nm_empleados.emp_email)
         GROUP BY nm_movhist.emp_ced;";
         $cedulas = DB::select($sql);
+
+        //AND nm_empleados.emp_email != '' AND !ISNULL(nm_empleados.emp_email)
+        //dd($cedulas);
 
         foreach ($cedulas as $cedula) {
             Event(new EnviarRecHon($cedula));

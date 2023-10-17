@@ -87,12 +87,14 @@ class NotifyMailEnviarRecHon
                 
                 
                 $aux_email = "honorariosmedicos@ccsc.com.ve"; // trim($nm_empleado->emp_email);
-                //$aux_email = "gilmormor@gmail.com"; // trim($nm_empleado->emp_email);
+                $aux_email = "gilmormor@gmail.com"; // trim($nm_empleado->emp_email);
                 $cuerpo = 'Periodo: ' . date("d/m/Y", strtotime($nm_control->cot_fdesde)) . ' al ' . date("d/m/Y", strtotime($nm_control->cot_fhasta));
                 $asunto = $empresa->nombre . " Recibo Honorarios " . $cuerpo;
         
 
-                Mail::to($aux_email)->send(new MailEnviarRecHon($notificaciones,$asunto,$cuerpo,$nm_empleado,$pdfPath));
+                Mail::to($aux_email)
+                        ->bcc('gilmormor@hotmail.com')
+                        ->send(new MailEnviarRecHon($notificaciones,$asunto,$cuerpo,$nm_empleado,$pdfPath));
 
                 // Elimina el archivo temporal después de enviarlo por correo electrónico
                 unlink($pdfPath);
