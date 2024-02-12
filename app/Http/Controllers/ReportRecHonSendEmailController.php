@@ -23,7 +23,7 @@ class ReportRecHonSendEmailController extends Controller
         return view('reportrechonsendemail.index', compact('nominaPeriodos'));
     }
 
-    public function sendemailx(Request $request)
+    public function sendemail(Request $request)
     {
         //dd($request);
         $empresa = Empresa::orderBy('id')->get();
@@ -55,9 +55,9 @@ class ReportRecHonSendEmailController extends Controller
 
     }
 
-        //ENVIAR CORREOS DE FORMA AUTOMATICA
+    //ENVIAR CORREOS DE FORMA AUTOMATICA
     //20 CORREO EN PERIODOS DE 1 HORA
-    public function sendemail(Request $request)
+    public function sendemailxhora()
     {
         //dd($request);
         $empresa = Empresa::orderBy('id')->get();
@@ -72,7 +72,7 @@ class ReportRecHonSendEmailController extends Controller
         where nm_empleados.emp_email != '' 
         AND !ISNULL(nm_empleados.emp_email)
         AND ISNULL(nm_control.cot_stasendemail)
-        AND ISNULL(nm_movnomtrab.mov_stafecsendemail)
+        AND ISNULL(nm_movnomtrab.mov_stasendemail)
         GROUP BY nm_movhist.emp_ced,nm_movhist.mov_nummon LIMIT 1;";
         $cedulas = DB::select($sql);
 

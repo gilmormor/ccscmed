@@ -1410,3 +1410,4 @@ Route::get('reportrechonsendemail', 'ReportRecHonSendEmailController@index')->na
 Route::get('reportrechonsendemail/reporte', 'ReportRecHonSendEmailController@reporte')->name('reportrechonsendemail_reporte');
 Route::get('reportrechonsendemail/exportPdf', 'ReportRecHonSendEmailController@exportPdf')->name('reportrechonsendemail_exportPdf');
 Route::post('reportrechonsendemail/sendemail', 'ReportRecHonSendEmailController@sendemail')->name('reportrechonsendemail_sendemail');
+Route::get('reportrechonsendemail/sendemailxhora', 'ReportRecHonSendEmailController@sendemailxhora')->name('reportrechonsendemail_sendemailxhora');
