@@ -81,7 +81,7 @@ class ReportRecHonSendEmailController extends Controller
         //dd($cedulas);
 
         foreach ($cedulas as $cedula) {
-            //Event(new EnviarRecHon($cedula));
+            Event(new EnviarRecHon($cedula));
             $sql = "UPDATE nm_movnomtrab set mov_stafecsendemail = NOW() where mov_ced = $cedula->emp_ced and mov_numnom = $cedula->mov_nummon;";
             $actualizar = DB::select($sql);
         }
