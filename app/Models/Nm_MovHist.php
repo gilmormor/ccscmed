@@ -75,7 +75,7 @@ class Nm_MovHist extends Model
     }
 
     public static function consultarecibolote($aux_ced,$aux_numnom){
-        $user = Usuario::findOrFail(auth()->id());
+        //$user = Usuario::findOrFail(auth()->id());
         $sql = "SELECT nm_conceptos.*, nm_movhist.*,nm_movhismonext.*
         FROM nm_empleados INNER JOIN nm_movhist 
         ON nm_empleados.emp_ced = nm_movhist.emp_ced 

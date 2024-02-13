@@ -41,17 +41,17 @@ class NotifyMailEnviarRecHon
 
         $empresa = Empresa::orderBy('id')->get();
         $sql = "SELECT *
-        FROM nm_empleados 
-        WHERE emp_ced = $aux_ced;";
+            FROM nm_empleados 
+            WHERE emp_ced = $aux_ced;";
         $nm_empleado = DB::select($sql);
-        $sql = "SELECT *
-        FROM nm_movnomtrab 
-        WHERE mov_ced = $aux_ced
-        AND mov_numnom = $aux_numnom;";
+            $sql = "SELECT *
+            FROM nm_movnomtrab 
+            WHERE mov_ced = $aux_ced
+            AND mov_numnom = $aux_numnom;";
         $nm_movnomtrab = DB::select($sql);
         $sql = "SELECT *
-        FROM nm_control 
-        WHERE cot_numnom = $aux_numnom;";
+            FROM nm_control 
+            WHERE cot_numnom = $aux_numnom;";
         $nm_control = DB::select($sql);
         if(count($nm_empleado) > 0 and count($nm_movnomtrab) > 0){
             $nm_empleado = $nm_empleado[0];
@@ -64,7 +64,6 @@ class NotifyMailEnviarRecHon
                     $tasacamb = $nm_movhist->mme_tasacambiorig;
                     break;
                 }
-                
             }
             if($nm_empleado){
                 if(env('APP_DEBUG')){

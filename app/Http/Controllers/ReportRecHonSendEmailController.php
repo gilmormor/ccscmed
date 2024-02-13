@@ -60,8 +60,8 @@ class ReportRecHonSendEmailController extends Controller
     public function sendemailxhora()
     {
         //dd($request);
-        $empresa = Empresa::orderBy('id')->get();
-        $usuario = Usuario::findOrFail(auth()->id());
+        /* $empresa = Empresa::orderBy('id')->get();
+        $usuario = Usuario::findOrFail(auth()->id()); */
         $sql = "SELECT nm_movhist.emp_ced,nm_movhist.mov_nummon
         FROM nm_movhist INNER JOIN nm_empleados
         ON nm_movhist.emp_ced = nm_empleados.emp_ced

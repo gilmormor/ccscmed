@@ -1,0 +1,48 @@
+"artisan" no se reconoce como un comando interno o externo,
+programa o archivo por lotes ejecutable.
+
+  [41;1m Illuminate\Database\Eloquent\ModelNotFoundException [49;22m : [33mNo query results for model [App\Models\Seguridad\Usuario].[39m
+
+  at [32mC:\laragon\www\ccscmed\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php[39m:[32m396[39m
+    [90;3m392| [0m[33m        } elseif (! [0m[39;1mis_null[0m[33m([0m[39;1m$result[0m[33m)) {[0m
+    [90;3m393| [0m[33m            return [0m[39;1m$result[0m[33m;[0m
+    [90;3m394| [0m[33m        }[0m
+    [90;3m395| [0m
+[41;1m  > [0m[90;3m396| [0m[33m        throw (new [0m[39;1mModelNotFoundException[0m[33m)->[0m[39;1msetModel[0m[33m([0m
+    [90;3m397| [0m[33m            [0m[39;1mget_class[0m[33m([0m[39;1m$this[0m[33m->[0m[39;1mmodel[0m[33m), [0m[39;1m$id[0m
+    [90;3m398| [0m[39;1m        [0m[33m);[0m
+    [90;3m399| [0m[33m    }[0m
+    [90;3m400| [0m
+
+  [33mException trace:[39m
+
+  [36m1   [39m[33mIlluminate\Database\Eloquent\Builder::findOrFail()[39m
+      [32mC:\laragon\www\ccscmed\vendor\laravel\framework\src\Illuminate\Support\Traits\ForwardsCalls.php[39m:[32m23[39m
+
+  [36m2   [39m[33mIlluminate\Database\Eloquent\Model::forwardCallTo(Object(Illuminate\Database\Eloquent\Builder), "findOrFail")[39m
+      [32mC:\laragon\www\ccscmed\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php[39m:[32m1622[39m
+
+  [32mPlease use the argument [39m[31m-v[39m[32m to see more details.[39m
+
+  [41;1m Illuminate\Database\Eloquent\ModelNotFoundException [49;22m : [33mNo query results for model [App\Models\Seguridad\Usuario].[39m
+
+  at [32mC:\laragon\www\ccscmed\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php[39m:[32m396[39m
+    [90;3m392| [0m[33m        } elseif (! [0m[39;1mis_null[0m[33m([0m[39;1m$result[0m[33m)) {[0m
+    [90;3m393| [0m[33m            return [0m[39;1m$result[0m[33m;[0m
+    [90;3m394| [0m[33m        }[0m
+    [90;3m395| [0m
+[41;1m  > [0m[90;3m396| [0m[33m        throw (new [0m[39;1mModelNotFoundException[0m[33m)->[0m[39;1msetModel[0m[33m([0m
+    [90;3m397| [0m[33m            [0m[39;1mget_class[0m[33m([0m[39;1m$this[0m[33m->[0m[39;1mmodel[0m[33m), [0m[39;1m$id[0m
+    [90;3m398| [0m[39;1m        [0m[33m);[0m
+    [90;3m399| [0m[33m    }[0m
+    [90;3m400| [0m
+
+  [33mException trace:[39m
+
+  [36m1   [39m[33mIlluminate\Database\Eloquent\Builder::findOrFail()[39m
+      [32mC:\laragon\www\ccscmed\vendor\laravel\framework\src\Illuminate\Support\Traits\ForwardsCalls.php[39m:[32m23[39m
+
+  [36m2   [39m[33mIlluminate\Database\Eloquent\Model::forwardCallTo(Object(Illuminate\Database\Eloquent\Builder), "findOrFail")[39m
+      [32mC:\laragon\www\ccscmed\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php[39m:[32m1622[39m
+
+  [32mPlease use the argument [39m[31m-v[39m[32m to see more details.[39m
