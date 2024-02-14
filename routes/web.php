@@ -93,6 +93,12 @@ Route::get('composerintervention', function () {
     shell_exec('composer require intervention/image');
 });
 
+//COMANDO PARA ENVIAR CORREO POR LOTES EN CRON DE CPANEL
+Route::get('sendxhora',function(){
+    Artisan::call('email:sendxhora'); 
+
+});
+
 
 
 //Route::group(['middleware' => ['auth']], function () {
