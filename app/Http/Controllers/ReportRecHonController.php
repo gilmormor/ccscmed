@@ -21,7 +21,7 @@ class ReportRecHonController extends Controller
     {
         can('listar-recibo-honorarios');
 
-        $nominaPeriodos = Nm_MovHist::periodosnompersona();
+        $nominaPeriodos = Nm_MovHist::periodosnompersona("");
         //dd($nominaPeriodos);
 
         return view('reportrechon.index', compact('nominaPeriodos'));
@@ -38,15 +38,22 @@ class ReportRecHonController extends Controller
     public function exportPdf(Request $request)
     {
         //dd($request);
+        if(isset($request->emp_ced)){
+            $aux_cedula = $request->emp_ced;
+        }else{
+            $usuario = Usuario::findOrFail(auth()->id());
+            $aux_cedula = $usuario->usuario;
+            //$aux_cedula = "2450604";
+        }
+
         $empresa = Empresa::orderBy('id')->get();
-        $usuario = Usuario::findOrFail(auth()->id());
         $sql = "SELECT *
         FROM nm_empleados 
-        WHERE emp_ced = $usuario->usuario;";
+        WHERE emp_ced = $aux_cedula;";
         $datas = DB::select($sql);
         $sql = "SELECT *
         FROM nm_movnomtrab 
-        WHERE mov_ced = $usuario->usuario
+        WHERE mov_ced = $aux_cedula
         AND mov_numnom = $request->mov_nummon;";
         $nm_movnomtrab = DB::select($sql);
         $sql = "SELECT *

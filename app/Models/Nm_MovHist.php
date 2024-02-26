@@ -25,13 +25,21 @@ class Nm_MovHist extends Model
         'gru_cod'
     ];
 
-    public static function periodosnompersona(){
-        $user = Usuario::findOrFail(auth()->id());
+    public static function periodosnompersona($request){
+        if(isset($request->emp_ced)){
+            $aux_cedula = $request->emp_ced;
+        }else{
+            $user = Usuario::findOrFail(auth()->id());
+            $aux_cedula = $user->usuario;
+            //$aux_cedula = "2450604";
+        }
 
-        $sql = "SELECT nm_control.*
+        $sql = "SELECT nm_control.*,
+        DATE_FORMAT(cot_fdesde, '%d/%m/%Y') AS fdesde,
+        DATE_FORMAT(cot_fhasta, '%d/%m/%Y') AS fhasta
         FROM nm_movhist INNER JOIN nm_control
         ON nm_movhist.mov_nummon = nm_control.cot_numnom
-        where nm_movhist.emp_ced = $user->usuario 
+        where nm_movhist.emp_ced = $aux_cedula 
         group by nm_movhist.mov_nummon 
         order by nm_control.cot_fdesde desc;";
 
@@ -55,6 +63,14 @@ class Nm_MovHist extends Model
 
     public static function consultarecibo($request){
         $user = Usuario::findOrFail(auth()->id());
+        if(isset($request->emp_ced)){
+            $aux_cedula = $request->emp_ced;
+        }else{
+            $user = Usuario::findOrFail(auth()->id());
+            $aux_cedula = $user->usuario;
+            //$aux_cedula = "2450604";
+        }
+
         $sql = "SELECT nm_conceptos.*, nm_movhist.*,nm_movhismonext.*
         FROM nm_empleados INNER JOIN nm_movhist 
         ON nm_empleados.emp_ced = nm_movhist.emp_ced 
@@ -64,7 +80,7 @@ class Nm_MovHist extends Model
         and nm_conceptos.gru_cod=nm_movhist.gru_cod
         LEFT JOIN nm_movhismonext
         ON nm_movhismonext.mov_id = nm_movhist.mov_id
-        where nm_empleados.emp_ced=$user->usuario
+        where nm_empleados.emp_ced=$aux_cedula
         and nm_movhist.mov_nummon=$request->mov_nummon
         ORDER BY nm_conceptos.con_asided,nm_conceptos.con_cod;";
 

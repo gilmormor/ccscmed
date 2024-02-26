@@ -1417,3 +1417,13 @@ Route::get('reportrechonsendemail/reporte', 'ReportRecHonSendEmailController@rep
 Route::get('reportrechonsendemail/exportPdf', 'ReportRecHonSendEmailController@exportPdf')->name('reportrechonsendemail_exportPdf');
 Route::post('reportrechonsendemail/sendemail', 'ReportRecHonSendEmailController@sendemail')->name('reportrechonsendemail_sendemail');
 Route::get('reportrechonsendemail/sendemailxhora', 'ReportRecHonSendEmailController@sendemailxhora')->name('reportrechonsendemail_sendemailxhora');
+
+/*RUTAS empleado*/
+Route::get('empleado', 'EmpleadoController@index')->name('empleado');
+Route::get('empleado/empleadobuscarpage', 'EmpleadoController@empleadobuscarpage')->name('empleadobuscar');
+Route::post('empleado/buscarCedula', 'EmpleadoController@buscarCedula')->name('buscarCedula');
+
+
+//ENVIAR REPORTE CORREO GENERAL
+Route::get('reportrechongen', 'ReportRecHonGenController@index')->name('reportrechongen');
+Route::post('reportrechongen/periodos', 'ReportRecHonGenController@periodos')->name('reportrechongen_periodos');
