@@ -73,7 +73,7 @@ class ReportRecHonSendEmailController extends Controller
         AND !ISNULL(nm_empleados.emp_email)
         AND ISNULL(nm_control.cot_stasendemail)
         AND ISNULL(nm_movnomtrab.mov_stasendemail)
-        GROUP BY nm_movhist.emp_ced,nm_movhist.mov_nummon LIMIT 5;";
+        GROUP BY nm_movhist.emp_ced,nm_movhist.mov_nummon LIMIT 1;";
         $cedulas = DB::select($sql);
 
         // nm_movhist.mov_nummon=$request->mov_nummon AND 
