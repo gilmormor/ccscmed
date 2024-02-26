@@ -86,8 +86,8 @@ class NotifyMailEnviarRecHon
                 
                 
                 //$aux_email = "honorariosmedicos@ccsc.com.ve"; // trim($nm_empleado->emp_email);
-                $aux_email = "gilmormor@gmail.com"; // trim($nm_empleado->emp_email);
-                //$aux_email = trim($nm_empleado->emp_email);
+                //$aux_email = "gilmormor@gmail.com"; // trim($nm_empleado->emp_email);
+                $aux_email = strtolower(trim($nm_empleado->emp_email));
                 $cuerpo = 'Periodo: ' . date("d/m/Y", strtotime($nm_control->cot_fdesde)) . ' al ' . date("d/m/Y", strtotime($nm_control->cot_fhasta));
                 $asunto = $empresa->nombre . " Recibo Honorarios " . $cuerpo;
         
