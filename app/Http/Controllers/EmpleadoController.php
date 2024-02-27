@@ -103,7 +103,7 @@ function consulta($request){
     if(isset($request->emp_ced) and $request->emp_ced != null and $request->emp_ced != ""){
         $cond_cedula = " nm_empleados.emp_ced = $request->emp_ced";
     }
-    $sql = "SELECT emp_ced,concat(TRIM(emp_nom),' ',TRIM(emp_ape)) as emp_nomape
+    $sql = "SELECT emp_ced,concat(TRIM(emp_nom),' ',TRIM(emp_ape)) as emp_nomape,emp_email
     FROM nm_empleados INNER JOIN nm_movnomtrab
     ON nm_empleados.emp_ced = nm_movnomtrab.mov_ced
     where $cond_cedula

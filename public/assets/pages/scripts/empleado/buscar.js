@@ -19,7 +19,8 @@ function configTablaEmpleado(){
         'ajax'        : "empleado/empleadobuscarpage",
         'columns'     : [
             {data: 'emp_ced'},
-            {data: 'emp_nomape'}
+            {data: 'emp_nomape'},
+            {data: 'emp_email'}
         ],
 		"language": {
             "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"

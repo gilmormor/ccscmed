@@ -17,6 +17,7 @@
                             <tr>
                                 <th>Ced</th>
                                 <th>Nombre</th>
+                                <th>email</th>
                             </tr>
                         </thead>
                         <tbody>
