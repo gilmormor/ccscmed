@@ -83,7 +83,7 @@ class Nm_MovHist extends Model
         where nm_empleados.emp_ced=$aux_cedula
         and nm_movhist.mov_nummon=$request->mov_nummon
         ORDER BY nm_conceptos.con_asided,nm_conceptos.con_cod;";
-
+        //dd($sql);
         $datas = DB::select($sql);
         //dd($datas);
         return $datas;
@@ -104,7 +104,7 @@ class Nm_MovHist extends Model
         where nm_empleados.emp_ced= $aux_ced
         and nm_movhist.mov_nummon= $aux_numnom
         ORDER BY nm_conceptos.con_asided,nm_conceptos.con_cod;";
-
+        //dd($sql);
         $datas = DB::select($sql);
         return $datas;
 

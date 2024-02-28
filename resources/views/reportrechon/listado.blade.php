@@ -111,7 +111,7 @@
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format((strpos("D", $nm_movhist->mov_tipocon) !== false and $nm_movhist->mme_montomone > 0) ? $nm_movhist->mme_montomone : 0, 2, ",", ".")}}&nbsp;&nbsp;</td>
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format((strpos("D", $nm_movhist->mov_tipocon) !== false and $nm_movhist->mme_montomone > 0) ? $nm_movhist->mov_monto - $nm_movhist->mme_montomone : 0, 2, ",", ".")}}&nbsp;&nbsp;</td>
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format(($nm_movhist->mov_codcon == 307 and $nm_movhist->mme_montodl > 0) ? $nm_movhist->mme_montodll : $nm_movhist->mme_montodl, 2, ",", ".")}}&nbsp;&nbsp;</td>
-						<td style='text-align:right;width: 7.7% !important;'>{{number_format(($nm_movhist->mov_codcon == 307 and $nm_movhist->mme_montodl > 0) ? $nm_movhist->mme_tasacambi : 0, 2, ",", ".")}}&nbsp;&nbsp;</td>
+						<td style='text-align:right;width: 7.7% !important;'>{{number_format(($nm_movhist->mov_codcon == 307 or $nm_movhist->mme_montodl > 0) ? $nm_movhist->mme_tasacambi : 0, 2, ",", ".")}}&nbsp;&nbsp;</td>
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format($totalacum, 2, ",", ".")}}&nbsp;&nbsp;</td>
 					</tr>
 					<?php 
