@@ -32,7 +32,7 @@
 		<tr>
 			<td class="info_cliente">
 				<div class="round">
-					<span class="h3">Médico</span>
+					<span class="h3">{{$nm_movnomtrab->car_desc}}</span>
 					<table class="datos_cliente">
 						<!--<tr class="headt">-->
 						<tr class="headt">

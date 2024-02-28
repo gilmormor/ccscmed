@@ -48,13 +48,14 @@ class ReportRecHonController extends Controller
 
         $empresa = Empresa::orderBy('id')->get();
         $sql = "SELECT *
-        FROM nm_empleados 
-        WHERE emp_ced = $aux_cedula;";
+            FROM nm_empleados 
+            WHERE emp_ced = $aux_cedula;";
         $datas = DB::select($sql);
-        $sql = "SELECT *
-        FROM nm_movnomtrab 
-        WHERE mov_ced = $aux_cedula
-        AND mov_numnom = $request->mov_nummon;";
+        $sql = "SELECT nm_movnomtrab.*,nm_cargos.car_desc
+            FROM nm_movnomtrab INNER JOIN nm_cargos
+            ON nm_movnomtrab.mov_codcar=nm_cargos.car_cod 
+            WHERE mov_ced = $aux_cedula
+            AND mov_numnom = $request->mov_nummon;";
         $nm_movnomtrab = DB::select($sql);
         $sql = "SELECT *
         FROM nm_control 

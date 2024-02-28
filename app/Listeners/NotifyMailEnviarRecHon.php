@@ -44,8 +44,9 @@ class NotifyMailEnviarRecHon
             FROM nm_empleados 
             WHERE emp_ced = $aux_ced;";
         $nm_empleado = DB::select($sql);
-            $sql = "SELECT *
-            FROM nm_movnomtrab 
+            $sql = "SELECT nm_movnomtrab.*,nm_cargos.car_desc
+            FROM nm_movnomtrab INNER JOIN nm_cargos
+            ON nm_movnomtrab.mov_codcar=nm_cargos.car_cod
             WHERE mov_ced = $aux_ced
             AND mov_numnom = $aux_numnom;";
         $nm_movnomtrab = DB::select($sql);
