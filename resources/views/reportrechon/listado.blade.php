@@ -141,6 +141,7 @@
 		$NetoPagarRefBs = $totalHonxPagarBs / (($totalHonxPagarBs > 0) ? (($tasacamb > 0) ? $tasacamb : $nm_control->cot_valordolar) : 1);
 		$NetoPagarRefME = $totalHonxPagarME / (($totalHonxPagarME > 0) ? (($tasacamb > 0) ? $tasacamb : $nm_control->cot_valordolar) : 1);
 	?>
+	<!--
 	<div class="round" style="padding-bottom: 0px;padding-top: 8px;margin-bottom: 3px;">
 		<table id="factura_detalle">
 			<tr>
@@ -186,5 +187,6 @@
 
 		</table>
 	</div>
+	-->
 	
 </div>
