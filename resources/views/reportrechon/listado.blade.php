@@ -37,11 +37,11 @@
 						<!--<tr class="headt">-->
 						<tr class="headt">
 							<td style="width:10%"><strong>Cédula:</strong> </td><td style="width:50%">{{number_format($nm_empleado->emp_ced, 0, ",", ".")}}</td>
-							<td style="width:15%"><strong>Tasa Liberacion:</strong> </td><td style="width:10%">{{number_format($tasacamb, 2, ",", ".")}}</td>
+							<td style="width:15%"><strong>Tasa de pago:</strong> </td><td style="width:10%">{{number_format($tasacamb, 2, ",", ".")}}</td>
 						</tr>
 						<tr class="headt">
 							<td style="width:10%"><strong>Nombre:</strong> </td><td style="width:50%">{{$nm_empleado->emp_nom}} {{$nm_empleado->emp_ape}}</td>
-							<td style="width:15%"><strong>Tasa Promedio:</strong> </td><td style="width:10%">{{number_format($nm_control->cot_valordolar, 2, ",", ".")}}</td>
+							<td style="width:15%"><strong>Tasa BCV:</strong> </td><td style="width:10%">{{number_format($nm_control->cot_valordolar, 2, ",", ".")}}</td>
 						</tr>
 					</table>
 				</div>
@@ -141,54 +141,50 @@
 		$NetoPagarRefBs = $totalHonxPagarBs / (($totalHonxPagarBs > 0) ? (($tasacamb > 0) ? $tasacamb : $nm_control->cot_valordolar) : 1);
 		$NetoPagarRefME = $totalHonxPagarME / (($totalHonxPagarME > 0) ? (($tasacamb > 0) ? $tasacamb : $nm_control->cot_valordolar) : 1);
 	?>
-	@if ($totalacum == 0 and $totalME == 0)
-		<div class="round" style="padding-bottom: 0px;padding-top: 8px;margin-bottom: 3px;">
-			<table id="factura_detalle">
-				<tr>
-					<td style='text-align:center;width: 30.7% !important;'></td>
-					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td colspan="3" style='text-align:right;'></td>
-					<td style='text-align:right;width: 7.7% !important;'><strong>Bs.&nbsp;&nbsp;</strong></td>
-					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td style='text-align:right;width: 7.7% !important;'><strong>ME&nbsp;&nbsp;</strong></td>
-				</tr>
-				<!--
-				<tr>
-					<td style='text-align:center;width: 30.7% !important;'></td>
-					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td colspan="3" style='text-align:right;'><strong>Total Honorarios por pagar:</strong></td>
-					<td style='text-align:right;width: 7.7% !important;'>{{number_format($totalHonxPagarBs, 2, ",", ".")}}&nbsp;&nbsp;</td>
-					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td style='text-align:right;width: 7.7% !important;'>{{number_format($totalHonxPagarME, 2, ",", ".")}}&nbsp;&nbsp;</td>
-				</tr>
-				<tr>
-					<td style='text-align:center;width: 30.7% !important;'></td>
-					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td colspan="3" style='text-align:right;'><strong>Neto a pagar Ref ME:</strong></td>
-					<td style='text-align:right;width: 7.7% !important;'>{{number_format($NetoPagarRefBs, 2, ",", ".")}}&nbsp;&nbsp;</td>
-					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td style='text-align:right;width: 7.7% !important;'>{{number_format($NetoPagarRefME, 2, ",", ".")}}&nbsp;&nbsp;</td>
-				</tr>
-				-->
-				<tr>
-					<td style='text-align:center;width: 30.7% !important;'></td>
-					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td colspan="3" style='text-align:right;'><strong>Total Moneda Extranjera:</strong></td>
-					<td style='text-align:right;width: 7.7% !important;'>{{number_format($aux_anticipobs, 2, ",", ".")}}&nbsp;&nbsp;</td>
-					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td style='text-align:right;width: 7.7% !important;'>{{number_format($aux_anticipodll, 2, ",", ".")}}&nbsp;&nbsp;</td>
-				</tr>
-			</table>
-		</div>
-	@endif
+	<div class="round" style="padding-bottom: 0px;padding-top: 8px;margin-bottom: 3px;">
+		<table id="factura_detalle">
+			<tr>
+				<td style='text-align:center;width: 30.7% !important;'></td>
+				<td style='text-align:right;width: 7.7% !important;'></td>
+				<td style='text-align:right;width: 7.7% !important;'></td>
+				<td style='text-align:right;width: 7.7% !important;'></td>
+				<td colspan="3" style='text-align:right;'></td>
+				<td style='text-align:right;width: 7.7% !important;'><strong>Bs.&nbsp;&nbsp;</strong></td>
+				<td style='text-align:right;width: 7.7% !important;'></td>
+				<td style='text-align:right;width: 7.7% !important;'><strong>ME&nbsp;&nbsp;</strong></td>
+			</tr>
+			<tr>
+				<td style='text-align:center;width: 30.7% !important;'></td>
+				<td style='text-align:right;width: 7.7% !important;'></td>
+				<td style='text-align:right;width: 7.7% !important;'></td>
+				<td style='text-align:right;width: 7.7% !important;'></td>
+				<td colspan="3" style='text-align:right;'><strong>Total Honorarios por pagar:</strong></td>
+				<td style='text-align:right;width: 7.7% !important;'>{{number_format($totalHonxPagarBs, 2, ",", ".")}}&nbsp;&nbsp;</td>
+				<td style='text-align:right;width: 7.7% !important;'></td>
+				<td style='text-align:right;width: 7.7% !important;'>{{number_format($NetoPagarRefBs, 2, ",", ".")}}&nbsp;&nbsp;</td>
+			</tr>
+			<tr>
+				<td style='text-align:center;width: 30.7% !important;'></td>
+				<td style='text-align:right;width: 7.7% !important;'></td>
+				<td style='text-align:right;width: 7.7% !important;'></td>
+				<td style='text-align:right;width: 7.7% !important;'></td>
+				<td colspan="3" style='text-align:right;'><strong>Neto a pagar Ref ME:</strong></td>
+				<td style='text-align:right;width: 7.7% !important;'>{{number_format($totalHonxPagarME, 2, ",", ".")}}&nbsp;&nbsp;</td>
+				<td style='text-align:right;width: 7.7% !important;'></td>
+				<td style='text-align:right;width: 7.7% !important;'>{{number_format($totalME, 2, ",", ".")}}&nbsp;&nbsp;</td>
+			</tr>
+			<tr>
+				<td style='text-align:center;width: 30.7% !important;'></td>
+				<td style='text-align:right;width: 7.7% !important;'></td>
+				<td style='text-align:right;width: 7.7% !important;'></td>
+				<td style='text-align:right;width: 7.7% !important;'></td>
+				<td colspan="3" style='text-align:right;'><strong>Total Moneda Extranjera:</strong></td>
+				<td style='text-align:right;width: 7.7% !important;'>{{number_format($aux_anticipobs, 2, ",", ".")}}&nbsp;&nbsp;</td>
+				<td style='text-align:right;width: 7.7% !important;'></td>
+				<td style='text-align:right;width: 7.7% !important;'>{{number_format($aux_anticipodll, 2, ",", ".")}}&nbsp;&nbsp;</td>
+			</tr>
+		</table>
+	</div>
 
 	
 </div>
