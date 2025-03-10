@@ -9,6 +9,7 @@ use App\Models\Seguridad\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Facades\Validator;
 
 class ReportRecHonSendEmailController extends Controller
 {
@@ -59,10 +60,12 @@ class ReportRecHonSendEmailController extends Controller
     //20 CORREO EN PERIODOS DE 1 HORA
     public function sendemailxhora()
     {
-        //dd($request);
-        /* $empresa = Empresa::orderBy('id')->get();
-        $usuario = Usuario::findOrFail(auth()->id()); */
-        $sql = "SELECT nm_movhist.emp_ced,nm_movhist.mov_nummon
+        $status_nm_control = false;
+        $array_erroremail = CedularErrorEmail($status_nm_control);
+        // Convertir las claves de $array_erroremail (emp_ced) en una cadena separada por comas
+        $emp_ced_errors = implode(',', array_keys($array_erroremail));
+
+        $sql = "SELECT nm_movhist.emp_ced,nm_movhist.mov_nummon,nm_empleados.emp_email
         FROM nm_movhist INNER JOIN nm_empleados
         ON nm_movhist.emp_ced = nm_empleados.emp_ced
         INNER JOIN nm_control
@@ -71,14 +74,12 @@ class ReportRecHonSendEmailController extends Controller
         ON nm_movnomtrab.mov_numnom = nm_movhist.mov_nummon AND nm_movnomtrab.mov_ced = nm_movhist.emp_ced
         where nm_empleados.emp_email != '' 
         AND !ISNULL(nm_empleados.emp_email)
-        AND ISNULL(nm_control.cot_stasendemail)
         AND ISNULL(nm_movnomtrab.mov_stasendemail)
+        AND nm_empleados.emp_ced NOT IN ($emp_ced_errors)
         GROUP BY nm_movhist.emp_ced,nm_movhist.mov_nummon LIMIT 1;";
         $cedulas = DB::select($sql);
-
-        // nm_movhist.mov_nummon=$request->mov_nummon AND 
-
         //dd($cedulas);
+        // nm_movhist.mov_nummon=$request->mov_nummon AND 
 
         foreach ($cedulas as $cedula) {
             Event(new EnviarRecHon($cedula));

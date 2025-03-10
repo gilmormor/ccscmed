@@ -99,6 +99,12 @@ Route::get('sendxhora',function(){
 
 });
 
+//COMANDO PARA ENVIAR CORREO INDICANDO LOS CORREOS QUE ESTAN ERRADOS O EN BLANCO EN CRON DE CPANEL
+Route::get('enviaremailconerror',function(){
+    Artisan::call('erroremail:enviaremailconerror'); 
+
+});
+
 
 
 //Route::group(['middleware' => ['auth']], function () {

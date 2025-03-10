@@ -80,28 +80,36 @@
 				$NetoAPagarRefBs = 0;
 				$aux_anticipobs = 0;
 				$aux_anticipodll = 0;
-
+				$aux_sumame = 0;
+				$aux_sumameA = 0;
+				$aux_sumameD = 0;
 			?>
 			<tbody id="detalle_productos">
 				@foreach($nm_movhists as $nm_movhist)
-				<?php 
-					$signo = $nm_movhist->con_asided == "A" ? 1 : -1;
-					$totalAsigBsGeneral += (strpos("AOF", $nm_movhist->mov_tipocon) !== false) ? $nm_movhist->mov_monto : 0;
-					$totalAsigOtraMon += (strpos("AOF", $nm_movhist->mov_tipocon) !== false and $nm_movhist->mme_montomone > 0) ? $nm_movhist->mme_montomone : 0;
-					$totalAsigBsNetos += (strpos("AOF", $nm_movhist->mov_tipocon) !== false and $nm_movhist->mme_montomone > 0) ? $nm_movhist->mov_monto - $nm_movhist->mme_montomone : 0;
-					$totalDeduBsGeneral += (strpos("D", $nm_movhist->mov_tipocon) !== false) ? $nm_movhist->mov_monto : 0;
-					$totalDeduOtraMon += (strpos("D", $nm_movhist->mov_tipocon) !== false and $nm_movhist->mme_montomone > 0) ? $nm_movhist->mme_montomone : 0;
-					$totalDeduBsNetos += (strpos("D", $nm_movhist->mov_tipocon) !== false) ? $nm_movhist->mov_monto - $nm_movhist->mme_montomone : 0;
-					$totalME += (($nm_movhist->mov_codcon == 307 and $nm_movhist->mme_montodl > 0) ? $nm_movhist->mme_montodll : $nm_movhist->mme_montodl)  * $signo;
+					<?php 
+						$signo = $nm_movhist->con_asided == "A" ? 1 : -1;
+						$totalAsigBsGeneral += (strpos("AOF", $nm_movhist->mov_tipocon) !== false) ? $nm_movhist->mov_monto : 0;
+						$totalAsigOtraMon += (strpos("AOF", $nm_movhist->mov_tipocon) !== false and $nm_movhist->mme_montomone > 0) ? $nm_movhist->mme_montomone : 0;
+						$totalAsigBsNetos += (strpos("AOF", $nm_movhist->mov_tipocon) !== false and $nm_movhist->mme_montomone > 0) ? $nm_movhist->mov_monto - $nm_movhist->mme_montomone : 0;
+						$totalDeduBsGeneral += (strpos("D", $nm_movhist->mov_tipocon) !== false) ? $nm_movhist->mov_monto : 0;
+						$totalDeduOtraMon += (strpos("D", $nm_movhist->mov_tipocon) !== false and $nm_movhist->mme_montomone > 0) ? $nm_movhist->mme_montomone : 0;
+						$totalDeduBsNetos += (strpos("D", $nm_movhist->mov_tipocon) !== false) ? $nm_movhist->mov_monto - $nm_movhist->mme_montomone : 0;
+						$totalME += (($nm_movhist->mov_codcon == 307 and $nm_movhist->mme_montodl > 0) ? $nm_movhist->mme_montodll : $nm_movhist->mme_montodl)  * $signo;
 
-					$totalacum += ($nm_movhist->mov_monto*$signo)-($nm_movhist->mme_montomone * $signo);
+						$totalacum += ($nm_movhist->mov_monto*$signo)-($nm_movhist->mme_montomone * $signo);
 
-					$totalHonxPagarBs += ($nm_movhist->mov_monto * $signo)-($nm_movhist->mme_montomone * $signo);
-					$totalHonxPagarME += $nm_movhist->mme_montomone * $signo;
+						$totalHonxPagarBs += ($nm_movhist->mov_monto * $signo)-($nm_movhist->mme_montomone * $signo);
+						$totalHonxPagarME += $nm_movhist->mme_montomone * $signo;
 
-					$aux_anticipobs += ($nm_movhist->mov_codcon == 307 ? $nm_movhist->mov_monto : 0);
-					$aux_anticipodll += ($nm_movhist->mov_codcon == 307 ? $nm_movhist->mme_montodll : 0);
-				?>
+						$aux_anticipobs += ($nm_movhist->mov_codcon == 307 ? $nm_movhist->mov_monto : 0);
+						$aux_anticipodll += ($nm_movhist->mov_codcon == 307 ? $nm_movhist->mme_montodll : 0);
+						if(strpos("A", $nm_movhist->mov_tipocon)){
+							$aux_sumameA += ($nm_movhist->mme_montodl > 0) ? $nm_movhist->mme_montodl : 0;
+						}else{
+							$aux_sumameD += ($nm_movhist->mme_montodl > 0) ? $nm_movhist->mme_montodl : 0;
+						}
+
+					?>
 					<tr class='btn-accion-tabla tooltipsC'>
 						<td style='text-align:left;width: 30.7% !important;'>{{$nm_movhist->con_desc . $nm_movhist->mov_ref}}</td>
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format((strpos("AOF", $nm_movhist->mov_tipocon) !== false) ? $nm_movhist->mov_monto : 0, 2, ",", ".")}}&nbsp;&nbsp;</td>
@@ -110,7 +118,7 @@
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format((strpos("D", $nm_movhist->mov_tipocon) !== false) ? $nm_movhist->mov_monto : 0, 2, ",", ".")}}&nbsp;&nbsp;</td>
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format((strpos("D", $nm_movhist->mov_tipocon) !== false and $nm_movhist->mme_montomone > 0) ? $nm_movhist->mme_montomone : 0, 2, ",", ".")}}&nbsp;&nbsp;</td>
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format((strpos("D", $nm_movhist->mov_tipocon) !== false and $nm_movhist->mme_montomone > 0) ? $nm_movhist->mov_monto - $nm_movhist->mme_montomone : 0, 2, ",", ".")}}&nbsp;&nbsp;</td>
-						<td style='text-align:right;width: 7.7% !important;'>{{number_format(($nm_movhist->mov_codcon == 307 and $nm_movhist->mme_montodl > 0) ? $nm_movhist->mme_montodll : $nm_movhist->mme_montodl, 2, ",", ".")}}&nbsp;&nbsp;</td>
+						<td style='text-align:right;width: 7.7% !important;'>{{number_format(($nm_movhist->mov_codcon == 307 or $nm_movhist->mme_montodl > 0) ? $nm_movhist->mme_montodll : $nm_movhist->mme_montodl, 2, ",", ".")}}&nbsp;&nbsp;</td>
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format(($nm_movhist->mov_codcon == 307 or $nm_movhist->mme_montodl > 0) ? $nm_movhist->mme_tasacambi : 0, 2, ",", ".")}}&nbsp;&nbsp;</td>
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format($totalacum, 2, ",", ".")}}&nbsp;&nbsp;</td>
 					</tr>
@@ -140,6 +148,7 @@
 	<?php 
 		$NetoPagarRefBs = $totalHonxPagarBs / (($totalHonxPagarBs > 0) ? (($tasacamb > 0) ? $tasacamb : $nm_control->cot_valordolar) : 1);
 		$NetoPagarRefME = $totalHonxPagarME / (($totalHonxPagarME > 0) ? (($tasacamb > 0) ? $tasacamb : $nm_control->cot_valordolar) : 1);
+		$aux_sumame = $aux_sumameA - $aux_sumameD;
 	?>
 	<div class="round" style="padding-bottom: 0px;padding-top: 8px;margin-bottom: 3px;">
 		<table id="factura_detalle">
@@ -173,16 +182,18 @@
 				<td style='text-align:right;width: 7.7% !important;'></td>
 				<td style='text-align:right;width: 7.7% !important;'>{{number_format($totalME, 2, ",", ".")}}&nbsp;&nbsp;</td>
 			</tr>
-			<tr>
-				<td style='text-align:center;width: 30.7% !important;'></td>
-				<td style='text-align:right;width: 7.7% !important;'></td>
-				<td style='text-align:right;width: 7.7% !important;'></td>
-				<td style='text-align:right;width: 7.7% !important;'></td>
-				<td colspan="3" style='text-align:right;'><strong>Total Moneda Extranjera:</strong></td>
-				<td style='text-align:right;width: 7.7% !important;'>{{number_format($aux_anticipobs, 2, ",", ".")}}&nbsp;&nbsp;</td>
-				<td style='text-align:right;width: 7.7% !important;'></td>
-				<td style='text-align:right;width: 7.7% !important;'>{{number_format($aux_anticipodll, 2, ",", ".")}}&nbsp;&nbsp;</td>
-			</tr>
+			@if ($aux_sumame > 0 and $totalHonxPagarBs > 0)
+				<tr>
+					<td style='text-align:center;width: 30.7% !important;'></td>
+					<td style='text-align:right;width: 7.7% !important;'></td>
+					<td style='text-align:right;width: 7.7% !important;'></td>
+					<td style='text-align:right;width: 7.7% !important;'></td>
+					<td colspan="3" style='text-align:right;'><strong>Total Moneda Extranjera:</strong></td>
+					<td style='text-align:right;width: 7.7% !important;'>{{number_format($aux_anticipobs, 2, ",", ".")}}&nbsp;&nbsp;</td>
+					<td style='text-align:right;width: 7.7% !important;'></td>
+					<td style='text-align:right;width: 7.7% !important;'>{{number_format($aux_anticipodll, 2, ",", ".")}}&nbsp;&nbsp;</td>
+				</tr>				
+			@endif
 		</table>
 	</div>
 
