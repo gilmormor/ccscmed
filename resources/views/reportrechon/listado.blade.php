@@ -1,8 +1,4 @@
 <link rel="stylesheet" href="{{asset("assets/css/factura.css")}}">
-<?php 
-	use App\Models\dtedte;
-	//dd($datas);
-?>
 <!--<img class="anulada" src="img/anulado.png" alt="Anulada">-->
 <br>
 <br>

@@ -8,7 +8,7 @@ $(document).ready(function () {
 
 $("#btnpdf2").click(function()
 {
-    aux_titulo = 'Pendientes Solicitud Despacho';
+    aux_titulo = 'Correos no validoso';
     //data = datosRecHon();
     $('#contpdf').attr('src', '/enviaremailconerrorgen/exportPdf/'); //+ data.data2);
     $("#myModalpdf").modal('show'); 
