@@ -47,11 +47,7 @@ class NotifyMailEnviarEmailConError
             }
             //dd($datos);
             
-            //return view('notaventaconsulta.listado', compact('notaventas','empresa','usuario','aux_fdesde','aux_fhasta','nomvendedor','nombreAreaproduccion','nombreGiro','nombreTipoEntrega'));
-            
-            //$pdf = PDF::loadView('reportinvstockvend.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
             $pdf = PDF::loadView('reportenviaremailconerror.listado', compact('datos','empresa'));
-            //$pdf = PDF::loadView('reportdtefac.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
             // Guarda el PDF en una ubicación temporal
             $pdfPath = storage_path("app/temp/enviaremailconerror.pdf");
             $pdf->save($pdfPath);

@@ -21,7 +21,7 @@ class ReportEnviarEmailConErrorController extends Controller
     public function sendemail()
     {
         $status_nm_control = true;
-        $array_erroremail = CedularErrorEmail($status_nm_control);
+        $array_erroremail = CedularErrorEmail($status_nm_control,false);
         //dd($array_erroremail);
 
         Event(new EnviarEmailConError($array_erroremail));
