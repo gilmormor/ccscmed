@@ -93,10 +93,10 @@
 						$totalAsigBsNetos += (strpos("AOF", $nm_movhist->mov_tipocon) !== false and $nm_movhist->mme_montomone > 0) ? $nm_movhist->mov_monto - $nm_movhist->mme_montomone : 0;
 						$totalDeduBsGeneral += (strpos("D", $nm_movhist->mov_tipocon) !== false) ? $nm_movhist->mov_monto : 0;
 						$totalDeduOtraMon += (strpos("D", $nm_movhist->mov_tipocon) !== false and $nm_movhist->mme_montomone > 0) ? $nm_movhist->mme_montomone : 0;
-						$totalDeduBsNetos += (strpos("D", $nm_movhist->mov_tipocon) !== false) ? $nm_movhist->mov_monto - $nm_movhist->mme_montomone : 0;
+						$totalDeduBsNetos += (strpos("D", $nm_movhist->mov_tipocon) !== false and $nm_movhist->mme_montomone > 0) ? $nm_movhist->mov_monto - $nm_movhist->mme_montomone : 0;
 						$totalME += (($nm_movhist->mov_codcon == 307 and $nm_movhist->mme_montodl > 0) ? $nm_movhist->mme_montodll : $nm_movhist->mme_montodl)  * $signo;
 
-						$totalacum += ($nm_movhist->mov_monto*$signo)-($nm_movhist->mme_montomone * $signo);
+						$totalacum += ($nm_movhist->mov_monto * $signo)-($nm_movhist->mme_montomone * $signo);
 
 						$totalHonxPagarBs += ($nm_movhist->mov_monto * $signo)-($nm_movhist->mme_montomone * $signo);
 						$totalHonxPagarME += $nm_movhist->mme_montomone * $signo;
@@ -118,7 +118,7 @@
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format((strpos("D", $nm_movhist->mov_tipocon) !== false) ? $nm_movhist->mov_monto : 0, 2, ",", ".")}}&nbsp;&nbsp;</td>
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format((strpos("D", $nm_movhist->mov_tipocon) !== false and $nm_movhist->mme_montomone > 0) ? $nm_movhist->mme_montomone : 0, 2, ",", ".")}}&nbsp;&nbsp;</td>
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format((strpos("D", $nm_movhist->mov_tipocon) !== false and $nm_movhist->mme_montomone > 0) ? $nm_movhist->mov_monto - $nm_movhist->mme_montomone : 0, 2, ",", ".")}}&nbsp;&nbsp;</td>
-						<td style='text-align:right;width: 7.7% !important;'>{{number_format(($nm_movhist->mov_codcon == 307 or $nm_movhist->mme_montodl > 0) ? $nm_movhist->mme_montodll : $nm_movhist->mme_montodl, 2, ",", ".")}}&nbsp;&nbsp;</td>
+						<td style='text-align:right;width: 7.7% !important;'>{{number_format(($nm_movhist->mov_codcon == 307 ) ? $nm_movhist->mme_montodll : $nm_movhist->mme_montodl, 2, ",", ".")}}&nbsp;&nbsp;</td>
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format(($nm_movhist->mov_codcon == 307 or $nm_movhist->mme_montodl > 0) ? $nm_movhist->mme_tasacambi : 0, 2, ",", ".")}}&nbsp;&nbsp;</td>
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format($totalacum, 2, ",", ".")}}&nbsp;&nbsp;</td>
 					</tr>
@@ -149,6 +149,8 @@
 		$NetoPagarRefBs = $totalHonxPagarBs / (($totalHonxPagarBs > 0) ? (($tasacamb > 0) ? $tasacamb : $nm_control->cot_valordolar) : 1);
 		$NetoPagarRefME = $totalHonxPagarME / (($totalHonxPagarME > 0) ? (($tasacamb > 0) ? $tasacamb : $nm_control->cot_valordolar) : 1);
 		$aux_sumame = $aux_sumameA - $aux_sumameD;
+		//TOMO SOLO LOS 2 DECIMALES SIN REDONDEAR, porque asi lo hago en visual fox 
+		$NetoPagarRefBs = intval($NetoPagarRefBs * 100) / 100;
 	?>
 	<div class="round" style="padding-bottom: 0px;padding-top: 8px;margin-bottom: 3px;">
 		<table id="factura_detalle">
@@ -182,7 +184,7 @@
 				<td style='text-align:right;width: 7.7% !important;'></td>
 				<td style='text-align:right;width: 7.7% !important;'>{{number_format($totalME, 2, ",", ".")}}&nbsp;&nbsp;</td>
 			</tr>
-			@if ($aux_sumame > 0 and $totalHonxPagarBs > 0)
+			@if (($aux_sumame <= 0) and ($totalHonxPagarBs <= 0))
 				<tr>
 					<td style='text-align:center;width: 30.7% !important;'></td>
 					<td style='text-align:right;width: 7.7% !important;'></td>
