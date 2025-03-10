@@ -99,6 +99,12 @@ Route::get('sendxhora',function(){
 
 });
 
+//COMANDO PARA ENVIAR CORREO INDICANDO LOS CORREOS QUE ESTAN ERRADOS O EN BLANCO EN CRON DE CPANEL
+Route::get('enviaremailconerror',function(){
+    Artisan::call('erroremail:enviaremailconerror'); 
+
+});
+
 
 
 //Route::group(['middleware' => ['auth']], function () {
@@ -1427,3 +1433,8 @@ Route::post('empleado/buscarCedula', 'EmpleadoController@buscarCedula')->name('b
 //ENVIAR REPORTE CORREO GENERAL
 Route::get('reportrechongen', 'ReportRecHonGenController@index')->name('reportrechongen');
 Route::post('reportrechongen/periodos', 'ReportRecHonGenController@periodos')->name('reportrechongen_periodos');
+
+//ENVIAR REPORTE ReportEnviarEmailConErrorGen GENERAL
+Route::get('enviaremailconerrorgen', 'ReportEnviarEmailConErrorGenController@index')->name('enviaremailconerrorgen');
+Route::get('enviaremailconerrorgen/exportPdf', 'ReportEnviarEmailConErrorGenController@exportPdf')->name('enviaremailconerrorgen_exportPdf');
+Route::post('enviaremailconerrorgen/periodos', 'ReportEnviarEmailConErrorGenController@periodos')->name('enviaremailconerrorgen_periodos');

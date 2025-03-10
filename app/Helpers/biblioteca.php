@@ -3,6 +3,8 @@
 use App\Models\Admin\Menu;
 use App\Models\Admin\Permiso;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 if (!function_exists('getMenuActivo')) {
     function getMenuActivo($ruta)
@@ -257,4 +259,75 @@ if (!function_exists('sucFisXUsu')) {
         return $arraySuc;
     }
 }
+
+//Sucursales fisicas por Usuario. Sucursales a las que pertenese el Usuario a traves de tabla persona
+if (!function_exists('CedularErrorEmail')) {
+    function CedularErrorEmail($status_nm_control,$sta_mostrartodo = false){
+        $aux_nm_controlCond = " true";
+        $aux_empEmailBlancoCond = " nm_empleados.emp_email != ''";
+        $aux_empEmailNullCond = " !ISNULL(nm_empleados.emp_email)";
+        $aux_nm_movnomtrab_mov_stasendemailCond = " ISNULL(nm_movnomtrab.mov_stasendemail)";
+        if($status_nm_control){
+            $aux_nm_controlCond = " ISNULL(nm_control.cot_stasendemail)";
+            $aux_empEmailBlancoCond = " true";
+            $aux_empEmailNullCond = " true";
+            $aux_nm_movnomtrab_mov_stasendemailCond = " true";
+        }
+        if($sta_mostrartodo){
+            $aux_nm_movnomtrab_mov_stasendemailCond = " true";
+        }else{
+            $aux_nm_controlCond = " true";
+            $aux_empEmailBlancoCond = " nm_empleados.emp_email != ''";
+            $aux_empEmailNullCond = " !ISNULL(nm_empleados.emp_email)";
+            $aux_nm_movnomtrab_mov_stasendemailCond = " ISNULL(nm_movnomtrab.mov_stasendemail)";    
+        }
+
+
+        $sql = "SELECT nm_movhist.emp_ced,nm_movhist.mov_nummon,nm_empleados.emp_ced,nm_empleados.emp_email,
+        concat(TRIM(nm_empleados.emp_nom), ' ' ,TRIM(nm_empleados.emp_ape)) as empleado_nombre
+        FROM nm_movhist INNER JOIN nm_empleados
+        ON nm_movhist.emp_ced = nm_empleados.emp_ced
+        INNER JOIN nm_control
+        ON nm_movhist.mov_nummon = nm_control.cot_numnom
+        INNER JOIN nm_movnomtrab
+        ON nm_movnomtrab.mov_numnom = nm_movhist.mov_nummon AND nm_movnomtrab.mov_ced = nm_movhist.emp_ced
+        where $aux_empEmailBlancoCond 
+        AND $aux_empEmailNullCond
+        AND $aux_nm_movnomtrab_mov_stasendemailCond
+        AND $aux_nm_controlCond
+        GROUP BY nm_movhist.emp_ced;";
+
+        /* $sql = "SELECT emp_ced,emp_email
+        FROM nm_empleados
+        ORDER BY emp_ced;"; */
+        $cedulas = DB::select($sql);
+
+        //dd($cedulas);
+        $array_erroremail = [];
+        foreach ($cedulas as $cedula) {
+            $email = $cedula->emp_email;
+            // Crear un validador manual
+            $validator = Validator::make(
+                ['emp_email' => $email],
+                ['emp_email' => 'required|max:50|email:rfc,dns']
+            );
+            // Verificar si la validación falló
+            if ($validator->fails()) {
+                $array_erroremail[$cedula->emp_ced] = [
+                    "emp_ced" => $cedula->emp_ced,
+                    "empleado_nombre" => $cedula->empleado_nombre,
+                    "email" => $email,
+                    "error" => $validator->errors()
+                ];
+                // El correo no es válido, continuar con el siguiente registro
+                continue;
+            }
+
+        }
+        //dd($array_erroremail);
+        return $array_erroremail;
+
+    }
+}
+
 ?>
