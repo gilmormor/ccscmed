@@ -296,7 +296,7 @@ if (!function_exists('CedularErrorEmail')) {
         AND $aux_nm_movnomtrab_mov_stasendemailCond
         AND $aux_nm_controlCond
         GROUP BY nm_movhist.emp_ced;";
-
+        dd($sql);
         /* $sql = "SELECT emp_ced,emp_email
         FROM nm_empleados
         ORDER BY emp_ced;"; */
