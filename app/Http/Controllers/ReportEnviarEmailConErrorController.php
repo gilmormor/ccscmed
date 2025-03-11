@@ -21,7 +21,7 @@ class ReportEnviarEmailConErrorController extends Controller
     
     public function sendemail()
     {
-        $array_erroremail = CedularErrorEmail(true);
+        $array_erroremail = CedularErrorEmail(1);
         //dd($array_erroremail);
 
         Event(new EnviarEmailConError($array_erroremail));

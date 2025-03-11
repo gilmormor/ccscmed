@@ -60,7 +60,7 @@ class ReportRecHonSendEmailController extends Controller
     //20 CORREO EN PERIODOS DE 1 HORA
     public function sendemailxhora()
     {
-        $array_erroremail = CedularErrorEmail(false);
+        $array_erroremail = CedularErrorEmail(2);
         $aux_conderroremail = " true";
         if(count($array_erroremail) > 0){
             // Convertir las claves de $array_erroremail (emp_ced) en una cadena separada por comas

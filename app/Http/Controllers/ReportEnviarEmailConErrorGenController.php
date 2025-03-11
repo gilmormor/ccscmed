@@ -24,7 +24,7 @@ class ReportEnviarEmailConErrorGenController extends Controller
     public function exportPdf(Request $request)
     {
 
-        $datos = CedularErrorEmail(true);
+        $datos = CedularErrorEmail(2);
         //dd($datos);
         
         if($datos){

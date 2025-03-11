@@ -264,10 +264,11 @@ if (!function_exists('sucFisXUsu')) {
 if (!function_exists('CedularErrorEmail')) {
     function CedularErrorEmail($status_envlistado){
         $aux_nm_movnomtrab_mov_stasendemailCond = " ISNULL(nm_movnomtrab.mov_stasendemail)";
-        if($status_envlistado){
+        if($status_envlistado == 1){
             $aux_nm_controlCond = " ISNULL(nm_control.cot_stasendemail)";
             $aux_nm_movnomtrab_mov_stasendemailCond = " ISNULL(nm_movnomtrab.mov_stasendemail)";
-        }else{
+        }
+        if($status_envlistado == 2){
             $aux_nm_controlCond = " true";
             $aux_nm_movnomtrab_mov_stasendemailCond = " ISNULL(nm_movnomtrab.mov_stasendemail)";
         }
