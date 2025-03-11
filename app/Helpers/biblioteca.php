@@ -283,7 +283,7 @@ if (!function_exists('CedularErrorEmail')) {
         }
 
 
-        $sql = "SELECT nm_movhist.emp_ced,nm_movhist.mov_nummon,nm_empleados.emp_ced,nm_empleados.emp_email,
+        $sql = "SELECT nm_movhist.emp_ced,nm_movhist.mov_nummon,nm_empleados.emp_ced,TRIM(nm_empleados.emp_email) as emp_email,
         concat(TRIM(nm_empleados.emp_nom), ' ' ,TRIM(nm_empleados.emp_ape)) as empleado_nombre
         FROM nm_movhist INNER JOIN nm_empleados
         ON nm_movhist.emp_ced = nm_empleados.emp_ced
