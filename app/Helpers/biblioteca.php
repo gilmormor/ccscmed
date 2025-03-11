@@ -262,26 +262,15 @@ if (!function_exists('sucFisXUsu')) {
 
 //Sucursales fisicas por Usuario. Sucursales a las que pertenese el Usuario a traves de tabla persona
 if (!function_exists('CedularErrorEmail')) {
-    function CedularErrorEmail($status_nm_control,$sta_mostrartodo = false){
-        $aux_nm_controlCond = " true";
-        $aux_empEmailBlancoCond = " nm_empleados.emp_email != ''";
-        $aux_empEmailNullCond = " !ISNULL(nm_empleados.emp_email)";
+    function CedularErrorEmail($status_envlistado){
         $aux_nm_movnomtrab_mov_stasendemailCond = " ISNULL(nm_movnomtrab.mov_stasendemail)";
-        if($status_nm_control){
+        if($status_envlistado){
             $aux_nm_controlCond = " ISNULL(nm_control.cot_stasendemail)";
-            $aux_empEmailBlancoCond = " true";
-            $aux_empEmailNullCond = " true";
-            $aux_nm_movnomtrab_mov_stasendemailCond = " true";
-        }
-        if($sta_mostrartodo){
-            $aux_nm_movnomtrab_mov_stasendemailCond = " true";
+            $aux_nm_movnomtrab_mov_stasendemailCond = " ISNULL(nm_movnomtrab.mov_stasendemail)";
         }else{
             $aux_nm_controlCond = " true";
-            $aux_empEmailBlancoCond = " nm_empleados.emp_email != ''";
-            $aux_empEmailNullCond = " !ISNULL(nm_empleados.emp_email)";
-            $aux_nm_movnomtrab_mov_stasendemailCond = " ISNULL(nm_movnomtrab.mov_stasendemail)";    
+            $aux_nm_movnomtrab_mov_stasendemailCond = " ISNULL(nm_movnomtrab.mov_stasendemail)";
         }
-
 
         $sql = "SELECT nm_movhist.emp_ced,nm_movhist.mov_nummon,nm_empleados.emp_ced,TRIM(nm_empleados.emp_email) as emp_email,
         concat(TRIM(nm_empleados.emp_nom), ' ' ,TRIM(nm_empleados.emp_ape)) as empleado_nombre
@@ -291,9 +280,7 @@ if (!function_exists('CedularErrorEmail')) {
         ON nm_movhist.mov_nummon = nm_control.cot_numnom
         INNER JOIN nm_movnomtrab
         ON nm_movnomtrab.mov_numnom = nm_movhist.mov_nummon AND nm_movnomtrab.mov_ced = nm_movhist.emp_ced
-        where $aux_empEmailBlancoCond 
-        AND $aux_empEmailNullCond
-        AND $aux_nm_movnomtrab_mov_stasendemailCond
+        where $aux_nm_movnomtrab_mov_stasendemailCond
         AND $aux_nm_controlCond
         GROUP BY nm_movhist.emp_ced;";
         //dd($sql);

@@ -63,8 +63,8 @@ class NotifyMailEnviarEmailConError
             //$aux_email = "honorariosmedicos@ccsc.com.ve"; // trim($nm_empleado->emp_email);
             $aux_email = "gilmormor@gmail.com"; // trim($nm_empleado->emp_email);
             //$aux_email = strtolower(trim($nm_empleado->emp_email));
-            $cuerpo = 'Listado correos con error';
-            $asunto = $empresa->nombre . " Recibo Honorarios " . $cuerpo;
+            $cuerpo = '👨‍⚕ Honorarios Medicos - 📩🚩😱Listado correos NO VALIDOS😱📩🚩';
+            $asunto = $empresa->nombre . " " . $cuerpo;
     
             //dd("entrro");
             Mail::to($aux_email)->send(new MailEnviarEmailConError($notificaciones,$asunto,$cuerpo,$nm_empleado,$pdfPath));

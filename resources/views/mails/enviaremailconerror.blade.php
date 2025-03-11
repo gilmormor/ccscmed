@@ -9,7 +9,7 @@
 <body>
    
     <p>Buen dia </p>
-    <p>Adjunto se envia listado de Correos no validos</p>   
+    <p>Adjunto se envia listado de Correos no validos Honorarios Medicos.</p>   
     <br><br>
     <p>
         <b>Recuerde que puede consultar todos sus Recibos a traves del Siguiente enlace:</b> 

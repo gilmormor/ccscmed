@@ -24,8 +24,7 @@ class ReportEnviarEmailConErrorGenController extends Controller
     public function exportPdf(Request $request)
     {
 
-        $status_nm_control = true;
-        $datos = CedularErrorEmail($status_nm_control,true);
+        $datos = CedularErrorEmail(true);
         //dd($datos);
         
         if($datos){

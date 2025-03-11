@@ -60,11 +60,15 @@ class ReportRecHonSendEmailController extends Controller
     //20 CORREO EN PERIODOS DE 1 HORA
     public function sendemailxhora()
     {
-        $status_nm_control = false;
-        $array_erroremail = CedularErrorEmail($status_nm_control);
-        // Convertir las claves de $array_erroremail (emp_ced) en una cadena separada por comas
-        $emp_ced_errors = implode(',', array_keys($array_erroremail));
-
+        $array_erroremail = CedularErrorEmail(false);
+        $aux_conderroremail = " true";
+        if(count($array_erroremail) > 0){
+            // Convertir las claves de $array_erroremail (emp_ced) en una cadena separada por comas
+            $emp_ced_errors = implode(',', array_keys($array_erroremail));
+            //dd($emp_ced_errors);
+            $aux_conderroremail = " nm_empleados.emp_ced NOT IN ($emp_ced_errors)";
+        }
+        //dd($aux_conderroremail);
         $sql = "SELECT nm_movhist.emp_ced,nm_movhist.mov_nummon,nm_empleados.emp_email
         FROM nm_movhist INNER JOIN nm_empleados
         ON nm_movhist.emp_ced = nm_empleados.emp_ced
@@ -75,7 +79,7 @@ class ReportRecHonSendEmailController extends Controller
         where nm_empleados.emp_email != '' 
         AND !ISNULL(nm_empleados.emp_email)
         AND ISNULL(nm_movnomtrab.mov_stasendemail)
-        AND nm_empleados.emp_ced NOT IN ($emp_ced_errors)
+        AND $aux_conderroremail
         GROUP BY nm_movhist.emp_ced,nm_movhist.mov_nummon LIMIT 1;";
         $cedulas = DB::select($sql);
         //dd($cedulas);
