@@ -61,8 +61,8 @@ class NotifyMailEnviarEmailConError
             
             
             //$aux_email = "honorariosmedicos@ccsc.com.ve"; // trim($nm_empleado->emp_email);
-            $aux_email = "gilmormor@gmail.com"; // trim($nm_empleado->emp_email);
-            $cc_email = "gilmormorm@gmail.com";
+            $aux_email = "administracion@ccsc.com.ve"; // trim($nm_empleado->emp_email);
+            $cc_email = "gilmormor@gmail.com";
             //$aux_email = strtolower(trim($nm_empleado->emp_email));
             $cuerpo = '👨‍⚕ Honorarios Medicos - 📩🚩😱Listado correos NO VALIDOS😱📩🚩';
             $asunto = $empresa->nombre . " " . $cuerpo;
