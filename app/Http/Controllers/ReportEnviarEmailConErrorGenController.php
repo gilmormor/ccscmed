@@ -12,7 +12,7 @@ class ReportEnviarEmailConErrorGenController extends Controller
 {
     public function index()
     {
-        can('listar-recibo-honorarios');
+        can('listar-correos-no-validos');
 
         //$nominaPeriodos = Nm_MovHist::periodosnompersona("");
         //dd($nominaPeriodos);
