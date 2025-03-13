@@ -7,9 +7,8 @@
     <title>Recuperar Contraseña</title>
 </head>
 <body>
+    {{-- <p>{{ $cuerpo }}</p>    --}}
 
-    <p>{{ $cuerpo }}</p>
-    
     <p>Buen dia estimado {{$tabla->nombre}}</p>
     <ul>
         <li><b>Nombre:</b> {{$tabla->nombre}}</li>
