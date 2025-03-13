@@ -80,7 +80,7 @@ class LoginController extends Controller
                 //$user->update(['password' => $claveencriptada]);
                 Event(new SolicitarSendPassUsuario($user));
                 return redirect('seguridad/login')->with([
-                    'mensaje'=>'Clave enviada, revise su Correo.',
+                    'mensaje'=>'Contraseña enviada, revise su Correo.',
                     'tipo_alert' => 'alert-success'
                 ]);
 
