@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Recuperar Clave</title>
+  <title>Recuperar Contraseña</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -34,7 +34,7 @@
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
-    <p class="login-box-msg">Recuperar Clave</p>
+    <p class="login-box-msg">Recuperar Contraseña</p>
     @include('includes.mensaje')    
     <form action="{{route('sendpass_seguridad')}}" method="POST" autocomplete="off">
       @csrf @method("put")

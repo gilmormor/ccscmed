@@ -39,7 +39,7 @@ class NotifyMailSendPassUsuario
         $notificaciones->usuariodestino_id = $usuario->id;
         $notificaciones->status = 1;                    
         $notificaciones->nombretabla = 'usuario';
-        $notificaciones->mensaje = 'Recuperacion contraseña. ' . urlRaiz();
+        $notificaciones->mensaje = 'Recuperar contraseña. ' . urlRaiz();
         $notificaciones->nombrepantalla = $rutaPantalla; 'auth.passwords.email';
         $notificaciones->rutaorigen = $rutaOrigen;
         $notificaciones->rutadestino = 'login';
