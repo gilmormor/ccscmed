@@ -1412,6 +1412,7 @@ Route::get('reportrechon/reportrechonpage', 'ReportRecHonController@reportrechon
 Route::get('reportrechon/reporte', 'ReportRecHonController@reporte')->name('reportrechon_reporte');
 Route::get('reportrechon/exportPdf', 'ReportRecHonController@exportPdf')->name('reportrechon_exportPdf');
 Route::get('reportrechon/totalizarindex', 'ReportRecHonController@totalizarindex')->name('reportrechon_totalizarindex');
+Route::get('reportrechon/relHonPdf', 'ReportRecHonController@relHonPdf')->name('reportrechon_relHonPdf');
 
 //ENVIAR BUSCAR EMPLEADO
 Route::get('nmempleado/nmepleadobuscarpage', 'NmEmpleadoController@nmepleadobuscarpage')->name('nmempleado_nmepleadobuscarpage');

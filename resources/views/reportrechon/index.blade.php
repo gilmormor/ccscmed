@@ -30,9 +30,17 @@ Recibo Honorarios
                     <form action="{{route('exportPdf_notaventaconsulta')}}" class="d-inline form-eliminar" method="get" target="_blank">
                         @csrf
                         @csrf @method("put")
-                        <div class="col-xs-12 col-md-9 col-sm-12">
+                        <div class="col-xs-12 col-md-8 col-sm-12">
                             <div class="col-xs-12 col-md-12 col-sm-12">
-                                <div class="col-xs-12 col-sm-6">
+                                {{-- <div class="col-xs-12 col-sm-6">
+                                    <div class="col-xs-12 col-md-4 col-sm-4 text-left">
+                                        <label for="annomes" class="col-lg-3 control-label">Mes:</label>
+                                    </div>
+                                    <div class="col-xs-12 col-md-8 col-sm-8">
+                                        <input type="text" name="annomes" id="annomes" class="form-control date-picker" value="{{old('annomes', $aux_mesanno ?? '')}}" readonly required>
+                                    </div>
+                                </div> --}}
+                                <div class="col-xs-12 col-sm-7">
                                     <div class="col-xs-12 col-md-4 col-sm-4 text-left">
                                         <label data-toggle='tooltip' title="Area de Producción">Periodo:</label>
                                     </div>
@@ -41,6 +49,7 @@ Recibo Honorarios
                                             @foreach($nominaPeriodos as $nominaPeriodo)
                                                 <option
                                                     value="{{$nominaPeriodo->cot_numnom}}"
+                                                    id="{{$nominaPeriodo->id}}"
                                                     >{{date("d/m/Y", strtotime($nominaPeriodo->cot_fdesde))}} al {{date("d/m/Y", strtotime($nominaPeriodo->cot_fhasta))}}</option>
                                             @endforeach
                                         </select>
@@ -48,9 +57,14 @@ Recibo Honorarios
                                 </div>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-md-3 col-sm-12 text-center">
-                            <button type='button' id='btnpdf2' name='btnpdf2' class='btn btn-success tooltipsC' title="Reporte PDF">
-                                <i class='glyphicon glyphicon-print'></i> Reporte
+                        <div class="col-xs-12 col-md-1 col-sm-12 text-center">
+                            <button type='button' id='btnpdf2' name='btnpdf2' class='btn btn-success tooltipsC' title="Recibo PDF">
+                                <i class='glyphicon glyphicon-print'></i> Recibo
+                            </button>
+                        </div>
+                        <div class="col-xs-12 col-md-1 col-sm-12 text-center">
+                            <button type='button' id='btnpdf3' name='btnpdf3' class='btn btn-success tooltipsC' title="Relación de Honotrarios PDF">
+                                <i class='glyphicon glyphicon-print'></i> Rel Hon
                             </button>
                         </div>
                     </form>

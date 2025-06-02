@@ -311,4 +311,32 @@ H1.SaltoDePagina
 .small-text {
     font-size: smaller;
     color: #444; /* Color que no sea tan negro */
-  }
+}
+
+.purple {
+      color: #aa00aa;
+}
+.small {
+	font-size: 11px;
+}
+
+.blue {
+      color: #154ef9;
+}
+.letragrande {
+	font-size: 14px;
+}
+
+.total-row td {
+    font-weight: bold;
+    font-size: 13px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    /* border-top: 2px solid #000;
+    border-bottom: 2px solid #000; */ /* línea inferior adicional */
+    /* background-color: #f0f0f0; */ /* opcional */
+}
+
+tr.fondo-blanco {
+    background-color: #ffffff !important;
+}

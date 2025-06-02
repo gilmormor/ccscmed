@@ -57,14 +57,14 @@
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="row">
+        <div class="col-xs-8">
+          <a class="btn btn-link" href="{{route('password.request')}}">
+            Recuperar la contraseña!
+          </a>
+        </div>
         <!-- /.col -->
         <div class="col-xs-4">
           <button type="submit" class="btn btn-primary btn-block btn-flat">Iniciar</button>
-        </div>
-        <div class="col-xs-8">
-          <a class="btn btn-link" href="{{route('password.request')}}">
-            Olvido la contraseña?
-          </a>
         </div>
         <!-- /.col -->
       </div>
