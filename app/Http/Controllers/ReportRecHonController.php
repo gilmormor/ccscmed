@@ -89,7 +89,22 @@ class ReportRecHonController extends Controller
             $pdf = PDF::loadView('reportrechon.listado', compact('nm_control','nm_empleado','empresa','nm_movhists','nm_movnomtrab','usuario','request','tasacamb'));
             //$pdf = PDF::loadView('reportdtefac.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
 
-            return $pdf->stream("ReciboHonorarios.pdf");
+            // Convertimos todo a mayúsculas y eliminamos espacios extra
+            $apellido = strtoupper(trim($nm_empleado->emp_ape));
+            $nombre = strtoupper(trim($nm_empleado->emp_nom));
+
+            $primer_apellido = explode(' ', $apellido)[0]; // GARCIA
+            $primer_nombre = explode(' ', $nombre)[0];     // ANNA
+
+            $primer_apellido = ucwords(strtolower($primer_apellido));
+            $primer_nombre = ucwords(strtolower($primer_nombre));
+
+            // Cedula con ceros a la izquierda (8 dígitos)
+            $cedula_formateada = str_pad($nm_empleado->emp_ced, 8, '0', STR_PAD_LEFT); // 00504431
+
+            // Concatenamos todo
+            $nomach = 'RecHon_' . $cedula_formateada . '_' . $primer_apellido . $primer_nombre;
+            return $pdf->stream($nomach . ".pdf");
         }else{
             dd('Ningún dato disponible en esta consulta.');
         } 
@@ -140,7 +155,22 @@ class ReportRecHonController extends Controller
             $pdf = PDF::loadView('reportrechon.relhon', compact('nm_control','nm_empleado','empresa','usuario','request','pacdets'));
             //$pdf = PDF::loadView('reportdtefac.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
 
-            return $pdf->stream("RelacionHonorarios.pdf");
+            // Convertimos todo a mayúsculas y eliminamos espacios extra
+            $apellido = strtoupper(trim($nm_empleado->emp_ape));
+            $nombre = strtoupper(trim($nm_empleado->emp_nom));
+
+            $primer_apellido = explode(' ', $apellido)[0]; // GARCIA
+            $primer_nombre = explode(' ', $nombre)[0];     // ANNA
+
+            $primer_apellido = ucwords(strtolower($primer_apellido));
+            $primer_nombre = ucwords(strtolower($primer_nombre));
+
+            // Cedula con ceros a la izquierda (8 dígitos)
+            $cedula_formateada = str_pad($nm_empleado->emp_ced, 8, '0', STR_PAD_LEFT); // 00504431
+
+            // Concatenamos todo
+            $nomach = 'RelPacHon_' . $cedula_formateada . '_' . $primer_apellido . $primer_nombre;
+            return $pdf->stream($nomach . ".pdf");
         }else{
             dd('Ningún dato disponible en esta consulta.');
         } 
