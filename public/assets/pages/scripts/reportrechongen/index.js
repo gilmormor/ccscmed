@@ -1,135 +1,8 @@
 $(document).ready(function () {
     Biblioteca.validacionGeneral('form-general');
     $("#cedula").numeric();
-    $("#btnconsultar").click(function()
-    {
-        data = datosFac();
-        $('#tabla-data-consulta').DataTable().ajax.url( "/reportdtefac/reportdtefacpage/" + data.data2 ).load();
-    });
+    
 });
-
-function configurarTabla(aux_tabla){
-    $(aux_tabla).DataTable({
-        'paging'      : true, 
-        'lengthChange': true,
-        'searching'   : true,
-        'ordering'    : true,
-        'info'        : true,
-        'autoWidth'   : false,
-        "order"       : [[ 0, "desc" ]],
-        "language": {
-            "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
-        }
-    });    
-}
-
-
-function ajaxRequest(data,url,funcion) {
-    aux_data = data;
-	$.ajax({
-		url: url,
-		type: 'POST',
-		data: data,
-		success: function (respuesta) {
-			if(funcion=='aprobarcotvend'){
-				if (respuesta.mensaje == "ok") {
-					$("#fila"+data['nfila']).remove();
-					Biblioteca.notificaciones('El registro fue procesado con exito', 'Plastiservi', 'success');
-				} else {
-					if (respuesta.mensaje == "sp"){
-						Biblioteca.notificaciones('Registro no tiene permiso procesar.', 'Plastiservi', 'error');
-					}else{
-						Biblioteca.notificaciones('El registro no pudo ser procesado, hay recursos usandolo', 'Plastiservi', 'error');
-					}
-				}
-            }
-            if(funcion=='vistonotaventa'){
-				if (respuesta.mensaje == "ok") {
-					//$("#fila"+data['nfila']).remove();
-                    Biblioteca.notificaciones('El registro fue procesado con exito', 'Plastiservi', 'success');
-                    
-				} else {
-					if (respuesta.mensaje == "sp"){
-						Biblioteca.notificaciones('Registro no tiene permiso procesar.', 'Plastiservi', 'error');
-					}else{
-						Biblioteca.notificaciones('El registro no pudo ser procesado, hay recursos usandolo', 'Plastiservi', 'error');
-					}
-				}
-			}
-            if(funcion=='btndevsol'){
-                if (respuesta.mensaje == "ok") {
-                    //form.parents('tr').remove();
-                    $("#fila"+data['nfila']).remove();
-                    Biblioteca.notificaciones('El registro fue procesado correctamente.', 'Plastiservi', 'success');
-                } else {
-                    if (respuesta.mensaje == "sp"){
-                        Biblioteca.notificaciones('Usuario no tiene permiso para eliminar.', 'Plastiservi', 'error');
-                    }else{
-                        if(respuesta.mensaje == "hijos"){
-                            Biblioteca.notificaciones('No puede ser eliminado: ID tiene registros relacionados en otras tablas.', 'Plastiservi', 'error');
-                        }else{
-                            if(respuesta.mensaje == "ne"){
-                                Biblioteca.notificaciones('No tiene permiso para eliminar.', 'Plastiservi', 'error');
-                            }else{
-                                if(respuesta.mensaje.length > 10){
-                                    Biblioteca.notificaciones(respuesta.mensaje, 'Plastiservi', 'error');
-                                }else{
-                                    Biblioteca.notificaciones('El registro no pudo ser eliminado, hay recursos usandolo.', 'Plastiservi', 'error');
-                                }
-                            }
-                        }
-                    }
-                }
-                $("#myModaldevsoldeps").modal('hide');
-            }
-            if(funcion=='btncerrarsol'){
-                if (respuesta.mensaje == "ok") {
-                    //form.parents('tr').remove();
-                    $("#fila"+data['nfila']).remove();
-                    Biblioteca.notificaciones('El registro fue procesado correctamente.', 'Plastiservi', 'success');
-                } else {
-                    if (respuesta.mensaje == "sp"){
-                        Biblioteca.notificaciones('Usuario no tiene permiso para eliminar.', 'Plastiservi', 'error');
-                    }else{
-                        if(respuesta.mensaje == "hijos"){
-                            Biblioteca.notificaciones('No puede ser eliminado: ID tiene registros relacionados en otras tablas.', 'Plastiservi', 'error');
-                        }else{
-                            if(respuesta.mensaje == "ne"){
-                                Biblioteca.notificaciones('No tiene permiso para eliminar.', 'Plastiservi', 'error');
-                            }else{
-                                Biblioteca.notificaciones('El registro no pudo ser eliminado, hay recursos usandolo.', 'Plastiservi', 'error');
-                            }
-                        }
-                    }
-                }
-                $("#myModaldevsoldeps").modal('hide');
-            }
-            if(funcion=="guardarfechaed"){
-                Biblioteca.notificaciones(respuesta.mensaje, 'Plastiservi', respuesta.tipo_alert);
-                restbotoneditfeced(aux_data.i)
-                if(respuesta.error == 0){
-                    $("#fechaestdesp" + aux_data.i).html($("#fechaed" + aux_data.i).val());
-                    $("#savefed" + aux_data.i).attr('updated_at',respuesta.updated_at);
-                }
-            }
-            if(funcion=='staverfacdesp'){
-				if (respuesta.error == 0) {
-                    $("#dtefac_updated_at" + aux_data.dte_id).html(respuesta.dtefac_updated_at);
-				} else {
-                    estaSeleccionado = $("#aux_staverfacdesp" + aux_data.dte_id).is(":checked");
-                    if(estaSeleccionado){
-                        $("#aux_staverfacdesp" + aux_data.dte_id).prop('checked',false);
-                    }else{
-                        $("#aux_staverfacdesp" + aux_data.dte_id).prop('checked',true);
-                    }
-				}
-                Biblioteca.notificaciones(respuesta.mensaje, 'Plastiservi', respuesta.tipo_alert);
-            }
-		},
-		error: function () {
-		}
-	});
-}
 
 function datosFac(){
     var data1 = {
@@ -247,7 +120,7 @@ $("#cedula").blur(function(){
                                 if(respuesta.length>0){
                                     //console.log(respuesta);
                                     for(var i=0;i<respuesta.length;i++){
-                                        $("#mov_nummon").append("<option value='" + respuesta[i].cot_numnom + "'>" + respuesta[i].fdesde + " al " + respuesta[i].fhasta + "</option>")
+                                        $("#mov_nummon").append("<option value='" + respuesta[i].cot_numnom + "' id='" + respuesta[i].id + "'>" + respuesta[i].fdesde + " al " + respuesta[i].fhasta + "</option>")
                                     }
                                     $(".selectpicker").selectpicker('refresh');
                                 }else{
@@ -303,28 +176,6 @@ function copiar_ced(id,ced){
 	$("#cedula").blur();
 }
 
-function btnpdf(numrep){
-    if(numrep==1){
-        aux_titulo = 'Indicadores ' + $("#consulta_id option:selected").html();
-        data = datosFac();
-        cadena = "?fechad="+data.fechad+"&fechah="+data.fechah +
-                "&fechaestdesp=" + data.fechaestdesp +
-                "&cedula=" + data.cedula +
-                "&vendedor_id=" + data.vendedor_id +
-                "&oc_id=" + data.oc_id +
-                "&giro_id=" + data.giro_id + 
-                "&areaproduccion_id=" + data.areaproduccion_id +
-                "&tipoentrega_id=" + data.tipoentrega_id +
-                "&notaventa_id=" + data.notaventa_id +
-                "&aprobstatus=" + data.aprobstatus +
-                "&comuna_id=" + data.comuna_id +
-                "&id=" + data.id +
-                "&filtro=" + data.filtro;
-        $('#contpdf').attr('src', '/despachosol/pdfpendientesoldesp/'+cadena);
-        $("#myModalpdf").modal('show'); 
-    }
-}
-
 $("#btnpdf2").click(function()
 {
     aux_titulo = 'Pendientes Solicitud Despacho';
@@ -335,12 +186,13 @@ $("#btnpdf2").click(function()
 
 function datosRecHon(){
     var data1 = {
+        nmcontrol_id      : $("#mov_nummon option:selected").attr('id'),
         emp_ced           : $("#cedula").val(),
         mov_nummon        : $("#mov_nummon").val(),
-        aprobstatusdesc   : $("#aprobstatus option:selected").html(),
         _token            : $('input[name=_token]').val()
     };
-    var data2 = "?mov_nummon="+data1.mov_nummon +
+    var data2 = "?nmcontrol_id="+data1.nmcontrol_id +
+    "&mov_nummon="+data1.mov_nummon +
     "&emp_ced="+data1.emp_ced +
     "&aprobstatusdesc="+data1.aprobstatusdesc +
     "&_token="+data1._token
@@ -353,21 +205,11 @@ function datosRecHon(){
     return data;
 }
 
-
-var eventFired = function ( type ) {
-	total = 0;
-	$("#pendientesoldesp tr .kgpend").each(function() {
-		valor = $(this).attr('data-order') ;
-		valorNum = parseFloat(valor);
-		total += valorNum;
-	});
-    $("#totalkg").html(MASKLA(total,2))
-	total = 0;
-	$("#pendientesoldesp tr .dinpend").each(function() {
-		valor = $(this).attr('data-order') ;
-		valorNum = parseFloat(valor);
-		total += valorNum;
-	});
-    $("#totaldinero").html(MASKLA(total,0))
-
-}
+$("#btnpdf3").click(function()
+{
+    aux_titulo = 'Pendientes Solicitud Despacho';
+    data = datosRecHon();
+    console.log(data);
+    $('#contpdf').attr('src', '/reportrechon/relHonPdf/' + data.data2);
+    $("#myModalpdf").modal('show'); 
+});

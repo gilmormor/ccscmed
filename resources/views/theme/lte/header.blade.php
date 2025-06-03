@@ -131,7 +131,7 @@
         <li class="dropdown user user-menu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <img src="/storage/imagenes/usuario/{{session()->get('foto_usuario')}}" class="user-image" alt="User Image">
-            <span class="hidden-xs">Hola {{session()->get('nombre_corto') ?? 'Invitado'}}</span>
+            <span class="hidden-xs">Hola {{ucwords(strtolower(session()->get('nombre_corto'))) ?? 'Invitado'}}</span>
           </a>
           <ul class="dropdown-menu">
             <!-- User image -->
@@ -139,7 +139,7 @@
               <!--<img src="{{asset("assets/$theme/dist/img/user2-160x160.jpg")}}" class="img-circle" alt="User Image">-->
               <img src="/storage/imagenes/usuario/{{session()->get('foto_usuario')}}" class="img-circle" alt="User Image">
               <p>
-                {{session()->get('nombre_usuario') }}
+                {{ucwords(strtolower(session()->get('nombre_usuario'))) }}
                 <small>{{session()->get('rol_nombre') }}</small>
               </p>
             </li>

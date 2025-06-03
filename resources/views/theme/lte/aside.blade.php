@@ -7,8 +7,8 @@
               <img src="/storage/imagenes/usuario/{{session()->get('foto_usuario')}}" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
-              <p>{{session()->get('nombre_usuario') ?? 'Invitado'}}</p>
-              <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+              <p>{{ucwords(strtolower(session()->get('nombre_usuario'))) ?? 'Invitado'}}</p>
+              <a href="#"><i class="fa fa-circle text-success"></i> En línea</a>
             </div>
           </div>
           <!-- search form -->

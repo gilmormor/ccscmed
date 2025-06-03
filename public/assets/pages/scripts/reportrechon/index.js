@@ -33,7 +33,6 @@ function datosRecHon(){
     var data1 = {
         nmcontrol_id      : $("#mov_nummon option:selected").attr('id'),
         mov_nummon        : $("#mov_nummon").val(),
-        aprobstatusdesc   : $("#aprobstatus option:selected").html(),
         _token            : $('input[name=_token]').val()
     };
     var data2 = "?nmcontrol_id="+data1.nmcontrol_id +

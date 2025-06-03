@@ -62,11 +62,11 @@ Recibo Honorarios
                                 <i class='glyphicon glyphicon-print'></i> Recibo
                             </button>
                         </div>
-                        <div class="col-xs-12 col-md-1 col-sm-12 text-center">
-                            <button type='button' id='btnpdf3' name='btnpdf3' class='btn btn-success tooltipsC' title="Relación de Honotrarios PDF">
+                        {{-- <div class="col-xs-12 col-md-1 col-sm-12 text-center">
+                            <button type='button' id='btnpdf3' name='btnpdf3' class='btn btn-success tooltipsC' title="Relación Honorarios PDF">
                                 <i class='glyphicon glyphicon-print'></i> Rel Hon
                             </button>
-                        </div>
+                        </div> --}}
                     </form>
                 </div>
             </div>
