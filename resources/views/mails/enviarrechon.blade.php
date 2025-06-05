@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Recibo Honorarios</title>
+    <title>Recibo Honorarios pagados</title>
 </head>
 <body>
    
     <p>Buen dia {{ucwords(strtolower($tabla->emp_nom))}}</p>
-    <p>Adjunto se envia recibo honorarios profesionales</p>   
+    <p>Adjunto se envia recibo honorarios pagados profesionales</p>   
     <p><b>Datos:</b></p>
     <ul>
         <li><b>CI:</b> {{$tabla->emp_ced}}</li>

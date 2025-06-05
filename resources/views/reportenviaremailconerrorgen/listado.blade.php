@@ -20,7 +20,7 @@
 			</td>
 			<td class="info_factura">
 				<div class="round">
-					<span class="h3">RECIBO HONORARIOS</span>
+					<span class="h3">RECIBO HONORARIOS PAGADOS</span>
 					<p><strong>Fecha:</strong> {{date("d/m/Y h:i:s A")}}</p>
 					<p><strong>Nro. Recibo:</strong> {{$nm_movnomtrab->mov_numrec}}</p>
 					<p><strong>Periodo:</strong> {{date('d/m/Y', strtotime($nm_control->cot_fdesde))}} al {{date('d/m/Y', strtotime($nm_control->cot_fhasta))}}</p>
@@ -188,10 +188,10 @@
 					<td style='text-align:right;width: 7.7% !important;'></td>
 					<td style='text-align:right;width: 7.7% !important;'></td>
 					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td colspan="3" style='text-align:right;'><strong>Total Moneda Extranjera:</strong></td>
+					{{-- <td colspan="3" style='text-align:right;'><strong>Total Moneda Extranjera:</strong></td>
 					<td style='text-align:right;width: 7.7% !important;'>{{number_format($aux_anticipobs, 2, ",", ".")}}&nbsp;&nbsp;</td>
 					<td style='text-align:right;width: 7.7% !important;'></td>
-					<td style='text-align:right;width: 7.7% !important;'>{{number_format($aux_anticipodll, 2, ",", ".")}}&nbsp;&nbsp;</td>
+					<td style='text-align:right;width: 7.7% !important;'>{{number_format($aux_anticipodll, 2, ",", ".")}}&nbsp;&nbsp;</td> --}}
 				</tr>				
 			@endif
 		</table>

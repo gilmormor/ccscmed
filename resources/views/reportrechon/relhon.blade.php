@@ -16,7 +16,7 @@
 			</td>
 			<td class="info_factura">
 				<div class="round">
-					<span class="h3">RELACION DE HONORARIOS</span>
+					<span class="h4">RELACION PACIENTES PAGADOS</span>
 					<p><strong>Fecha:</strong> {{date("d/m/Y h:i:s A")}}</p>
 					<p><strong>Relación #:</strong> {{implode(',', $nm_control->nmcontrolnomclss->pluck('ccl_nronomciclos')->toArray())}}</p>
 					<p><strong>Periodo:</strong> {{date('d/m/Y', strtotime($nm_control->cot_fdesde))}} al {{date('d/m/Y', strtotime($nm_control->cot_fhasta))}}</p>
@@ -28,7 +28,7 @@
 		<tr>
 			<td class="info_cliente">
 				<div class="round">
-					<span class="h3">MEDICO</span>
+					<span class="h4">MEDICO</span>
 					<table class="datos_cliente">
 						<!--<tr class="headt">-->
 						<tr class="headt">
@@ -44,7 +44,7 @@
 	</table>
 
 	<div class="round" style="padding-bottom: 0px;">
-		<table id="factura_detalle" style="table-layout:fixed;width: 100%;">
+		<table id="factura_detalleccsc" style="table-layout:fixed;width: 100%;">
 			<thead>
 				{{-- <tr>
 					<th style='text-align:left;width: 10% !important;'>Fecha/<br>Factura</th>
