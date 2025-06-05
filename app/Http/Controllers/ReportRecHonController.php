@@ -103,7 +103,7 @@ class ReportRecHonController extends Controller
             $cedula_formateada = str_pad($nm_empleado->emp_ced, 8, '0', STR_PAD_LEFT); // 00504431
 
             // Concatenamos todo
-            $nomach = 'RecHon_' . $cedula_formateada . '_' . $primer_apellido . $primer_nombre;
+            $nomach = 'RecHon_'  . $nm_movnomtrab->mov_numrec . '_' .  $cedula_formateada . '_' . $primer_apellido . $primer_nombre;
             return $pdf->stream($nomach . ".pdf");
         }else{
             dd('Ningún dato disponible en esta consulta.');
@@ -169,7 +169,7 @@ class ReportRecHonController extends Controller
             $cedula_formateada = str_pad($nm_empleado->emp_ced, 8, '0', STR_PAD_LEFT); // 00504431
 
             // Concatenamos todo
-            $nomach = 'RelPacHon_' . $cedula_formateada . '_' . $primer_apellido . $primer_nombre;
+            $nomach = 'RelPacHon_' . implode('_', $nm_control->nmcontrolnomclss->pluck('ccl_nronomciclos')->toArray()) . '_' . $cedula_formateada . '_' . $primer_apellido . $primer_nombre;
             return $pdf->stream($nomach . ".pdf");
         }else{
             dd('Ningún dato disponible en esta consulta.');
