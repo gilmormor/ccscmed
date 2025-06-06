@@ -106,11 +106,17 @@
 							$Tmonto_otra_moneda = 0;
 						?>
 					@endif
+					<?php
+						$aux_pagadoDscto = "0,00";
+						if($pacdet->pagado > 0 or $pacdet->dscto > 0){
+							$aux_pagadoDscto = number_format($pacdet->pagado, 2, ",", ".") . " / " . number_format($pacdet->dscto, 2, ",", ".");
+						}
+					?>
 					<tr class='btn-accion-tabla fondo-blanco'>
 						<td style='text-align:right;width: 10% !important;'>{{date("d/m/Y", strtotime($pacdet->fecha_fact))}}&nbsp;&nbsp;&nbsp;&nbsp;<br><i class="purple small">{{$pacdet->factura}}</i>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 						<td style='text-align:left;width: 30% !important;'>{{$pacdet->concepto}}<br><i class="purple small">{{$pacdet->nom_paciente}}</i></td>
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format($pacdet->honorario, 2, ",", ".")}}&nbsp;&nbsp;</td>
-						<td style='text-align:right;width: 7.7% !important;'>{{number_format($pacdet->pagado, 2, ",", ".")}}&nbsp;&nbsp;</td>
+						<td style='text-align:right;width: 7.7% !important;'>{{$aux_pagadoDscto}}&nbsp;&nbsp;</td>
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format($pacdet->pago_actual, 2, ",", ".")}}&nbsp;&nbsp;</td>
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format($pacdet->moneda_nac, 2, ",", ".")}}&nbsp;&nbsp;</td>
 						<td style='text-align:right;width: 7.7% !important;'>{{number_format($pacdet->otra_moneda_bs, 2, ",", ".")}}&nbsp;&nbsp;</td>
