@@ -58,7 +58,7 @@ Recibo Honorarios
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-1 col-sm-12 text-center">
-                            <button type='button' id='btnpdf2' name='btnpdf2' class='btn btn-success tooltipsC' title="Recibo PDF">
+                            <button type='button' id='btnpdf2' name='btnpdf2' class='btn btn-success tooltipsC' title="PDF Recibo Honorarios">
                                 <i class='glyphicon glyphicon-print'></i> Recibo
                             </button>
                         </div>

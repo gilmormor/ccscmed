@@ -58,12 +58,12 @@ Recibos
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-1 col-sm-12 text-center">
-                            <button type='button' id='btnpdf2' name='btnpdf2' class='btn btn-success tooltipsC' title="Reporte PDF">
-                                <i class='glyphicon glyphicon-print'></i> Reporte
+                            <button type='button' id='btnpdf2' name='btnpdf2' class='btn btn-success tooltipsC' title="PDF Recibo Honorarios">
+                                <i class='glyphicon glyphicon-print'></i> Recibo
                             </button>
                         </div>
                         <div class="col-xs-12 col-md-1 col-sm-12 text-center">
-                            <button type='button' id='btnpdf3' name='btnpdf3' class='btn btn-success tooltipsC' title="Relación Honorarios PDF">
+                            <button type='button' id='btnpdf3' name='btnpdf3' class='btn btn-success tooltipsC' title="PDF Relación Honorarios">
                                 <i class='glyphicon glyphicon-print'></i> Rel Hon
                             </button>
                         </div>
