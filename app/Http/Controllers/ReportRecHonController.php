@@ -65,7 +65,8 @@ class ReportRecHonController extends Controller
         if(count($datas) > 0 and count($nm_movnomtrab) > 0){
             $nm_empleado = $datas[0];
             $nm_movnomtrab = $nm_movnomtrab[0];
-            $nm_control = $nm_control[0];
+            //$nm_control = $nm_control[0];
+            $nm_control = nmControl::findOrFail($request->nmcontrol_id);
             $nm_movhists = Nm_MovHist::consultarecibo($request,$nm_empleado);
             $tasacamb = 0;
             foreach($nm_movhists as $nm_movhist){
@@ -121,9 +122,6 @@ class ReportRecHonController extends Controller
             //$aux_cedula = "2450604";
         }
         $nm_control = nmControl::findOrFail($request->nmcontrol_id);
-        $array_nronomcls = $nm_control->nmcontrolnomclss->pluck('ccl_nronomciclos')->toArray();
-        $nronomcls = implode(',', $array_nronomcls);
-        //dd($nronomcls);
         $empresa = Empresa::orderBy('id')->get();
         $sql = "SELECT *
             FROM nm_empleados 

@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Mail\MailEnviarRecHon;
 use App\Models\Empresa;
 use App\Models\Nm_MovHist;
+use App\Models\nmControl;
 use App\Models\Notificaciones;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -58,6 +59,7 @@ class NotifyMailEnviarRecHon
             $nm_empleado = $nm_empleado[0];
             $nm_movnomtrab = $nm_movnomtrab[0];
             $nm_control = $nm_control[0];
+            $nm_control = nmControl::findOrFail($nm_control->id);
             $nm_movhists = Nm_MovHist::consultarecibolote($aux_ced,$aux_numnom);
             $tasacamb = 0;
             foreach($nm_movhists as $nm_movhist){
