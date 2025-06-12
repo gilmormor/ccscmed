@@ -18,7 +18,7 @@
 				<div class="round">
 					<span class="h4">RELACION PACIENTES PAGADOS</span>
 					<p><strong>Fecha:</strong> {{date("d/m/Y h:i:s A")}}</p>
-					<p><strong>Relación #:</strong> {{implode(',', $nm_control->nmcontrolnomclss->pluck('ccl_nronomciclos')->toArray())}}</p>
+					<p><strong>Relación #:</strong> {{$nroNominaCiclos}}</p>
 					<p><strong>Periodo:</strong> {{date('d/m/Y', strtotime($nm_control->cot_fdesde))}} al {{date('d/m/Y', strtotime($nm_control->cot_fhasta))}}</p>
 				</div>
 			</td>
@@ -74,6 +74,7 @@
 			</thead>
 			<?php
 				$Tpago_actual = 0;
+				$Txfactura = 0;
 				$Tmoneda_nac = 0;
 				$Totra_moneda_bs = 0;
 				$Tmonto_otra_moneda = 0;
@@ -83,13 +84,41 @@
 				$TTmonto_otra_moneda = 0;
 
 				$aux_tipdoc_desc = $pacdets[0]->tipdoc_desc;
+				$aux_factura = $pacdets[0]->factura;
+
+				$TFactpago_actual = 0;
+				$TFactmoneda_nac = 0;
+				$TFactotra_moneda_bs = 0;
+				$TFactmonto_otra_moneda = 0;
+
 			?>
 			<tbody id="detalle_productos">
 				@foreach($pacdets as $pacdet)
+					@if ($aux_factura != $pacdet->factura)
+						<tr class='btn-accion-tabla total-row fondo-blanco'>
+							<td style='text-align:left;width: 10% !important;'></td>
+							<td style='text-align:right;width: 30% !important;'><span class="purple">Total Factura {{$aux_factura}}</span></td>
+							<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
+							<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
+							<td style='text-align:right;width: 7.7% !important;'><span class="purple">{{number_format($TFactpago_actual, 2, ",", ".")}}</span>&nbsp;&nbsp;</td>
+							<td style='text-align:right;width: 7.7% !important;'><span class="purple">{{number_format($TFactmoneda_nac, 2, ",", ".")}}</span>&nbsp;&nbsp;</td>
+							<td style='text-align:right;width: 7.7% !important;'><span class="purple">{{number_format($TFactotra_moneda_bs, 2, ",", ".")}}</span>&nbsp;&nbsp;</td>
+							<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
+							<td style='text-align:right;width: 7.7% !important;'><span class="purple">{{number_format($TFactmonto_otra_moneda, 2, ",", ".")}}</span></span>&nbsp;&nbsp;</td>
+						</tr>
+						<?php 
+							$aux_factura = $pacdet->factura;
+							$TFactpago_actual = 0;
+							$TFactmoneda_nac = 0;
+							$TFactotra_moneda_bs = 0;
+							$TFactmonto_otra_moneda = 0;
+						?>
+					@endif
+
 					@if ($aux_tipdoc_desc != $pacdet->tipdoc_desc)
 						<tr class='btn-accion-tabla total-row fondo-blanco'>
-							<td style='text-align:left;width: 10% !important;'></span></td>
-							<td style='text-align:right;width: 30% !important;'>Total {{$aux_tipdoc_desc}}</span></td>
+							<td style='text-align:left;width: 10% !important;'></td>
+							<td style='text-align:right;width: 30% !important;'>Total {{$aux_tipdoc_desc}}</td>
 							<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
 							<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
 							<td style='text-align:right;width: 7.7% !important;'>{{number_format($Tpago_actual, 2, ",", ".")}}&nbsp;&nbsp;</td>
@@ -134,11 +163,17 @@
 						$TTotra_moneda_bs += $pacdet->otra_moneda_bs;
 						$TTmonto_otra_moneda += $pacdet->monto_otra_moneda;
 
+						$TFactpago_actual += $pacdet->pago_actual;
+						$TFactmoneda_nac += $pacdet->moneda_nac;
+						$TFactotra_moneda_bs += $pacdet->otra_moneda_bs;
+						$TFactmonto_otra_moneda += $pacdet->monto_otra_moneda;
+
+
 					?>
 				@endforeach
 				<tr class='btn-accion-tabla total-row fondo-blanco'>
-					<td style='text-align:left;width: 10% !important;'></span></td>
-					<td style='text-align:right;width: 30% !important;'>Total {{$aux_tipdoc_desc}}</span></td>
+					<td style='text-align:left;width: 10% !important;'></td>
+					<td style='text-align:right;width: 30% !important;'>Total {{$aux_tipdoc_desc}}</td>
 					<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
 					<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
 					<td style='text-align:right;width: 7.7% !important;'>{{number_format($Tpago_actual, 2, ",", ".")}}&nbsp;&nbsp;</td>
@@ -153,8 +188,8 @@
 	<div class="round" style="padding-bottom: 0px;padding-top: 8px;margin-bottom: 3px;">
 		<table id="factura_detalle">
 			<tr class='total-row'>
-				<td style='text-align:left;width: 10% !important;'></span></td>
-				<td style='text-align:right;width: 30% !important;'>Total Bruto Honorarios Medico</span></td>
+				<td style='text-align:left;width: 10% !important;'></td>
+				<td style='text-align:right;width: 30% !important;'>Total Bruto Honorarios Medico</td>
 				<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
 				<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
 				<td style='text-align:right;width: 7.7% !important;'>{{number_format($TTpago_actual, 2, ",", ".")}}&nbsp;&nbsp;</td>
