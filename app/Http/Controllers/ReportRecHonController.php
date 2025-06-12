@@ -10,6 +10,8 @@ use App\Models\Seguridad\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\Snappy\Facades\SnappyPdf;
+use Illuminate\Routing\Route;
 
 class ReportRecHonController extends Controller
 {
@@ -164,13 +166,6 @@ class ReportRecHonController extends Controller
             $nroNominaCiclos = implode(',', $valores);
 
 
-            if(env('APP_DEBUG')){
-                //return view('reportrechon.relhon', compact('nm_control','nm_empleado','empresa','nm_movhists','nm_movnomtrab','usuario','request'));
-            }            
-            //$pdf = PDF::loadView('reportinvstockvend.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
-            $pdf = PDF::loadView('reportrechon.relhon', compact('nm_control','nm_empleado','empresa','usuario','request','pacdets','nroNominaCiclos'))->setPaper('a4', 'landscape');
-            //$pdf = PDF::loadView('reportdtefac.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
-
             // Convertimos todo a mayúsculas y eliminamos espacios extra
             $apellido = strtoupper(trim($nm_empleado->emp_ape));
             $nombre = strtoupper(trim($nm_empleado->emp_nom));
@@ -186,6 +181,23 @@ class ReportRecHonController extends Controller
 
             // Concatenamos todo
             $nomach = 'RelPacHon_' . implode('_', $nm_control->nmcontrolnomclss->pluck('ccl_nronomciclos')->toArray()) . '_' . $cedula_formateada . '_' . $primer_apellido . $primer_nombre;
+
+            $pdf = SnappyPdf::loadView('reportrechon.relhon', compact(
+                'nm_control', 'nm_empleado', 'empresa', 'usuario', 'request', 'pacdets', 'nroNominaCiclos'
+            ));
+            $pdf->setPaper('a4', 'landscape');
+            // Para descargar directamente
+            return $pdf->inline($nomach . '.pdf');
+
+
+
+            if(env('APP_DEBUG')){
+                //return view('reportrechon.relhon', compact('nm_control','nm_empleado','empresa','nm_movhists','nm_movnomtrab','usuario','request'));
+            }            
+            //$pdf = PDF::loadView('reportinvstockvend.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
+            $pdf = PDF::loadView('reportrechon.relhon', compact('nm_control','nm_empleado','empresa','usuario','request','pacdets','nroNominaCiclos'))->setPaper('a4', 'landscape');
+            //$pdf = PDF::loadView('reportdtefac.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
+
             return $pdf->stream($nomach . ".pdf");
         }else{
             dd('Ningún dato disponible en esta consulta.');
