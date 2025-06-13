@@ -381,38 +381,38 @@ tr.fondo-blanco {
 
 /* Aumenta el tamaño base para todos los elementos */
 * {
-    font-size: 12pt; /* Aumenté de 9pt a 12pt (puedes ajustar) */
+    font-size: 11pt; /* Aumenté de 9pt a 11pt (puedes ajustar) */
 }
 
 /* Ajusta tamaños específicos para mantener proporciones */
 p, label, span, table {
     font-family: 'BrixSansRegular';
-    font-size: 12pt; /* Aumentado de 9pt */
+    font-size: 11pt; /* Aumentado de 9pt */
 }
 
 .h2 {
     font-family: 'BrixSansBlack';
-    font-size: 19pt; /* Aumentado de 16pt */
+    font-size: 18pt; /* Aumentado de 16pt */
 }
 
 .h3 {
     font-family: 'BrixSansBlack';
-    font-size: 15pt; /* Aumentado de 12pt */
+    font-size: 14pt; /* Aumentado de 12pt */
 }
 
 .h4 {
     font-family: 'BrixSansBlack';
-    font-size: 15pt; /* Aumentado de 12pt */
+    font-size: 14pt; /* Aumentado de 12pt */
 }
 
 .small {
-    font-size: 13px; /* Aumentado de 11px */
+    font-size: 12px; /* Aumentado de 11px */
 }
 
 .letragrande {
-    font-size: 17px; /* Aumentado de 14px */
+    font-size: 16px; /* Aumentado de 14px */
 }
 
 .total-row td {
-    font-size: 15px; /* Aumentado de 13px */
+    font-size: 14px; /* Aumentado de 13px */
 }
