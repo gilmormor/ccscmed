@@ -95,17 +95,7 @@
 			<tbody id="detalle_productos">
 				@foreach($pacdets as $pacdet)
 					@if ($aux_factura != $pacdet->factura)
-						<tr class='btn-accion-tabla total-row fondo-blanco'>
-							<td style='text-align:left;width: 10% !important;'></td>
-							<td style='text-align:right;width: 30% !important;'><span class="purple">Total Factura {{$aux_factura}}</span></td>
-							<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
-							<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
-							<td style='text-align:right;width: 7.7% !important;'><span class="purple">{{number_format($TFactpago_actual, 2, ",", ".")}}</span>&nbsp;&nbsp;</td>
-							<td style='text-align:right;width: 7.7% !important;'><span class="purple">{{number_format($TFactmoneda_nac, 2, ",", ".")}}</span>&nbsp;&nbsp;</td>
-							<td style='text-align:right;width: 7.7% !important;'><span class="purple">{{number_format($TFactotra_moneda_bs, 2, ",", ".")}}</span>&nbsp;&nbsp;</td>
-							<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
-							<td style='text-align:right;width: 7.7% !important;'><span class="purple">{{number_format($TFactmonto_otra_moneda, 2, ",", ".")}}</span></span>&nbsp;&nbsp;</td>
-						</tr>
+						@include('reportrechon.subtotalfactura')
 						<?php 
 							$aux_factura = $pacdet->factura;
 							$TFactpago_actual = 0;
@@ -116,17 +106,7 @@
 					@endif
 
 					@if ($aux_tipdoc_desc != $pacdet->tipdoc_desc)
-						<tr class='btn-accion-tabla total-row fondo-blanco'>
-							<td style='text-align:left;width: 10% !important;'></td>
-							<td style='text-align:right;width: 30% !important;'>Total {{$aux_tipdoc_desc}}</td>
-							<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
-							<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
-							<td style='text-align:right;width: 7.7% !important;'>{{number_format($Tpago_actual, 2, ",", ".")}}&nbsp;&nbsp;</td>
-							<td style='text-align:right;width: 7.7% !important;'>{{number_format($Tmoneda_nac, 2, ",", ".")}}&nbsp;&nbsp;</td>
-							<td style='text-align:right;width: 7.7% !important;'>{{number_format($Totra_moneda_bs, 2, ",", ".")}}&nbsp;&nbsp;</td>
-							<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
-							<td style='text-align:right;width: 7.7% !important;'><span class="blue small">{{number_format($Tmonto_otra_moneda, 2, ",", ".")}}</span>&nbsp;&nbsp;</td>
-						</tr>
+						@include('reportrechon.subtotaltipodoc')
 						<?php 
 							$aux_tipdoc_desc = $pacdet->tipdoc_desc;
 							$Tpago_actual = 0;
@@ -168,20 +148,10 @@
 						$TFactotra_moneda_bs += $pacdet->otra_moneda_bs;
 						$TFactmonto_otra_moneda += $pacdet->monto_otra_moneda;
 
-
 					?>
 				@endforeach
-				<tr class='btn-accion-tabla total-row fondo-blanco'>
-					<td style='text-align:left;width: 10% !important;'></td>
-					<td style='text-align:right;width: 30% !important;'>Total {{$aux_tipdoc_desc}}</td>
-					<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
-					<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
-					<td style='text-align:right;width: 7.7% !important;'>{{number_format($Tpago_actual, 2, ",", ".")}}&nbsp;&nbsp;</td>
-					<td style='text-align:right;width: 7.7% !important;'>{{number_format($Tmoneda_nac, 2, ",", ".")}}&nbsp;&nbsp;</td>
-					<td style='text-align:right;width: 7.7% !important;'>{{number_format($Totra_moneda_bs, 2, ",", ".")}}&nbsp;&nbsp;</td>
-					<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
-					<td style='text-align:right;width: 7.7% !important;'><span class="blue small">{{number_format($Tmonto_otra_moneda, 2, ",", ".")}}</span>&nbsp;&nbsp;</td>
-				</tr>
+				@include('reportrechon.subtotalfactura')
+				@include('reportrechon.subtotaltipodoc')
 			</tbody>
 		</table>
 	</div>
@@ -189,7 +159,7 @@
 		<table id="factura_detalle">
 			<tr class='total-row'>
 				<td style='text-align:left;width: 10% !important;'></td>
-				<td style='text-align:right;width: 30% !important;'>Total Bruto Honorarios Medico</td>
+				<td style='text-align:right;width: 30% !important;'>TOTAL BRUTO HONORARIOS MEDICO</td>
 				<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
 				<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
 				<td style='text-align:right;width: 7.7% !important;'>{{number_format($TTpago_actual, 2, ",", ".")}}&nbsp;&nbsp;</td>
