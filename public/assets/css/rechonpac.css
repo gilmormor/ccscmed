@@ -378,3 +378,41 @@ H1.SaltoDePagina
 tr.fondo-blanco {
     background-color: #ffffff !important;
 }
+
+/* Aumenta el tamaño base para todos los elementos */
+* {
+    font-size: 12pt; /* Aumenté de 9pt a 12pt (puedes ajustar) */
+}
+
+/* Ajusta tamaños específicos para mantener proporciones */
+p, label, span, table {
+    font-family: 'BrixSansRegular';
+    font-size: 12pt; /* Aumentado de 9pt */
+}
+
+.h2 {
+    font-family: 'BrixSansBlack';
+    font-size: 19pt; /* Aumentado de 16pt */
+}
+
+.h3 {
+    font-family: 'BrixSansBlack';
+    font-size: 15pt; /* Aumentado de 12pt */
+}
+
+.h4 {
+    font-family: 'BrixSansBlack';
+    font-size: 15pt; /* Aumentado de 12pt */
+}
+
+.small {
+    font-size: 13px; /* Aumentado de 11px */
+}
+
+.letragrande {
+    font-size: 17px; /* Aumentado de 14px */
+}
+
+.total-row td {
+    font-size: 15px; /* Aumentado de 13px */
+}

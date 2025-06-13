@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{{asset("assets/css/factura.css")}}">
+<link rel="stylesheet" href="{{asset("assets/css/rechonpac.css")}}">
 <!--<img class="anulada" src="img/anulado.png" alt="Anulada">-->
 <br>
 <br>
@@ -43,7 +43,7 @@
 		</tr>
 	</table>
 
-	<div class="round" style="padding-bottom: 0px;">
+	<div class="round" style="padding-bottom: 0px;page-break-inside: avoid;">
 		<table id="factura_detalleccsc" style="table-layout:fixed;width: 100%;">
 			<thead>
 				{{-- <tr>
@@ -196,7 +196,7 @@
 				<td style='text-align:right;width: 7.7% !important;'>{{number_format($TTmoneda_nac, 2, ",", ".")}}&nbsp;&nbsp;</td>
 				<td style='text-align:right;width: 7.7% !important;'>{{number_format($TTotra_moneda_bs, 2, ",", ".")}}&nbsp;&nbsp;</td>
 				<td style='text-align:right;width: 7.7% !important;'>&nbsp;&nbsp;</td>
-				<td style='text-align:right;width: 7.7% !important;'><span class="blue small">{{number_format($TTmonto_otra_moneda, 2, ",", ".")}}&nbsp;&nbsp;</td>
+				<td style='text-align:right;width: 7.7% !important;'><span class="blue">{{number_format($TTmonto_otra_moneda, 2, ",", ".")}}&nbsp;&nbsp;</td>
 			</tr>
 		</table>
 	</div>

@@ -35,7 +35,7 @@ return [
     
     'pdf' => [
     'enabled' => true,
-    'binary' => '"C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe"', // ← ¡con comillas dobles dentro!
+    'binary' => env('"WKHTMLTOPDF_BINARY"', '/usr/local/bin/wkhtmltopdf'), // ← ¡con comillas dobles dentro!
     'timeout' => false,
     'options' => [
         'lowquality' => true,
