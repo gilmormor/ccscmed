@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Mail\MailEnviarEmailConError;
-use App\Mail\MailEnviarRecHon;
 use App\Models\Empresa;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;

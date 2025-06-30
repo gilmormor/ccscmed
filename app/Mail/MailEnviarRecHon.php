@@ -16,18 +16,20 @@ class MailEnviarRecHon extends Mailable
     public $cuerpo;
     public $tabla;
     public $pdfPath;
+    public $pdfPathRelPac;
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($msg,$asunto,$cuerpo,$tabla,$pdfPath)
+    public function __construct($msg,$asunto,$cuerpo,$tabla,$pdfPath,$pdfPathRelPac)
     {
         $this->subject = $asunto;
         $this->cuerpo = $cuerpo;
         $this->msg = $msg;
         $this->tabla = $tabla;
         $this->pdfPath = $pdfPath;
+        $this->pdfPathRelPac = $pdfPathRelPac;
     }
 
     /**
@@ -38,10 +40,22 @@ class MailEnviarRecHon extends Mailable
     public function build()
     {
         $nm_movnomtrab = $this->msg["nm_movnomtrab"];
-        return $this->view('mails.enviarrechon')
-                    ->attach($this->pdfPath, [
-                        'as' => "$nm_movnomtrab->mov_numrec.pdf", // Nombre del archivo adjunto
-                        'mime' => 'application/pdf', // Tipo MIME del archivo PDF
-                    ]);
+        if($this->pdfPathRelPac != ""){
+            return $this->view('mails.enviarrechon')
+                        ->attach($this->pdfPath, [
+                            'as' => "$nm_movnomtrab->mov_numrec.pdf", // Nombre del archivo adjunto
+                            'mime' => 'application/pdf', // Tipo MIME del archivo PDF
+                        ])
+                        ->attach($this->pdfPathRelPac, [
+                            'as' => "$nm_movnomtrab->mov_numrec" . "_relpac.pdf", // Nombre del archivo adjunto
+                            'mime' => 'application/pdf', // Tipo MIME del archivo PDF
+                        ]);
+        }else{
+            return $this->view('mails.enviarrechon')
+                        ->attach($this->pdfPath, [
+                            'as' => "$nm_movnomtrab->mov_numrec.pdf", // Nombre del archivo adjunto
+                            'mime' => 'application/pdf', // Tipo MIME del archivo PDF
+                        ]);
+        }
     }
 }

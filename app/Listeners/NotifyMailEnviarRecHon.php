@@ -12,6 +12,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Http\Request;
+use Barryvdh\Snappy\Facades\SnappyPdf;
 
 class NotifyMailEnviarRecHon
 {
@@ -69,6 +71,25 @@ class NotifyMailEnviarRecHon
                 }
             }
             if($nm_empleado){
+                $sql = "SELECT nm_controlnomcls.ccl_nronomciclos
+                    FROM nm_control INNER JOIN nm_controlnomcls
+                    ON nm_control.id = nm_controlnomcls.nm_control_id
+                    INNER JOIN nm_honpacientedet
+                    ON nm_controlnomcls.id = nm_honpacientedet.nm_controlnomcls_id
+                    LEFT JOIN tipodocumento
+                    ON nm_honpacientedet.tipo_documento = tipodocumento.tipodoc
+                    WHERE nm_control.id = $nm_control->id
+                    AND nm_honpacientedet.emp_ced = $aux_ced
+                    GROUP BY nm_controlnomcls.ccl_nronomciclos;";
+                $nronomciclos = DB::select($sql);
+                // Convertir a array de números
+                $valores = array_map(function($item) {
+                    return $item->ccl_nronomciclos;
+                }, $nronomciclos);
+
+                // Convertir a cadena separada por comas
+                $nroNominaCiclos = implode(',', $valores);
+
                 if(env('APP_DEBUG')){
                     //return view('reportrechon.listado', compact('nm_control','nm_empleado','empresa','nm_movhists','nm_movnomtrab','usuario','request'));
                 }
@@ -76,7 +97,7 @@ class NotifyMailEnviarRecHon
                 //return view('notaventaconsulta.listado', compact('notaventas','empresa','usuario','aux_fdesde','aux_fhasta','nomvendedor','nombreAreaproduccion','nombreGiro','nombreTipoEntrega'));
                 
                 //$pdf = PDF::loadView('reportinvstockvend.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
-                $pdf = PDF::loadView('reportrechon.listado', compact('nm_control','nm_empleado','empresa','nm_movhists','nm_movnomtrab','usuario','request','tasacamb'));
+                $pdf = PDF::loadView('reportrechon.listado', compact('nm_control','nm_empleado','empresa','nm_movhists','nm_movnomtrab','usuario','request','tasacamb','nroNominaCiclos'));
                 //$pdf = PDF::loadView('reportdtefac.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
                 // Guarda el PDF en una ubicación temporal
                 $pdfPath = storage_path("app/temp/$nm_movnomtrab->mov_numrec.pdf");
@@ -95,10 +116,26 @@ class NotifyMailEnviarRecHon
                 $asunto = $empresa->nombre . " Recibo Honorarios " . $cuerpo;
         
 
-                Mail::to($aux_email)->send(new MailEnviarRecHon($notificaciones,$asunto,$cuerpo,$nm_empleado,$pdfPath));
+                $request = new Request();
+                $request->merge(['emp_ced' => $aux_ced]);
+                $request->merge(['nmcontrol_id' => $nm_control->id]);
+                $data = nmControl::generarPDFRelHon($request);
+                $pdfPathRelPac = "";
+                if(isset($data["pdf"])){
+                    $pdf = $data["pdf"];
+                    $nomach = $data["nomach"];
+                    $pdfPathRelPac = storage_path("app/temp/$nm_movnomtrab->mov_numrec" . "_relpac.pdf");
+                    $pdf->save($pdfPathRelPac); // Guardar el archivo en storage/app/public
+                }
+
+
+                Mail::to($aux_email)->send(new MailEnviarRecHon($notificaciones,$asunto,$cuerpo,$nm_empleado,$pdfPath,$pdfPathRelPac));
 
                 // Elimina el archivo temporal después de enviarlo por correo electrónico
                 unlink($pdfPath);
+                if($pdfPathRelPac != ""){
+                    unlink($pdfPathRelPac);
+                }   
 
                 //return $pdf->stream("ReciboHonorarios.pdf");
             }else{

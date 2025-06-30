@@ -82,6 +82,25 @@ class ReportRecHonController extends Controller
         }
         if($datas){
 
+            $sql = "SELECT nm_controlnomcls.ccl_nronomciclos
+                        FROM nm_control INNER JOIN nm_controlnomcls
+                        ON nm_control.id = nm_controlnomcls.nm_control_id
+                        INNER JOIN nm_honpacientedet
+                        ON nm_controlnomcls.id = nm_honpacientedet.nm_controlnomcls_id
+                        LEFT JOIN tipodocumento
+                        ON nm_honpacientedet.tipo_documento = tipodocumento.tipodoc
+                        WHERE nm_control.id = $request->nmcontrol_id
+                        AND nm_honpacientedet.emp_ced = $aux_cedula
+                        GROUP BY nm_controlnomcls.ccl_nronomciclos;";
+            $nronomciclos = DB::select($sql);
+            // Convertir a array de números
+            $valores = array_map(function($item) {
+                return $item->ccl_nronomciclos;
+            }, $nronomciclos);
+
+            // Convertir a cadena separada por comas
+            $nroNominaCiclos = implode(',', $valores);
+
             if(env('APP_DEBUG')){
                 //return view('reportrechon.listado', compact('nm_control','nm_empleado','empresa','nm_movhists','nm_movnomtrab','usuario','request'));
             }
@@ -89,7 +108,7 @@ class ReportRecHonController extends Controller
             //return view('notaventaconsulta.listado', compact('notaventas','empresa','usuario','aux_fdesde','aux_fhasta','nomvendedor','nombreAreaproduccion','nombreGiro','nombreTipoEntrega'));
             
             //$pdf = PDF::loadView('reportinvstockvend.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
-            $pdf = PDF::loadView('reportrechon.listado', compact('nm_control','nm_empleado','empresa','nm_movhists','nm_movnomtrab','usuario','request','tasacamb'));
+            $pdf = PDF::loadView('reportrechon.listado', compact('nm_control','nm_empleado','empresa','nm_movhists','nm_movnomtrab','usuario','request','tasacamb','nroNominaCiclos'));
             //$pdf = PDF::loadView('reportdtefac.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
 
             // Convertimos todo a mayúsculas y eliminamos espacios extra
@@ -116,6 +135,16 @@ class ReportRecHonController extends Controller
     public function relHonPdf(Request $request)
     {
         //dd($request);
+        $data = nmControl::generarPDFRelHon($request);
+        if(!isset($data["pdf"])){
+            return $data["mensaje"];
+        }
+        $pdf = $data["pdf"];
+        $nomach = $data["nomach"];
+        return $pdf->inline($nomach . '.pdf');
+        /* dd($data);
+        $data = json_decode($aux_valor, true);
+        dd($data);
         if(isset($request->emp_ced)){
             $aux_cedula = $request->emp_ced;
         }else{
@@ -189,18 +218,8 @@ class ReportRecHonController extends Controller
             // Para descargar directamente
             return $pdf->inline($nomach . '.pdf');
 
-
-
-            if(env('APP_DEBUG')){
-                //return view('reportrechon.relhon', compact('nm_control','nm_empleado','empresa','nm_movhists','nm_movnomtrab','usuario','request'));
-            }            
-            //$pdf = PDF::loadView('reportinvstockvend.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
-            $pdf = PDF::loadView('reportrechon.relhon', compact('nm_control','nm_empleado','empresa','usuario','request','pacdets','nroNominaCiclos'))->setPaper('a4', 'landscape');
-            //$pdf = PDF::loadView('reportdtefac.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
-
-            return $pdf->stream($nomach . ".pdf");
         }else{
             dd('Ningún dato disponible en esta consulta.');
-        } 
+        }  */
     }
 }

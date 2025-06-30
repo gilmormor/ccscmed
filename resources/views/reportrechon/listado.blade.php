@@ -20,8 +20,8 @@
 					<p><strong>Fecha:</strong> {{date("d/m/Y h:i:s A")}}</p>
 					<p><strong>Nro. Recibo:</strong> {{$nm_movnomtrab->mov_numrec}}</p>
 					<p><strong>Periodo:</strong> {{date('d/m/Y', strtotime($nm_control->cot_fdesde))}} al {{date('d/m/Y', strtotime($nm_control->cot_fhasta))}}</p>
-					@if (isset($nm_control->nmcontrolnomclss) and count($nm_control->nmcontrolnomclss) > 0)
-						<p><strong>Relación #:</strong> {{implode(',', $nm_control->nmcontrolnomclss->pluck('ccl_nronomciclos')->toArray())}}</p>					
+					@if ($nroNominaCiclos != "")
+						<p><strong>Relación #:</strong> {{$nroNominaCiclos}}</p>					
 					@endif
 				</div>
 			</td>
