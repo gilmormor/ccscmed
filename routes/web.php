@@ -1439,3 +1439,13 @@ Route::post('reportrechongen/periodos', 'ReportRecHonGenController@periodos')->n
 Route::get('enviaremailconerrorgen', 'ReportEnviarEmailConErrorGenController@index')->name('enviaremailconerrorgen');
 Route::get('enviaremailconerrorgen/exportPdf', 'ReportEnviarEmailConErrorGenController@exportPdf')->name('enviaremailconerrorgen_exportPdf');
 Route::post('enviaremailconerrorgen/periodos', 'ReportEnviarEmailConErrorGenController@periodos')->name('enviaremailconerrorgen_periodos');
+
+/*RUTAS REPORTE RECIBO HONORARIOS*/
+Route::get('reportrecemp', 'ReportRecEmpController@index')->name('reportrecemp');
+Route::get('reportrecemp/reportrecemppage', 'ReportRecEmpController@reportrecemppage')->name('reportrecemppage');
+Route::get('reportrecemp/reporte', 'ReportRecEmpController@reporte')->name('reportrecemp_reporte');
+Route::get('reportrecemp/exportPdf', 'ReportRecEmpController@exportPdf')->name('reportrecemp_exportPdf');
+Route::get('reportrecemp/totalizarindex', 'ReportRecEmpController@totalizarindex')->name('reportrecemp_totalizarindex');
+Route::get('reportrecemp/relHonPdf', 'ReportRecEmpController@relHonPdf')->name('reportrecemp_relHonPdf');
+Route::post('reportrecemp/periodos', 'ReportRecEmpController@periodos')->name('reportrecemp_periodos');
+Route::get('reportrecemp/constanciaTrabajo', 'ReportRecEmpController@constanciaTrabajo')->name('reportrecemp_constanciaTrabajo');

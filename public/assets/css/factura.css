@@ -19,11 +19,11 @@ p, label, span, table{
 	font-family: 'BrixSansBlack';
 	font-size: 12pt;
 	display: block;
-	background: rgb(0, 119, 255);
+	background: rgb(97, 171, 255);
 	color: #FFF;
 	text-align: center;
 	padding: 3px;
-	margin-bottom: 5px;
+	margin-bottom: 3px;
 }
 .h4{
 	font-family: 'BrixSansBlack';
@@ -43,14 +43,17 @@ p, label, span, table{
 
 #factura_head, #factura_cliente, #factura_detalle{
 	width: 100%;
-	margin-bottom: 10px;
+	margin-bottom: 0px;
 }
 .logo_factura{
-	width: 20%;
+	width: 50%;
+	text-align: center;
+    font-weight: bold;
+    font-size: 24px; /* puedes ajustar este valor */
 }
 .info_empresa{
-	width: 40%;
-	text-align: center;
+	width: 10%;
+	text-align: left;
 }
 .info_factura{
 	width: 40%;
@@ -65,7 +68,7 @@ p, label, span, table{
 	width: 50%;
 }
 .datos_cliente{
-	padding: 10px 10px 0 10px;
+	padding: 2px 2px 0 2px;
 }
 .datos_cliente label{
 	width: 75px;
@@ -88,7 +91,7 @@ p, label, span, table{
     border-radius: 10px;
     border: 1px solid #0a4661;
     overflow: hidden;
-    padding-bottom: 15px;
+    padding-bottom: 5px;
     /* Añade estos estilos específicos para Snappy */
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
@@ -133,7 +136,7 @@ p, label, span, table{
 	border-collapse: collapse;
 }
 #factura_detalle thead th{
-	background: rgb(0, 119, 255);
+	background: rgb(97, 171, 255);
 	color: #FFF;
 	padding: 5px;
 }
@@ -144,7 +147,7 @@ p, label, span, table{
 }
 
 #detalle_productos tr:nth-child(even) {
-    background: #ededed;
+    background: #fbfbfb;
 }
 #detalle_totales span{
 	font-family: 'BrixSansBlack';
@@ -167,7 +170,7 @@ p, label, span, table{
 }
 
 .headt td {
-	height: 20px;
+	height: 10px;
 }
 
 H1.SaltoDePagina
@@ -377,4 +380,39 @@ H1.SaltoDePagina
 
 tr.fondo-blanco {
     background-color: #ffffff !important;
+}
+
+#apDiv1 {
+	
+	left: 0px;
+	top: 50px;	
+	z-index: 1;
+	font-size:12px;
+}
+#tit_constancia
+{
+	text-align: center;
+	font-size:18px;
+	font-family: 'Times New Roman';
+	text-decoration: underline;
+	font-weight: bold;
+	
+	 
+}
+#p
+{
+	line-height: 12;
+}
+#cuerpo_constancia
+{
+	height: auto;
+	width: 98%;
+	text-align: justify;
+	font-family: 'arial';
+	font-size:16px;
+	line-height: 1.5;
+}
+#logo
+{
+	 float: left;
 }
