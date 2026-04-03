@@ -70,7 +70,12 @@
       </div>
     </form>
 
-    <!-- /.social-auth-links -->
+    <div style="text-align:center; margin-top:15px; border-top:1px solid #eee; padding-top:12px;">
+      <a href="{{ route('manual_recibo_pago') }}" target="_blank" style="color:#009688; font-size:12px;">
+        <span class="glyphicon glyphicon-file"></span>
+        &nbsp;Manual de Usuario — Sistema de Recibos de Pago
+      </a>
+    </div>
 
   </div>
   <!-- /.login-box-body -->

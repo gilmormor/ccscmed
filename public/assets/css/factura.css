@@ -19,7 +19,7 @@ p, label, span, table{
 	font-family: 'BrixSansBlack';
 	font-size: 12pt;
 	display: block;
-	background: rgb(97, 171, 255);
+	background: rgb(100, 190, 180);
 	color: #FFF;
 	text-align: center;
 	padding: 3px;
@@ -46,14 +46,14 @@ p, label, span, table{
 	margin-bottom: 0px;
 }
 .logo_factura{
-	width: 50%;
+	width: 22%;
+	text-align: center;
+}
+.info_empresa{
+	width: 38%;
 	text-align: center;
     font-weight: bold;
     font-size: 24px; /* puedes ajustar este valor */
-}
-.info_empresa{
-	width: 10%;
-	text-align: left;
 }
 .info_factura{
 	width: 40%;
@@ -66,6 +66,20 @@ p, label, span, table{
 }
 .datos_cliente tr td{
 	width: 50%;
+}
+.dc-label{
+	width: 1%;
+	white-space: nowrap;
+	vertical-align: top;
+	padding-right: 6px;
+	font-size: 11px;
+}
+.dc-value{
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	vertical-align: top;
+	font-size: 11px;
+	padding-right: 12px;
 }
 .datos_cliente{
 	padding: 2px 2px 0 2px;
@@ -136,7 +150,7 @@ p, label, span, table{
 	border-collapse: collapse;
 }
 #factura_detalle thead th{
-	background: rgb(97, 171, 255);
+	background: rgb(100, 190, 180);
 	color: #FFF;
 	padding: 5px;
 }

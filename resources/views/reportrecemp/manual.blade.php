@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Manual de Usuario - Sistema Consulta de Recibos de Pago Online</title>
+    <style>
+        @page {
+            margin-left: 70px;
+            margin-right: 70px;
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-size: 11px;
+            line-height: 1.7;
+            color: #222;
+        }
+
+        /* ── ENCABEZADO ── */
+        .header-table {
+            width: 100%;
+            border-bottom: 3px solid rgb(100, 190, 180);
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+        }
+        .header-logo { width: 50%; vertical-align: middle; }
+        .header-logo img { width: 200px; }
+        .header-title {
+            width: 75%;
+            vertical-align: middle;
+            text-align: right;
+        }
+        .header-title h1 {
+            font-size: 16px;
+            color: rgb(0, 120, 110);
+            margin: 0 0 3px 0;
+        }
+        .header-title p {
+            font-size: 10px;
+            color: #555;
+            margin: 0;
+        }
+
+        /* ── TÍTULOS DE SECCIÓN ── */
+        .section-title {
+            background: rgb(100, 190, 180);
+            color: #fff;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 5px 10px;
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+        .step-row {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 4px 0;
+        }
+        .step-num {
+            width: 22px;
+            min-width: 22px;
+            vertical-align: top;
+            padding-top: 1px;
+            padding-right: 6px;
+            text-align: center;
+        }
+        .step-num span {
+            display: block;
+            background: rgb(0, 150, 136);
+            color: #fff;
+            font-weight: bold;
+            font-size: 11px;
+            width: 18px;
+            height: 18px;
+            text-align: center;
+            line-height: 18px;
+            border-radius: 9px;
+        }
+        .step-text {
+            vertical-align: top;
+        }
+
+        /* ── CAJAS ── */
+        .box-info {
+            border-left: 4px solid rgb(100, 190, 180);
+            background: #f0faf9;
+            padding: 7px 10px;
+            margin: 8px 0;
+            font-size: 10.5px;
+        }
+        .box-warn {
+            border-left: 4px solid #e07b39;
+            background: #fff6f0;
+            padding: 7px 10px;
+            margin: 8px 0;
+            font-size: 10.5px;
+        }
+        .box-error {
+            border-left: 4px solid #c0392b;
+            background: #fff0f0;
+            padding: 7px 10px;
+            margin: 8px 0;
+            font-size: 10.5px;
+        }
+
+        /* ── ETIQUETAS ── */
+        .badge {
+            background: rgb(0, 150, 136);
+            color: #fff;
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 3px;
+        }
+        .badge-gray {
+            background: #888;
+            color: #fff;
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 3px;
+        }
+        .badge-orange {
+            background: #e07b39;
+            color: #fff;
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 3px;
+        }
+        .path {
+            font-family: Courier New, monospace;
+            background: #eee;
+            padding: 1px 5px;
+            font-size: 10px;
+            border-radius: 2px;
+        }
+
+        /* ── TABLA DE CAMPOS ── */
+        .field-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 6px 0 10px 0;
+            font-size: 10.5px;
+        }
+        .field-table th {
+            background: rgb(100, 190, 180);
+            color: #fff;
+            padding: 4px 8px;
+            text-align: left;
+        }
+        .field-table td {
+            border-bottom: 1px solid #ddd;
+            padding: 5px 8px;
+            vertical-align: top;
+        }
+        .field-table tr:nth-child(even) td { background: #f5fafa; }
+
+        /* ── PIE ── */
+        .footer {
+            border-top: 2px solid rgb(100, 190, 180);
+            margin-top: 30px;
+            padding-top: 6px;
+            text-align: center;
+            font-size: 9px;
+            color: #777;
+        }
+
+        p { margin: 4px 0; }
+        ul { margin: 4px 0 6px 20px; }
+        li { margin-bottom: 3px; }
+        a { color: rgb(0, 120, 110); }
+    </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     ENCABEZADO
+═══════════════════════════════════════════════ -->
+<table class="header-table">
+    <tr>
+        <td class="header-logo">
+            <img src="{{ public_path('storage/imagenes/logos/ccsc.png') }}">
+        </td>
+        <td class="header-title">
+            <h1>Manual de Usuario</h1>
+            <p>Sistema de Consulta de Recibos de Pago Online</p>
+            <p>Rol: Trabajador &nbsp;|&nbsp; Versión 1.0 &nbsp;|&nbsp; {{ date('d/m/Y') }}</p>
+        </td>
+    </tr>
+</table>
+
+
+<!-- ══════════════════════════════════════════════
+     1. INTRODUCCIÓN
+═══════════════════════════════════════════════ -->
+<div class="section-title">1. Introducción</div>
+<p>
+    El <strong>Sistema de Consulta de Recibos de Pago Online</strong> del Centro Clínico San Cristóbal
+    le permite consultar y descargar en formato PDF sus recibos de pago correspondientes a cada período
+    de nómina, así como generar su <strong>Constancia de Trabajo</strong> cuando la necesite,
+    todo desde cualquier dispositivo con acceso a Internet.
+</p>
+<div class="box-info">
+    <strong>Perfil de acceso:</strong> Su cuenta tiene asignado el rol <span class="badge">Trabajador</span>,
+    que le permite consultar únicamente su propia información de nómina.
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     2. INGRESO AL SISTEMA (LOGIN)
+═══════════════════════════════════════════════ -->
+<div class="section-title">2. Ingreso al Sistema</div>
+
+<table class="step-row"><tr><td class="step-num"><span>1</span></td><td class="step-text">Abra su navegador e ingrese a la dirección del sistema haciendo clic en el siguiente enlace o copiándolo en su navegador:<br>&nbsp;&nbsp;&nbsp;<a href="{{ url('/') }}">{{ url('/') }}</a></td></tr></table>
+<table class="step-row"><tr><td class="step-num"><span>2</span></td><td class="step-text">El sistema lo llevará automáticamente a la pantalla de inicio de sesión.</td></tr></table>
+<table class="step-row"><tr><td class="step-num"><span>3</span></td><td class="step-text">Complete los campos de acceso:</td></tr></table>
+
+<table class="field-table">
+    <tr>
+        <th style="width:30%;">Campo</th>
+        <th>Descripción</th>
+    </tr>
+    <tr>
+        <td><strong>Usuario</strong></td>
+        <td>
+            Ingrese su número de cédula de identidad <strong>solo con dígitos numéricos</strong>,
+            sin la letra V, sin puntos ni espacios.<br>
+            <em>Ejemplo correcto:</em> <span class="path">12345678</span>&nbsp;
+            <em>Ejemplo incorrecto:</em> <span class="path">V-12.345.678</span>
+        </td>
+    </tr>
+    <tr>
+        <td><strong>Contraseña</strong></td>
+        <td>Ingrese la contraseña asignada. La contraseña distingue mayúsculas de minúsculas.</td>
+    </tr>
+</table>
+
+<table class="step-row"><tr><td class="step-num"><span>4</span></td><td class="step-text">Haga clic en el botón <span class="badge">Ingresar</span>.</td></tr></table>
+
+<div class="box-error">
+    <strong>Credenciales incorrectas:</strong> Si el usuario o la contraseña no son válidos, el sistema
+    mostrará el mensaje en rojo:<br><br>
+    &nbsp;&nbsp;&nbsp;<em>"Las credenciales introducidas son incorrectas."</em><br><br>
+    Verifique que su número de cédula esté escrito correctamente (solo números) y que no tenga
+    activado el bloqueo de mayúsculas al escribir la contraseña. Si el problema persiste,
+    utilice la opción de recuperación de contraseña descrita en la sección 3.
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     3. RECUPERACIÓN DE CONTRASEÑA
+═══════════════════════════════════════════════ -->
+<div class="section-title">3. Recuperación de Contraseña</div>
+
+<p>Si olvidó su contraseña, puede recuperarla desde la pantalla de inicio de sesión:</p>
+
+<table class="step-row"><tr><td class="step-num"><span>1</span></td><td class="step-text">En la pantalla de inicio de sesión haga clic en el enlace <a href="{{ url('seguridad/reset') }}"><strong>"Recuperar la contraseña!"</strong></a>.</td></tr></table>
+<table class="step-row"><tr><td class="step-num"><span>2</span></td><td class="step-text">Ingrese el <strong>correo electrónico</strong> registrado en el sistema.</td></tr></table>
+<table class="step-row"><tr><td class="step-num"><span>3</span></td><td class="step-text">Haga clic en <span class="badge">Enviar</span>.</td></tr></table>
+<table class="step-row"><tr><td class="step-num"><span>4</span></td><td class="step-text">El sistema le enviará un correo electrónico con su nueva contraseña para que pueda ingresar al sistema.</td></tr></table>
+<table class="step-row"><tr><td class="step-num"><span>5</span></td><td class="step-text">Revise su bandeja de entrada (y la carpeta de spam si no lo encuentra).</td></tr></table>
+<table class="step-row"><tr><td class="step-num"><span>6</span></td><td class="step-text">Use esa contraseña para iniciar sesión y luego cámbiela por una de su preferencia (ver sección 5).</td></tr></table>
+
+<div class="box-error">
+    <strong>Correo no encontrado:</strong> Si al intentar recuperar su contraseña el sistema muestra el mensaje:<br><br>
+    &nbsp;&nbsp;&nbsp;<em>"Correo electrónico [su correo] no existe."</em><br><br>
+    Significa que el correo ingresado no está registrado en el sistema. En ese caso diríjase al
+    <strong>Departamento de Talento Humano</strong> para que actualicen su dirección de correo
+    electrónico en el sistema.
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     4. CONSULTA DE RECIBOS DE PAGO
+═══════════════════════════════════════════════ -->
+<div class="section-title">4. Consulta de Recibos de Pago</div>
+
+<p>
+    Al ingresar al sistema, en el menú principal encontrará la opción
+    <strong>Reportes</strong>. Siga estos pasos:
+</p>
+
+<table class="step-row"><tr><td class="step-num"><span>1</span></td><td class="step-text">Haga clic en el menú <strong>Reporte</strong>.</td></tr></table>
+<table class="step-row"><tr><td class="step-num"><span>2</span></td><td class="step-text">Seleccione la opción <strong>Recibo Emp</strong>.</td></tr></table>
+<div class="box-info">
+    Ruta de acceso: <strong>Reporte &rarr; Recibo Emp</strong>
+</div>
+
+<table class="step-row"><tr><td class="step-num"><span>3</span></td><td class="step-text">Se abrirá la pantalla de consulta. Debe completar los tres filtros disponibles:</td></tr></table>
+
+<table class="field-table">
+    <tr>
+        <th style="width:25%;">Filtro</th>
+        <th>Descripción</th>
+    </tr>
+    <tr>
+        <td><strong>Cono Monetario</strong></td>
+        <td>Seleccione el cono monetario (tipo de moneda) correspondiente al período que desea consultar.</td>
+    </tr>
+    <tr>
+        <td><strong>Empresa</strong></td>
+        <td>Seleccione la empresa a la cual pertenece su nómina.</td>
+    </tr>
+    <tr>
+        <td><strong>Período</strong></td>
+        <td>Seleccione el período de nómina (quincena o mes) que desea consultar.</td>
+    </tr>
+</table>
+
+<table class="step-row"><tr><td class="step-num"><span>4</span></td><td class="step-text">Una vez seleccionados los tres filtros, haga clic en el botón <span class="badge">Recibo</span> para visualizar y descargar su recibo de pago en formato PDF.</td></tr></table>
+
+<div class="box-info">
+    <strong>Importante:</strong> Los tres filtros son obligatorios. Si no selecciona alguno de ellos,
+    no podrá generar el recibo de pago.
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     5. CONSTANCIA DE TRABAJO
+═══════════════════════════════════════════════ -->
+<div class="section-title">5. Constancia de Trabajo</div>
+
+<p>
+    Desde la misma pantalla de consulta de recibos (<strong>Reporte &rarr; Recibo Emp</strong>)
+    también puede generar su Constancia de Trabajo:
+</p>
+
+<table class="step-row"><tr><td class="step-num"><span>1</span></td><td class="step-text">Seleccione los tres filtros (Cono Monetario, Empresa y Período) tal como se describe en la sección 4.</td></tr></table>
+<table class="step-row"><tr><td class="step-num"><span>2</span></td><td class="step-text">Haga clic en el botón <span class="badge">Constancia</span>.</td></tr></table>
+<table class="step-row"><tr><td class="step-num"><span>3</span></td><td class="step-text">El sistema generará su constancia de trabajo en formato PDF.</td></tr></table>
+
+<div class="box-warn">
+    <strong>Condición para generar la Constancia:</strong> La constancia de trabajo
+    solo puede generarse si usted se encuentra registrado como <strong>empleado activo</strong>
+    de la empresa seleccionada. Si el sistema no genera el documento, verifique con el
+    <strong>Departamento de Talento Humano</strong> el estatus de su relación laboral en el sistema.
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     6. CAMBIO DE CONTRASEÑA Y CIERRE DE SESIÓN
+═══════════════════════════════════════════════ -->
+<div class="section-title">6. Cambio de Contraseña y Cierre de Sesión</div>
+
+<p>
+    En la parte superior derecha de la pantalla encontrará el ícono de usuario (imagen de una persona
+    con corbata) junto al texto <strong>"Hola [su nombre]"</strong>, por ejemplo:
+    <em>Hola María</em>. Al hacer clic sobre ese texto se despliega un menú con las siguientes opciones:
+</p>
+
+<table class="field-table">
+    <tr>
+        <th style="width:35%;">Opción</th>
+        <th>Descripción</th>
+    </tr>
+    <tr>
+        <td><strong>Cambiar contraseña</strong></td>
+        <td>
+            Permite actualizar su contraseña de acceso. Se recomienda usar una contraseña
+            segura de al menos 8 caracteres combinando letras y números.
+        </td>
+    </tr>
+    <tr>
+        <td><strong>Salir</strong></td>
+        <td>
+            Cierra su sesión de forma segura. <strong>Siempre utilice esta opción</strong>
+            antes de cerrar el navegador, especialmente si usa un equipo compartido.
+        </td>
+    </tr>
+</table>
+
+
+<!-- ══════════════════════════════════════════════
+     7. RECOMENDACIONES GENERALES
+═══════════════════════════════════════════════ -->
+<div class="section-title">7. Recomendaciones Generales</div>
+
+<ul>
+    <li>No comparta su usuario ni contraseña con otras personas.</li>
+    <li>Si sospecha que alguien más conoce su contraseña, cámbiela de inmediato desde el menú
+        <strong>Hola [su nombre] &rarr; Cambiar contraseña</strong>.</li>
+    <li>Siempre cierre su sesión al terminar de usar el sistema.</li>
+    <li>Si tiene algún inconveniente con el acceso al sistema, contacte al
+        <strong>Departamento de Talento Humano</strong>.</li>
+</ul>
+
+
+<!-- ── PIE DE PÁGINA ── -->
+<div class="footer">
+    Centro Clínico San Cristóbal &nbsp;|&nbsp; Sistema de Consulta de Recibos de Pago Online
+    &nbsp;|&nbsp; Manual de Usuario Rol Trabajador &nbsp;|&nbsp; {{ date('Y') }}
+</div>
+
+</body>
+</html>

@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('seguridad/login', 'Seguridad\LoginController@index')->name('login');
+Route::get('manuales/recibo-pago', 'ManualController@reciboPago')->name('manual_recibo_pago');
 Route::post('seguridad/login', 'Seguridad\LoginController@login')->name('login-post');
 Route::get('seguridad/logout', 'Seguridad\LoginController@logout')->name('logout');
 Route::put('seguridad/sendpass', 'Seguridad\LoginController@sendpass')->name('sendpass_seguridad');

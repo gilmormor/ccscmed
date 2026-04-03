@@ -9,7 +9,7 @@ use App\Models\Seguridad\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade as PDF;
-
+use Illuminate\Support\Facades\Storage;
 
 class ReportRecEmpController extends Controller
 {
@@ -46,7 +46,7 @@ class ReportRecEmpController extends Controller
             //$aux_cedula = "2450604";
         }
         $nm_empresa = DB::table('nm_empresa')
-            ->select('emp_codh', 'emp_nombre', 'emp_rif')
+            ->select('emp_codh', 'emp_nombre', 'emp_rif','logo')
             ->where('emp_codh', $request->emp_codh)
             ->first();
 
@@ -97,7 +97,15 @@ class ReportRecEmpController extends Controller
         $nm_empleado = DB::table('nm_empleados')
             ->where('emp_ced', $aux_cedula)
             ->first();
-
+        $nm_vacproc = null;
+        if($request->cot_tipo == "V"){
+            $nm_vacproc = DB::table('nm_vacproc')
+                ->where('emp_codh', $request->emp_codh)
+                ->where('vac_ced', $aux_cedula)
+                ->where('vac_numrec', $nm_movnomtrab->mov_numrec)
+                ->first();
+        }
+        
         if($nm_movhists){
 
 
@@ -108,7 +116,7 @@ class ReportRecEmpController extends Controller
             //return view('reportrecemp.listado', compact('nm_control','nm_empleado','nm_empresa','nm_movhists','nm_movnomtrab','usuario','nm_cargos','nm_ubicacion','nm_tiponomina','request'));
             
             //$pdf = PDF::loadView('reportinvstockvend.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
-            $pdf = PDF::loadView('reportrecemp.listado', compact('nm_control','nm_empleado','nm_empresa','nm_movhists','nm_movnomtrab','usuario','nm_cargos','nm_ubicacion','nm_tiponomina','request'));
+            $pdf = PDF::loadView('reportrecemp.listado', compact('nm_control','nm_empleado','nm_empresa','nm_movhists','nm_movnomtrab','usuario','nm_cargos','nm_ubicacion','nm_tiponomina','request','nm_vacproc'));
             //$pdf = PDF::loadView('reportrecemp.listado', compact('nm_control','nm_empleado','nm_empresa','nm_movhists','nm_movnomtrab','usuario','nm_cargos','nm_ubicacion','nm_tiponomina','request'))->setPaper('a4', 'landscape');
             //$pdf = PDF::loadView('reportdtefac.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
 
@@ -175,27 +183,30 @@ class ReportRecEmpController extends Controller
             ->where('m.mov_numnom', $request->mov_nummon)
             ->first();
         //dd($nm_movnomtrab);
-        $pdf = PDF::loadView('reportrecemp.constanciatrabajo', compact('nm_movnomtrab','nm_empresa','request'));
-        //$pdf = PDF::loadView('reportrecemp.listado', compact('nm_control','nm_empleado','nm_empresa','nm_movhists','nm_movnomtrab','usuario','nm_cargos','nm_ubicacion','nm_tiponomina','request'))->setPaper('a4', 'landscape');
-        //$pdf = PDF::loadView('reportdtefac.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
+        if(!$nm_movnomtrab){
+            dd('Ningún dato disponible en esta consulta.');
+        }else{
+            $pdf = PDF::loadView('reportrecemp.constanciatrabajo', compact('nm_movnomtrab','nm_empresa','request'));
+            //$pdf = PDF::loadView('reportrecemp.listado', compact('nm_control','nm_empleado','nm_empresa','nm_movhists','nm_movnomtrab','usuario','nm_cargos','nm_ubicacion','nm_tiponomina','request'))->setPaper('a4', 'landscape');
+            //$pdf = PDF::loadView('reportdtefac.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
 
-        // Convertimos todo a mayúsculas y eliminamos espacios extra
-        $apellido = strtoupper(trim($nm_movnomtrab->emp_ape));
-        $nombre = strtoupper(trim($nm_movnomtrab->emp_nom));
+            // Convertimos todo a mayúsculas y eliminamos espacios extra
+            $apellido = strtoupper(trim($nm_movnomtrab->emp_ape));
+            $nombre = strtoupper(trim($nm_movnomtrab->emp_nom));
 
-        $primer_apellido = explode(' ', $apellido)[0]; // GARCIA
-        $primer_nombre = explode(' ', $nombre)[0];     // ANNA
+            $primer_apellido = explode(' ', $apellido)[0]; // GARCIA
+            $primer_nombre = explode(' ', $nombre)[0];     // ANNA
 
-        $primer_apellido = ucwords(strtolower($primer_apellido));
-        $primer_nombre = ucwords(strtolower($primer_nombre));
+            $primer_apellido = ucwords(strtolower($primer_apellido));
+            $primer_nombre = ucwords(strtolower($primer_nombre));
 
-        // Cedula con ceros a la izquierda (8 dígitos)
-        $cedula_formateada = str_pad($nm_movnomtrab->emp_rif, 8, '0', STR_PAD_LEFT); // 00504431
+            // Cedula con ceros a la izquierda (8 dígitos)
+            $cedula_formateada = str_pad($nm_movnomtrab->emp_rif, 8, '0', STR_PAD_LEFT); // 00504431
 
-        // Concatenamos todo
-        $nomach = 'ConstanciaTrab_'  .  $cedula_formateada . '_' . $primer_apellido . $primer_nombre;
-        return $pdf->stream($nomach . ".pdf");
-
+            // Concatenamos todo
+            $nomach = 'ConstanciaTrab_'  .  $cedula_formateada . '_' . $primer_apellido . $primer_nombre;
+            return $pdf->stream($nomach . ".pdf");
+        }
     }
     public function relHonPdf(Request $request)
     {

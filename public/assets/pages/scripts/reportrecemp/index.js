@@ -79,6 +79,7 @@ function periodos(){
 function datosRecEmp(){
     var data1 = {
         cono_monetario    : $("#cono_monetario").val(),
+        cono_monetarioletra : $("#cono_monetario option:selected").html(),
         mov_nummon        : $("#mov_nummon").val(),
         emp_codh          : $("#emp_codh").val(),
         mov_codcar        : $("#mov_nummon option:selected").attr("mov_codcar"),
@@ -88,6 +89,7 @@ function datosRecEmp(){
     };
     var data2 = "?mov_nummon="+data1.mov_nummon +
     "&cono_monetario="+data1.cono_monetario +
+    "&cono_monetarioletra="+data1.cono_monetarioletra +
     "&emp_codh="+data1.emp_codh +
     "&mov_codcar="+data1.mov_codcar +
     "&cot_tipo="+data1.cot_tipo +

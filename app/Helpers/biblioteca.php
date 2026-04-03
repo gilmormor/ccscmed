@@ -578,7 +578,7 @@ function num2letras($num, $fem = false, $dec = true) {
    } 
    $tex = $neg . substr($tex, 1) . $fin; 
    //Zi hack --> return ucfirst($tex);
-   $end_num=ucfirst($tex).' Bolivares '.$float[1].'/100';
+   $end_num=ucfirst($tex).' Bolivares '.($float[1] ?? '00').'/100';
    return $end_num; 
 } 
 function fechaEnTexto($fecha)
