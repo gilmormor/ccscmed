@@ -131,6 +131,12 @@ $("#emp_ced").on('input', function(){
 $("#emp_ced").on('change', function(){
     if($(this).val() != ""){
         empresasPorCedula();
+    } else {
+        $('#emp_codh').empty();
+        $('#emp_codh').append('<option value="">Seleccione...</option>');
+        $('#mov_nummon').empty();
+        $('#mov_nummon').append('<option value="" mov_codcar="" cot_tipo="" mov_codubica="">Seleccione...</option>');
+        $(".selectpicker").selectpicker('refresh');
     }
 });
 
@@ -178,12 +184,13 @@ $("#btnpdf2").click(function()
     aux_titulo = 'Recibo de pago';
     data = datosRecEmp();
     //console.log(data);
-    if(data.data1.cono_monetario != "" && data.data1.emp_codh != "" && data.data1.mov_nummon != ""){
+    var cedValida = ($('#emp_ced').length === 0) || (data.data1.emp_ced != "");
+    if(data.data1.cono_monetario != "" && data.data1.emp_codh != "" && data.data1.mov_nummon != "" && cedValida){
         $('#contpdf').attr('src', '/reportrecemp/exportPdf/' + data.data2);
-        $("#myModalpdf").modal('show'); 
+        $("#myModalpdf").modal('show');
     }else{
         swal({
-        title: 'Debe seleccionar el Cono Monetario, Empresa y Periodo.',
+        title: 'Debe seleccionar el Cono Monetario, Empresa, Periodo' + ($('#emp_ced').length ? ' y Cédula' : '') + '.',
         text: "",
         icon: 'warning',
         buttons: {
@@ -198,7 +205,7 @@ $("#btnpdf2").click(function()
 
     return 0;
     $('#contpdf').attr('src', '/reportrecemp/exportPdf/' + data.data2);
-    $("#myModalpdf").modal('show'); 
+    $("#myModalpdf").modal('show');
 });
 
 $("#constancia").click(function()
@@ -206,12 +213,13 @@ $("#constancia").click(function()
     aux_titulo = 'Recibo de pago';
     data = datosRecEmp();
     //console.log(data);
-    if(data.data1.cono_monetario != "" && data.data1.emp_codh != "" && data.data1.mov_nummon != ""){
+    var cedValida = ($('#emp_ced').length === 0) || (data.data1.emp_ced != "");
+    if(data.data1.cono_monetario != "" && data.data1.emp_codh != "" && data.data1.mov_nummon != "" && cedValida){
         $('#contpdf').attr('src', '/reportrecemp/constanciaTrabajo/' + data.data2);
-        $("#myModalpdf").modal('show'); 
+        $("#myModalpdf").modal('show');
     }else{
         swal({
-        title: 'Debe seleccionar el Cono Monetario, Empresa y Periodo.',
+        title: 'Debe seleccionar el Cono Monetario, Empresa, Periodo' + ($('#emp_ced').length ? ' y Cédula' : '') + '.',
         text: "",
         icon: 'warning',
         buttons: {
@@ -226,7 +234,7 @@ $("#constancia").click(function()
 
     return 0;
     $('#contpdf').attr('src', '/reportrecemp/exportPdf/' + data.data2);
-    $("#myModalpdf").modal('show'); 
+    $("#myModalpdf").modal('show');
 });
 
 
