@@ -87,7 +87,39 @@ Route::get('install',function(){
 });
 //EJECUTAR PHP ARTISAN STORAGE:LINK
 Route::get('storagelink', function () {
-    Artisan::call('storage:link');
+    $target = storage_path('app/public');
+    $link   = public_path('storage');
+
+    // Si ya existe como enlace simbólico correcto
+    if (is_link($link)) {
+        return 'El enlace simbólico ya existe y apunta a: ' . readlink($link);
+    }
+
+    // Si existe como archivo o carpeta real (el caso del hosting)
+    if (file_exists($link) || is_dir($link)) {
+        if (is_dir($link) && !is_link($link)) {
+            // Es carpeta real, no enlace — eliminarla para poder crear el symlink
+            rmdir($link);
+        } else {
+            unlink($link);
+        }
+    }
+
+    // Intentar con symlink() nativo de PHP
+    if (function_exists('symlink')) {
+        if (symlink($target, $link)) {
+            return 'Enlace simbólico creado correctamente: ' . $link . ' -> ' . $target;
+        }
+    }
+
+    // Fallback: comando del sistema (Linux hosting)
+    $output = shell_exec('ln -s ' . escapeshellarg($target) . ' ' . escapeshellarg($link) . ' 2>&1');
+    if (is_link($link)) {
+        return 'Enlace simbólico creado via shell: ' . $link . ' -> ' . $target;
+    }
+
+    return 'Error al crear el enlace simbólico. Respuesta del sistema: ' . $output
+         . ' | symlink() disponible: ' . (function_exists('symlink') ? 'sí' : 'no');
 });
 //EJECUTAR INSTALACION DE 
 Route::get('composerintervention', function () {
