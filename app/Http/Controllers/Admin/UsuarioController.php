@@ -23,6 +23,7 @@ class UsuarioController extends Controller
      */
     public function index()
     {
+        can('listar-usuario');
         $usuarios = Usuario::with('roles:id,nombre')->orderBy('id')->get();
         //dd($usuarios);
         return view('admin.usuario.index', compact('usuarios')); //Se usa compact() para evitar la sintaxis anterior 
@@ -52,6 +53,7 @@ class UsuarioController extends Controller
      */
     public function crear()
     {
+        can('crear-usuario');
         $rols = Rol::orderBy('id')->pluck('nombre', 'id')->toArray();
         $sucursales = Sucursal::orderBy('id')->pluck('nombre', 'id')->toArray();
         return view('admin.usuario.crear', compact('rols','sucursales'));
@@ -66,6 +68,7 @@ class UsuarioController extends Controller
     public function guardar(ValidarUsuario $request)
     {
         //dd($request->foto_up);
+        can('guardar-usuario');
         if ($foto = Usuario::setFotoUsuario($request->foto_up,$request->usuario)){
             $request->request->add(['foto' => $foto]);
         }
@@ -95,6 +98,7 @@ class UsuarioController extends Controller
      */
     public function editar($id)
     {
+        can('editar-usuario');
         $rols = Rol::orderBy('id')->pluck('nombre', 'id')->toArray();
         $data = Usuario::with('roles')->findOrFail($id);
         $sucursales = Sucursal::orderBy('id')->pluck('nombre', 'id')->toArray();
@@ -110,6 +114,7 @@ class UsuarioController extends Controller
      */
     public function actualizar(ValidarUsuario $request, $id)
     {
+        can('guardar-usuario');
         //dd($request);
         //dd($request->file('foto_up'));
         //$usuario = Usuario::findOrFail($id)->update(array_filter($request->all()));
@@ -150,6 +155,7 @@ class UsuarioController extends Controller
      */
     public function eliminar(Request $request, $id)
     {
+        can('eliminar-usuario');
         if ($request->ajax()) {
             $usuario = Usuario::findOrFail($id);
             $usuario->roles()->detach();
@@ -170,6 +176,7 @@ class UsuarioController extends Controller
     public function cambclave()
     {
         //dd(auth()->id());
+        can('guardar-usuario');
         $id = auth()->id();
         $rols = Rol::orderBy('id')->pluck('nombre', 'id')->toArray();
         $data = Usuario::with('roles')->findOrFail($id);
@@ -193,6 +200,7 @@ class UsuarioController extends Controller
     
     public function datosbasicos()
     {
+        can('editar-usuario');
         $id = auth()->id();
         $rols = Rol::orderBy('id')->pluck('nombre', 'id')->toArray();
         $data = Usuario::with('roles')->findOrFail($id);
@@ -203,6 +211,7 @@ class UsuarioController extends Controller
 
     public function actualizarbasicos(ValidarUsuarioBasicos $request){
         //dd($request);
+        can('guardar-usuario');
         if(!is_null($request->file('foto_up'))){
             $image = $request->file('foto_up');
             $filename = $request->usuario . '.' . $image->getClientOriginalExtension();

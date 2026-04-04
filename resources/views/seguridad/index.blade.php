@@ -49,7 +49,7 @@
     <form action="{{route('login-post')}}" method="POST" autocomplete="off">
       @csrf
       <div class="form-group has-feedback">
-        <input type="text" id="usuario" name="usuario" class="form-control" value="{{old('usuario')}}" placeholder="Nro. Cédula o Usuario">
+        <input type="text" id="usuario" name="usuario" class="form-control" value="{{old('usuario')}}" placeholder="N° Cédula 12345678 o usuario" maxlength="12">
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
