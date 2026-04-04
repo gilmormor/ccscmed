@@ -76,6 +76,7 @@ class Nm_MovHist extends Model
             ON nm_tiponomina.tmo_cod = nm_control.cot_tipo AND nm_tiponomina.gru_cod = nm_movnomtrab.gru_cod and nm_tiponomina.emp_codh = nm_movnomtrab.emp_codh
             where nm_movnomtrab.mov_ced = $aux_cedula 
             AND nm_movnomtrab.emp_codh = $request->emp_codh
+            AND nm_control.emp_codh = $request->emp_codh
             $aux_condfecha
             group by nm_movnomtrab.mov_numnom 
             order by nm_control.cot_fdesde desc;";
