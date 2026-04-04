@@ -11,6 +11,9 @@ Recibo Empleados
     <script src="{{autoVer("assets/pages/scripts/general.js")}}" type="text/javascript"></script>
     <script src="{{autoVer("assets/pages/scripts/admin/index.js")}}" type="text/javascript"></script>
     <script src="{{autoVer("assets/pages/scripts/reportrecemp/index.js")}}" type="text/javascript"></script>
+    @if($esAdmin)
+    <script src="{{autoVer("assets/pages/scripts/empleado/buscar.js")}}" type="text/javascript"></script>
+    @endif
 @endsection
 
 @section('contenido')
@@ -31,6 +34,23 @@ Recibo Empleados
                         @csrf
                         @csrf @method("put")
                         <div class="col-xs-12 col-md-8 col-sm-9">
+                            @if($esAdmin)
+                            <div class="col-xs-12 col-md-12 col-sm-12">
+                                <div class="col-xs-12 col-sm-9">
+                                    <div class="col-xs-12 col-md-4 col-sm-4 text-left">
+                                        <label for="emp_ced" data-toggle='tooltip' title="Cédula del Empleado">Cédula:</label>
+                                    </div>
+                                    <div class="col-xs-12 col-md-8 col-sm-8">
+                                        <div class="input-group">
+                                            <input type="text" name="emp_ced" id="emp_ced" class="form-control" placeholder="Nro. Cédula" maxlength="12" data-toggle='tooltip'/>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default" type="button" id="btnbuscarempleado" name="btnbuscarempleado" data-toggle='tooltip' title="Buscar Empleado">Buscar</button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endif
                             <div class="col-xs-12 col-md-12 col-sm-12">
                                 <div class="col-xs-12 col-sm-9">
                                     <div class="col-xs-12 col-md-4 col-sm-4 text-left">
@@ -116,6 +136,9 @@ Recibo Empleados
 </div>
 
 
+@if($esAdmin)
+@include('generales.buscarempleado')
+@endif
 @include('generales.modalpdf')
 @include('generales.verpdf')
 @endsection

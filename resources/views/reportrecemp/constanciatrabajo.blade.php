@@ -93,7 +93,7 @@
         Quien suscribe, Jefe del Departamento de Talento Humano de la Sociedad Mercantil
         <span class="bold">{{ strtoupper(trim($nm_empresa->emp_nombre)) }}</span>, hace constar que
         el (la) ciudadano(a)
-        <span class="bold">{{ trim($nm_movnomtrab->emp_nom) }}</span>,
+        <span class="bold">{{ trim($nm_movnomtrab->emp_nom) }} {{ trim($nm_movnomtrab->emp_ape) }}</span>,
         titular de la cédula de identidad No.
         <span class="bold">{{ substr($nm_movnomtrab->emp_rif, 0, 1) . '-' . number_format((int)$nm_movnomtrab->emp_ced, 0, '', '.') }}</span>,
         trabaja en esta empresa desde el {{fechaEnLetras($nm_movnomtrab->mov_fecing)}},

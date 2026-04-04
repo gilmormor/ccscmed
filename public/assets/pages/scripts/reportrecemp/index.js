@@ -37,11 +37,12 @@ $(document).ready(function () {
 });
 
 function periodos(){
-    $('#mov_nummon').empty(); 
+    $('#mov_nummon').empty();
     $(".selectpicker").selectpicker('refresh');
     var data = {
         emp_codh       : $('#emp_codh').val(),
         cono_monetario : $("#cono_monetario").val(),
+        emp_ced        : $('#emp_ced').val() || "",
         _token         : $('input[name=_token]').val()
     };
     $("#mov_nummon").append(`<option value="" 
@@ -82,6 +83,7 @@ function datosRecEmp(){
         cono_monetarioletra : $("#cono_monetario option:selected").html(),
         mov_nummon        : $("#mov_nummon").val(),
         emp_codh          : $("#emp_codh").val(),
+        emp_ced           : $("#emp_ced").val() || "",
         mov_codcar        : $("#mov_nummon option:selected").attr("mov_codcar"),
         cot_tipo          : $("#mov_nummon option:selected").attr("cot_tipo"),
         mov_codubica      : $("#mov_nummon option:selected").attr("mov_codubica"),
@@ -91,10 +93,10 @@ function datosRecEmp(){
     "&cono_monetario="+data1.cono_monetario +
     "&cono_monetarioletra="+data1.cono_monetarioletra +
     "&emp_codh="+data1.emp_codh +
+    "&emp_ced="+data1.emp_ced +
     "&mov_codcar="+data1.mov_codcar +
     "&cot_tipo="+data1.cot_tipo +
     "&mov_codubica="+data1.mov_codubica +
-
     "&_token="+data1._token
 
     var data = {
@@ -103,6 +105,71 @@ function datosRecEmp(){
     };
     //console.log(data);
     return data;
+}
+
+function copiar_ced(_id, ced){
+    $("#myModalBusqueda").modal('hide');
+    $("#emp_ced").val(ced);
+    empresasPorCedula();
+}
+
+$("#btnbuscarempleado").click(function(){
+    $("#myModalBusqueda").modal('show');
+});
+
+$("#emp_ced").on('keypress', function(e){
+    if(!/[0-9]/.test(String.fromCharCode(e.which))) {
+        e.preventDefault();
+    }
+});
+
+$("#emp_ced").on('input', function(){
+    var val = $(this).val().replace(/[^0-9]/g, '').substring(0, 8);
+    $(this).val(val);
+});
+
+$("#emp_ced").on('change', function(){
+    if($(this).val() != ""){
+        empresasPorCedula();
+    }
+});
+
+function empresasPorCedula(){
+    var cedula = $('#emp_ced').val();
+    if(cedula == "") return;
+
+    $('#emp_codh').empty();
+    $('#emp_codh').append('<option value="">Seleccione...</option>');
+    $('#mov_nummon').empty();
+    $('#mov_nummon').append('<option value="" mov_codcar="" cot_tipo="" mov_codubica="">Seleccione...</option>');
+    $(".selectpicker").selectpicker('refresh');
+
+    $.ajax({
+        url: '/reportrecemp/empresas',
+        type: 'POST',
+        data: {
+            emp_ced: cedula,
+            _token: $('input[name=_token]').val()
+        },
+        success: function(response) {
+            if(response.data.length === 0){
+                swal({
+                    title: 'Sin información',
+                    text: 'La cédula ' + cedula + ' no tiene información para mostrar.',
+                    icon: 'warning',
+                    buttons: { confirm: 'Aceptar' }
+                });
+                return;
+            }
+            for(var i = 0; i < response.data.length; i++){
+                $('#emp_codh').append('<option value="' + response.data[i].emp_codh + '">' + response.data[i].emp_nombre + '</option>');
+            }
+            $(".selectpicker").selectpicker('refresh');
+        },
+        error: function(xhr) {
+            console.error('Error:', xhr.responseText);
+        }
+    });
 }
 
 

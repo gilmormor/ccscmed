@@ -1449,4 +1449,5 @@ Route::get('reportrecemp/exportPdf', 'ReportRecEmpController@exportPdf')->name('
 Route::get('reportrecemp/totalizarindex', 'ReportRecEmpController@totalizarindex')->name('reportrecemp_totalizarindex');
 Route::get('reportrecemp/relHonPdf', 'ReportRecEmpController@relHonPdf')->name('reportrecemp_relHonPdf');
 Route::post('reportrecemp/periodos', 'ReportRecEmpController@periodos')->name('reportrecemp_periodos');
+Route::post('reportrecemp/empresas', 'ReportRecEmpController@empresasPorCedula')->name('reportrecemp_empresas');
 Route::get('reportrecemp/constanciaTrabajo', 'ReportRecEmpController@constanciaTrabajo')->name('reportrecemp_constanciaTrabajo');

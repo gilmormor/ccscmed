@@ -26,7 +26,7 @@ class Nm_MovHist extends Model
     ];
 
     public static function empresas($request){
-        if(isset($request->emp_ced)){
+        if(!empty($request->emp_ced)){
             $aux_cedula = $request->emp_ced;
         }else{
             $user = Usuario::findOrFail(auth()->id());
@@ -53,7 +53,7 @@ class Nm_MovHist extends Model
 		if ($request->cono_monetario=="2")
 			$aux_condfecha=" and cot_fdesde>='2021-10-01'  ";
 
-        if(isset($request->emp_ced)){
+        if(!empty($request->emp_ced)){
             $aux_cedula = $request->emp_ced;
         }else{
             $user = Usuario::findOrFail(auth()->id());

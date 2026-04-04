@@ -21,13 +21,38 @@ class ReportRecEmpController extends Controller
     public function index()
     {
         can('listar-recibo-empleados');
-        $empresas = Nm_MovHist::empresas(null);
-        //dd("prueba");
-        //$nominaPeriodos = Nm_MovHist::periodosnompersona("");
-        //$aux_mesanno = mesanno(date("Y") . date("m"));
-        //dd($nominaPeriodos);
+        $usuario = Usuario::findOrFail(auth()->id());
+        $aux_cedula = $usuario->usuario;
 
-        return view('reportrecemp.index', compact('empresas'));
+        $esEmpleado = false;
+        if (is_numeric($aux_cedula)) {
+            $existe = DB::table('nm_empleados')->where('emp_ced', $aux_cedula)->exists();
+            if ($existe) {
+                $esEmpleado = true;
+            }
+        }
+
+        if ($esEmpleado) {
+            $empresas = Nm_MovHist::empresas(null);
+        } else {
+            $empresas = collect();
+        }
+
+        $esAdmin = !$esEmpleado;
+        return view('reportrecemp.index', compact('empresas', 'esAdmin'));
+    }
+
+    public function empresasPorCedula(Request $request)
+    {
+        $cedula = $request->emp_ced;
+        $empresas = DB::table('nm_empresa')
+            ->join('nm_empleados', 'nm_empresa.emp_codh', '=', 'nm_empleados.emp_codh')
+            ->where('nm_empleados.emp_ced', $cedula)
+            ->select('nm_empresa.emp_codh', 'nm_empresa.emp_nombre')
+            ->groupBy('nm_empresa.emp_codh', 'nm_empresa.emp_nombre')
+            ->orderBy('nm_empresa.emp_nombre')
+            ->get();
+        return response()->json(['data' => $empresas]);
     }
 
     public function periodos(Request $request){
