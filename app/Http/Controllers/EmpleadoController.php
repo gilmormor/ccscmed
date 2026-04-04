@@ -104,11 +104,16 @@ function consulta($request){
         $cond_cedula = " nm_empleados.emp_ced = $request->emp_ced";
     }
     $sql = "SELECT emp_ced,concat(TRIM(emp_nom),' ',TRIM(emp_ape)) as emp_nomape,emp_email
-    FROM nm_empleados INNER JOIN nm_movnomtrab
-    ON nm_empleados.emp_ced = nm_movnomtrab.mov_ced
+    FROM nm_empleados
     where $cond_cedula
     GROUP BY emp_ced;";
     return DB::select($sql);
+
+    /* $sql = "SELECT emp_ced,concat(TRIM(emp_nom),' ',TRIM(emp_ape)) as emp_nomape,emp_email
+    FROM nm_empleados INNER JOIN nm_movnomtrab
+    ON nm_empleados.emp_ced = nm_movnomtrab.mov_ced
+    where $cond_cedula
+    GROUP BY emp_ced;"; */
 
 
 }
