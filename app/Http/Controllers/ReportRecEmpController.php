@@ -134,9 +134,9 @@ class ReportRecEmpController extends Controller
         if($nm_movhists){
 
 
-            if(env('APP_DEBUG')){
+            /* if(env('APP_DEBUG')){
                 return view('reportrecemp.listado', compact('nm_control','nm_empleado','nm_empresa','nm_movhists','nm_movnomtrab','usuario','nm_cargos','nm_ubicacion','nm_tiponomina','request'));
-            }
+            } */
             
             //return view('reportrecemp.listado', compact('nm_control','nm_empleado','nm_empresa','nm_movhists','nm_movnomtrab','usuario','nm_cargos','nm_ubicacion','nm_tiponomina','request'));
             

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mysql -u root ccsclaravel -e \"SHOW CREATE TABLE bitacora\\\\G\")",
+      "Bash(where mysql:*)",
+      "Bash(c:/laragon/bin/mysql/mysql-5.7.24-winx64/bin/mysql.exe -u root ccsclaravel -e 'SELECT * FROM sucursal\\\\G')",
+      "Bash(c:/laragon/bin/mysql/mysql-5.7.24-winx64/bin/mysql.exe -u root ccsclaravel -e 'SELECT emp_codh,emp_nombre,emp_direc,ciudad,region,pais,emp_rif,emp_telf,logo FROM nm_empresa\\\\G')"
+    ]
+  }
+}

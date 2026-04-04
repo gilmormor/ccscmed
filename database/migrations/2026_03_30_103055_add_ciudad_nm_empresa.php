@@ -28,6 +28,7 @@ class AddCiudadNmEmpresa extends Migration
     {
         Schema::table('nm_empresa', function (Blueprint $table) {
             $table->dropColumn('ciudad');
+            $table->dropColumn('emp_telf');
         });
     }
 }
