@@ -454,3 +454,8 @@ td.highlight {
     .action-buttons {
         white-space: nowrap; /* Evita el salto de línea */
     }
+
+/* Bootstrap Select: superar el z-index del navbar de AdminLTE (z-index:1030) */
+.bootstrap-select.open .dropdown-menu {
+    z-index: 1031 !important;
+}
