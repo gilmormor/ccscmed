@@ -1483,3 +1483,8 @@ Route::get('reportrecemp/relHonPdf', 'ReportRecEmpController@relHonPdf')->name('
 Route::post('reportrecemp/periodos', 'ReportRecEmpController@periodos')->name('reportrecemp_periodos');
 Route::post('reportrecemp/empresas', 'ReportRecEmpController@empresasPorCedula')->name('reportrecemp_empresas');
 Route::get('reportrecemp/constanciaTrabajo', 'ReportRecEmpController@constanciaTrabajo')->name('reportrecemp_constanciaTrabajo');
+
+/*ASISTENTE IA*/
+Route::get('ia', 'IaController@index')->name('ia');
+Route::post('ia/preguntar', 'IaController@preguntar')->name('ia_preguntar');
+Route::post('ia/exportar-excel', 'IaController@exportarExcel')->name('ia_exportar_excel');
