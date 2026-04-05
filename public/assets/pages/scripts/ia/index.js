@@ -68,6 +68,7 @@ $(document).ready(function () {
     // Procesar respuesta según tipo
     // ──────────────────────────────────────────────
     function procesarRespuesta(resp) {
+        console.log('[IA] Respuesta del servidor:', resp);
         if (resp.error) {
             agregarBurbujaError(resp.error);
             return;
@@ -219,7 +220,15 @@ $(document).ready(function () {
 
     function renderizarGrafico(burbujaId, resp) {
         var canvasId = resp._canvasId;
-        if (!canvasId || !resp.datos || resp.datos.length === 0) return;
+
+        // Sin datos: mostrar mensaje dentro de la burbuja en lugar de fallar silenciosamente
+        if (!resp.datos || resp.datos.length === 0) {
+            $('#' + burbujaId).append('<p class="text-muted"><em>La consulta no devolvió datos para generar el gráfico.</em></p>');
+            return;
+        }
+
+        var canvasEl = document.getElementById(canvasId);
+        if (!canvasEl) return;
 
         var g         = resp.grafico || {};
         var labelCol  = g.label_col  || Object.keys(resp.datos[0])[0];
@@ -231,11 +240,12 @@ $(document).ready(function () {
 
         var colores = generarColores(labels.length);
 
-        var ctx = document.getElementById(canvasId);
+        var ctx = canvasEl.getContext('2d');
         if (!ctx) return;
 
         if (graficosActivos[canvasId]) {
             graficosActivos[canvasId].destroy();
+            delete graficosActivos[canvasId];
         }
 
         graficosActivos[canvasId] = new Chart(ctx, {

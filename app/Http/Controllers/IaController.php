@@ -128,22 +128,51 @@ class IaController extends Controller
     private function construirPrompt(string $pregunta, string $schema): string
     {
         return <<<PROMPT
-Eres un asistente de análisis de datos de nómina. Solo puedes consultar las siguientes tablas de base de datos MySQL:
+Eres un asistente de análisis de datos de nómina venezolana. Solo puedes consultar las siguientes tablas de base de datos MySQL:
 
 $schema
 
+RELACIONES ENTRE TABLAS (úsalas siempre para los JOIN):
+- nm_empleados.emp_codh = nm_empresa.emp_codh           (empleado pertenece a empresa)
+- nm_empleados.emp_codh = nm_movnomtrab.emp_codh
+  Y nm_empleados.emp_ced = nm_movnomtrab.mov_ced         (empleado tiene movimientos de nómina)
+- nm_movnomtrab.mov_codubica = nm_ubicacion.ubi_cod
+  Y nm_movnomtrab.emp_codh   = nm_ubicacion.emp_codh     (movimiento tiene ubicación administrativa)
+- nm_movnomtrab.mov_codcar = nm_cargos.car_cod
+  Y nm_movnomtrab.emp_codh  = nm_cargos.emp_codh         (movimiento tiene cargo)
+- nm_movhist.emp_ced    = nm_empleados.emp_ced            (historial de conceptos por empleado)
+- nm_movhist.mov_codcon = nm_conceptos.con_cod            (historial tiene concepto)
+- nm_movhist.emp_codh   = nm_empresa.emp_codh
+- nm_movhist.mov_nummon = nm_control.cot_numnom
+  Y nm_movhist.emp_codh = nm_control.emp_codh             (historial pertenece a un período de nómina)
+- nm_control.tmo_cod    = nm_tiponomina.tmo_cod
+  Y nm_control.emp_codh = nm_tiponomina.emp_codh          (período tiene tipo de nómina)
+- nm_empleados.gru_cod  = nm_grupo.gru_cod                (empleado pertenece a grupo)
+
+CAMPOS IMPORTANTES:
+- Sueldo del período: nm_movnomtrab.mov_sueldo
+- Sueldo del empleado: nm_empleados.emp_sueldo
+- Montos de conceptos (asignaciones/deducciones): nm_movhist.mov_monto
+- Empleados activos: nm_empleados.emp_staact = 1
+- Fecha ingreso: nm_empleados.emp_fecing
+- Ubicación administrativa: nm_ubicacion.ubi_desc
+- Cargo: nm_cargos.car_desc
+- Tipo de nómina: nm_tiponomina.tmo_desc
+
 REGLAS IMPORTANTES:
-1. Solo puedes generar consultas SELECT.
+1. Solo puedes generar consultas SELECT. Sin punto y coma al final.
 2. Solo puedes usar las tablas listadas arriba.
-3. Nunca uses DROP, DELETE, UPDATE, INSERT, ALTER, CREATE, TRUNCATE ni ninguna instrucción que modifique datos.
-4. Si el usuario pide algo que no requiere datos de la BD, responde solo con texto.
+3. Nunca uses DROP, DELETE, UPDATE, INSERT, ALTER, CREATE, TRUNCATE.
+4. NO uses columnas deleted_at en los WHERE a menos que el schema las muestre explícitamente.
+5. Usa siempre los JOINs de la sección RELACIONES para unir tablas.
+6. Si el usuario pide algo que no requiere datos de la BD, responde solo con texto.
 
 Responde ÚNICAMENTE con un objeto JSON válido, sin texto antes ni después, con esta estructura exacta:
 
 {
   "tipo": "texto" | "grafico" | "tabla" | "excel",
-  "sql": "SELECT ... (omitir si no se necesitan datos)",
-  "respuesta": "respuesta en texto (solo para tipo texto, o mensaje adicional)",
+  "sql": "SELECT ... (omitir si tipo es texto)",
+  "respuesta": "texto adicional o explicación (opcional)",
   "grafico": {
     "tipo_grafico": "bar" | "line" | "pie" | "doughnut",
     "titulo": "Título del gráfico",
@@ -153,11 +182,11 @@ Responde ÚNICAMENTE con un objeto JSON válido, sin texto antes ni después, co
   "titulo_excel": "nombre del archivo sin extensión"
 }
 
-Notas sobre los tipos:
+Tipos de respuesta:
 - "texto": respuesta conversacional sin datos tabulares
-- "grafico": requiere sql + grafico.{tipo_grafico, titulo, label_col, value_col}
-- "tabla": requiere sql, muestra los datos en una tabla HTML interactiva
-- "excel": requiere sql + titulo_excel, genera un archivo CSV/Excel descargable
+- "grafico": requiere sql + grafico completo
+- "tabla": requiere sql, muestra DataTable en pantalla
+- "excel": requiere sql + titulo_excel, genera CSV descargable
 
 Pregunta del usuario: $pregunta
 PROMPT;

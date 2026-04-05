@@ -5,7 +5,10 @@
       "Bash(where mysql:*)",
       "Bash(c:/laragon/bin/mysql/mysql-5.7.24-winx64/bin/mysql.exe -u root ccsclaravel -e 'SELECT * FROM sucursal\\\\G')",
       "Bash(c:/laragon/bin/mysql/mysql-5.7.24-winx64/bin/mysql.exe -u root ccsclaravel -e 'SELECT emp_codh,emp_nombre,emp_direc,ciudad,region,pais,emp_rif,emp_telf,logo FROM nm_empresa\\\\G')",
-      "Bash(php artisan:*)"
+      "Bash(php artisan:*)",
+      "Read(//c/laragon/www/plastiservi/storage/logs//**)",
+      "Read(//c/laragon/www/plastiservi/storage/logs/**)",
+      "Bash(/c/laragon/bin/php/php-7.4.33-Win32-VC15-x64/php.exe -r ':*)"
     ]
   }
 }
