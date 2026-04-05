@@ -33,7 +33,7 @@
 					<table style="width:100%; border-collapse:collapse;">
 						<tr>
 							<td style="white-space:nowrap; vertical-align:top; padding-right:5px;">&nbsp;&nbsp;<strong>Cédula:</strong></td>
-							<td style="width:40%; word-wrap:break-word; vertical-align:top; padding-right:15px;">{{$nm_empleado->emp_rif}}</td>
+							<td style="width:40%; word-wrap:break-word; vertical-align:top; padding-right:15px;">{{ substr($nm_empleado->emp_rif, 0, 1) . '-' . number_format((int)$nm_empleado->emp_ced, 0, '', '.') }}</td>
 							<td style="white-space:nowrap; vertical-align:top; padding-right:5px;"><strong>Dpto:</strong></td>
 							<td style="width:45%; word-wrap:break-word; vertical-align:top; padding-right:15px;">{{$nm_ubicacion->ubi_desc}}</td>
 						</tr>
