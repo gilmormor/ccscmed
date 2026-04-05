@@ -25,13 +25,18 @@ $(document).ready(function () {
 
     });
 
-    periodos();    
+    periodos();
     $('#cono_monetario').on('change', function() {
         periodos();
     });
     $('#emp_codh').on('change', function() {
         periodos();
     });
+
+    // Al recargar la página (F5), si emp_ced ya tiene valor pero emp_codh está vacío, rellenar empresas
+    if ($('#emp_ced').val() != "" && $('#emp_codh').val() == "") {
+        empresasPorCedula();
+    }
 
 
 });
@@ -127,6 +132,12 @@ $("#emp_ced").on('input', function(){
     var val = $(this).val().replace(/[^0-9]/g, '').substring(0, 8);
     $(this).val(val);
 });
+
+/* $("#emp_ced").on('focus', function(){
+    if ($(this).val() != "" && $('#emp_codh').val() == "") {
+        empresasPorCedula();
+    }
+}); */
 
 $("#emp_ced").on('change', function(){
     if($(this).val() != ""){
