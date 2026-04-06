@@ -33,6 +33,12 @@ $(document).ready(function () {
         periodos();
     });
 
+    // Al recargar la página (F5) el browser puede restaurar el valor de emp_ced,
+    // pero no dispara 'change'. Si tiene valor y emp_codh está vacío, llenamos las empresas.
+    if ($('#emp_ced').length && $('#emp_ced').val() != '' && $('#emp_codh').val() == '') {
+        empresasPorCedula();
+    }
+
     // Limitar ítems visibles según tamaño de pantalla (Bootstrap Select inyecta max-height inline,
     // se necesita style.setProperty con 'important' para sobreescribirlo)
     $('#mov_nummon, #emp_codh').on('shown.bs.select', function() {
