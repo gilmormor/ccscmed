@@ -25,7 +25,7 @@ $(document).ready(function () {
 
     });
 
-    periodos();    
+    periodos();
     $('#cono_monetario').on('change', function() {
         periodos();
     });
@@ -33,6 +33,17 @@ $(document).ready(function () {
         periodos();
     });
 
+    // Limitar ítems visibles según tamaño de pantalla (Bootstrap Select inyecta max-height inline,
+    // se necesita style.setProperty con 'important' para sobreescribirlo)
+    $('#mov_nummon, #emp_codh').on('shown.bs.select', function() {
+        var w = $(window).width();
+        var maxItems = w <= 480 ? 4 : w <= 767 ? 6 : 10;
+        var itemPx   = maxItems * 38;
+        var $bs = $(this).closest('.bootstrap-select');
+        $bs.find('.dropdown-menu')[0].style.setProperty('max-height', (itemPx + 52) + 'px', 'important');
+        $bs.find('div.inner')[0].style.setProperty('max-height', itemPx + 'px', 'important');
+        $bs.find('div.inner')[0].style.setProperty('overflow-y', 'scroll', 'important');
+    });
 
 });
 

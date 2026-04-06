@@ -7,6 +7,36 @@ Recibo Empleados
     $selecmultprod = true;
 ?>
 
+@section("styles")
+<style>
+@media (max-width: 767px) {
+    /* Mostrar texto completo sin truncar */
+    .bootstrap-select .dropdown-menu li a span.text {
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        word-break: break-word;
+        display: block;
+    }
+    /* Reservar espacio para el scrollbar a la derecha */
+    .bootstrap-select .dropdown-menu li a {
+        white-space: normal !important;
+        padding-right: 18px !important;
+    }
+    /* Scrollbar siempre visible y scroll táctil suave */
+    .bootstrap-select .dropdown-menu div.inner {
+        overflow-y: scroll !important;
+        -webkit-overflow-scrolling: touch;
+    }
+    /* El dropdown ocupa el ancho del contenedor */
+    .bootstrap-select .dropdown-menu {
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+}
+</style>
+@endsection
+
 @section("scripts")
     <script src="{{autoVer("assets/pages/scripts/general.js")}}" type="text/javascript"></script>
     <script src="{{autoVer("assets/pages/scripts/admin/index.js")}}" type="text/javascript"></script>
@@ -71,7 +101,7 @@ Recibo Empleados
                                         <label data-toggle='tooltip' title="Empresa">Empresa:</label>
                                     </div>
                                     <div class="col-xs-12 col-md-8 col-sm-8">
-                                        <select name="emp_codh" id="emp_codh" class="selectpicker form-control emp_codh">
+                                        <select name="emp_codh" id="emp_codh" class="selectpicker form-control emp_codh" data-size="10" data-width="100%">
                                             <option
                                                 value=""
                                                 >Seleccione...</option>
@@ -91,7 +121,7 @@ Recibo Empleados
                                         <label data-toggle='tooltip' title="Periodo">Periodo:</label>
                                     </div>
                                     <div class="col-xs-12 col-md-8 col-sm-8">
-                                        <select name="mov_nummon" id="mov_nummon" class="selectpicker form-control mov_nummon" data-live-search='true'>
+                                        <select name="mov_nummon" id="mov_nummon" class="selectpicker form-control mov_nummon" data-live-search='true' data-size="10" data-width="100%">
                                             <option value="" 
                                                 mov_codcar=""
                                                 cot_tipo=""
