@@ -71,8 +71,8 @@
 							<tr>
 								<td style="white-space:nowrap; vertical-align:top; padding-right:5px;">&nbsp;&nbsp;<strong>Periodo :</strong></td>
 								<td style="width:40%; word-wrap:break-word; vertical-align:top; padding-right:15px;">{{$nm_vacproc->vac_periodo}}</td>
-								<td style="white-space:nowrap; vertical-align:top; padding-right:5px;"><strong>Dias descanso:</strong></td>
-								<td style="width:50%; word-wrap:break-word; vertical-align:top; padding-right:15px;"></td>
+								{{-- <td style="white-space:nowrap; vertical-align:top; padding-right:5px;"><strong>Dias descanso:</strong></td>
+								<td style="width:50%; word-wrap:break-word; vertical-align:top; padding-right:15px;"></td> --}}
 							</tr>
 						@endif
 					</table>
