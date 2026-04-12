@@ -13,10 +13,11 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
+use Laravel\Sanctum\HasApiTokens;
 
 class Usuario extends Authenticatable
 {
-    use SoftDeletes;
+    use HasApiTokens, SoftDeletes;
     protected $remember_token = false;
     protected $table = 'usuario';
     protected $fillable = ['usuario', 'nombre', 'email', 'password','pass', 'foto'];

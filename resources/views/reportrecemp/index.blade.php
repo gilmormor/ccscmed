@@ -118,6 +118,32 @@ Recibo Empleados
                             <div class="col-xs-12 col-md-12 col-sm-12">
                                 <div class="col-xs-12 col-sm-9">
                                     <div class="col-xs-12 col-md-4 col-sm-4 text-left">
+                                        <label data-toggle='tooltip' title="Filtrar por rango de mes/año">Filtrar período:</label>
+                                    </div>
+                                    <div class="col-xs-12 col-md-8 col-sm-8">
+                                        <div class="row">
+                                            <div class="col-xs-5 col-sm-5">
+                                                <input type="text" id="fecha_desde" name="fecha_desde" class="form-control date-picker-mes" placeholder="Desde mm/aaaa" readonly>
+                                            </div>
+                                            <div class="col-xs-2 col-sm-2 text-center" style="padding-top:7px;">—</div>
+                                            <div class="col-xs-5 col-sm-5">
+                                                <input type="text" id="fecha_hasta" name="fecha_hasta" class="form-control date-picker-mes" placeholder="Hasta mm/aaaa" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-top:6px;">
+                                            <div class="col-xs-12">
+                                                <button type="button" id="btnFiltrarPeriodos" class="btn btn-primary btn-sm btn-block">
+                                                    <i class="fa fa-search"></i> Filtrar períodos
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-md-12 col-sm-12">
+                                <div class="col-xs-12 col-sm-9">
+                                    <div class="col-xs-12 col-md-4 col-sm-4 text-left">
                                         <label data-toggle='tooltip' title="Periodo">Periodo:</label>
                                     </div>
                                     <div class="col-xs-12 col-md-8 col-sm-8">

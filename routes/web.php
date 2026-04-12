@@ -1488,3 +1488,19 @@ Route::get('reportrecemp/constanciaTrabajo', 'ReportRecEmpController@constanciaT
 Route::get('ia', 'IaController@index')->name('ia');
 Route::post('ia/preguntar', 'IaController@preguntar')->name('ia_preguntar');
 Route::post('ia/exportar-excel', 'IaController@exportarExcel')->name('ia_exportar_excel');
+
+/*APP MÓVIL — ACTIVACIONES*/
+Route::get('appactivaciones', 'AppActivacionController@index')->name('appactivaciones');
+Route::post('appactivaciones/buscar', 'AppActivacionController@buscar')->name('appactivaciones_buscar');
+Route::post('appactivaciones/generar', 'AppActivacionController@generar')->name('appactivaciones_generar');
+Route::post('appactivaciones/regenerar', 'AppActivacionController@regenerar')->name('appactivaciones_regenerar');
+Route::post('appactivaciones/generar-todos', 'AppActivacionController@generarTodos')->name('appactivaciones_generar_todos');
+Route::post('appactivaciones/revocar', 'AppActivacionController@revocar')->name('appactivaciones_revocar');
+
+// ── Configuración perímetro de marcaje ───────────────────────────────────────
+Route::get('appconfig/marcaje',                              'AppMarcajeConfigController@index')->name('appconfig.marcaje');
+Route::get('appconfig/marcaje/empresa/{emp_codh}',           'AppMarcajeConfigController@editEmpresa')->name('appconfig.marcaje.empresa');
+Route::put('appconfig/marcaje/empresa/{emp_codh}',           'AppMarcajeConfigController@updateEmpresa')->name('appconfig.marcaje.empresa.update');
+Route::get('appconfig/marcaje/exentos',                      'AppMarcajeConfigController@exentos')->name('appconfig.marcaje.exentos');
+Route::post('appconfig/marcaje/exentos',                     'AppMarcajeConfigController@storeExento')->name('appconfig.marcaje.exentos.store');
+Route::delete('appconfig/marcaje/exentos/{id}',              'AppMarcajeConfigController@destroyExento')->name('appconfig.marcaje.exentos.destroy');

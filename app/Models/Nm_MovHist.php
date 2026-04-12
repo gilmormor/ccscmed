@@ -53,15 +53,22 @@ class Nm_MovHist extends Model
 		if ($request->cono_monetario=="2")
 			$aux_condfecha=" and cot_fdesde>='2021-10-01'  ";
 
+        // Filtro adicional por rango mes/año (formato: mm/yyyy)
+        if (!empty($request->fecha_desde) && preg_match('/^\d{2}\/\d{4}$/', $request->fecha_desde)) {
+            $p = explode('/', $request->fecha_desde);
+            $aux_condfecha .= " and cot_fdesde >= '{$p[1]}-{$p[0]}-01'";
+        }
+        if (!empty($request->fecha_hasta) && preg_match('/^\d{2}\/\d{4}$/', $request->fecha_hasta)) {
+            $p = explode('/', $request->fecha_hasta);
+            $aux_condfecha .= " and cot_fdesde <= LAST_DAY('{$p[1]}-{$p[0]}-01')";
+        }
+
         if(!empty($request->emp_ced)){
             $aux_cedula = $request->emp_ced;
         }else{
             $user = Usuario::findOrFail(auth()->id());
             $aux_cedula = $user->usuario;
-            //$aux_cedula = "2450604";
         }
-        //dd($aux_cedula);
-        //$aux_cedula = "6510971";
         $sql = "SELECT nm_control.cot_tipo,nm_control.cot_numnom,mov_codcar,mov_codubica,
             nm_tiponomina.tmo_desc,
             DATE_FORMAT(cot_fdesde, '%d/%m/%Y') AS fdesde,
@@ -74,11 +81,11 @@ class Nm_MovHist extends Model
             AND nm_movhist.emp_codh = nm_movnomtrab.emp_codh
             INNER JOIN nm_tiponomina
             ON nm_tiponomina.tmo_cod = nm_control.cot_tipo AND nm_tiponomina.gru_cod = nm_movnomtrab.gru_cod and nm_tiponomina.emp_codh = nm_movnomtrab.emp_codh
-            where nm_movnomtrab.mov_ced = $aux_cedula 
+            where nm_movnomtrab.mov_ced = $aux_cedula
             AND nm_movnomtrab.emp_codh = $request->emp_codh
             AND nm_control.emp_codh = $request->emp_codh
             $aux_condfecha
-            group by nm_movnomtrab.mov_numnom 
+            group by nm_movnomtrab.mov_numnom
             order by nm_control.cot_fdesde desc;";
 
         //dd($sql);

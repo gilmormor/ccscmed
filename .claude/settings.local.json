@@ -1,5 +1,18 @@
 {
   "permissions": {
-    "allow": []
+    "allow": [
+      "Bash(C:/laragon/bin/php/php-7.4.33-Win32-VC15-x64/php.exe C:/laragon/bin/composer/composer.phar require laravel/sanctum:^2.6)",
+      "Bash(C:/laragon/bin/php/php-7.4.33-Win32-VC15-x64/php.exe artisan:*)",
+      "Bash(C:/laragon/bin/php/php-7.4.33-Win32-VC15-x64/php.exe -l app/Http/Controllers/AppActivacionController.php)",
+      "Bash(C:/laragon/bin/php/php-7.4.33-Win32-VC15-x64/php.exe -l resources/views/appactivaciones/index.blade.php)",
+      "Read(//c/laragon/www/**)",
+      "Bash(npx create-expo-app@latest softmark-app --template blank)",
+      "Bash(npm install:*)",
+      "Bash(mkdir -p C:/laragon/www/softmark-app/src/screens)",
+      "Bash(mkdir -p C:/laragon/www/softmark-app/src/services)",
+      "Bash(mkdir -p C:/laragon/www/softmark-app/src/context)",
+      "Bash(npx expo:*)",
+      "Bash(/c/laragon/bin/php/php-7.4.33-Win32-VC15-x64/php.exe artisan:*)"
+    ]
   }
 }

@@ -24,8 +24,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
+        // Genera códigos de activación para empleados nuevos detectados por el VFP
+        $schedule->command('app:generar-codigos-activacion')->dailyAt('06:00');
     }
 
     /**

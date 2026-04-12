@@ -11,11 +11,26 @@ $(document).ready(function () {
     $('.date-picker').datepicker({
         language: "es",
         format: "MM yyyy",
-        viewMode: "years", 
+        viewMode: "years",
         minViewMode: "months",
         autoclose: true,
 		todayHighlight: true
     }).datepicker("setDate");
+
+    $('.date-picker-mes').datepicker({
+        language: "es",
+        format: "mm/yyyy",
+        viewMode: "months",
+        minViewMode: "months",
+        autoclose: true,
+        todayHighlight: true
+    });
+
+    $('#btnFiltrarPeriodos').on('click', function() {
+        if ($('#emp_codh').val() != "") {
+            periodos();
+        }
+    });
 
    $('#annomes').on('change', function () {
        /*  data = datos();
@@ -25,12 +40,10 @@ $(document).ready(function () {
 
     });
 
-    periodos();
     $('#cono_monetario').on('change', function() {
-        periodos();
-    });
-    $('#emp_codh').on('change', function() {
-        periodos();
+        $('#mov_nummon').empty();
+        $('#mov_nummon').append('<option value="" mov_codcar="" cot_tipo="" mov_codubica="">Seleccione...</option>');
+        $(".selectpicker").selectpicker('refresh');
     });
 
     // Al recargar la página (F5) el browser puede restaurar el valor de emp_ced,
@@ -60,6 +73,8 @@ function periodos(){
         emp_codh       : $('#emp_codh').val(),
         cono_monetario : $("#cono_monetario").val(),
         emp_ced        : $('#emp_ced').val() || "",
+        fecha_desde    : $('#fecha_desde').val() || "",
+        fecha_hasta    : $('#fecha_hasta').val() || "",
         _token         : $('input[name=_token]').val()
     };
     $("#mov_nummon").append(`<option value="" 
@@ -220,9 +235,6 @@ $("#btnpdf2").click(function()
 
     }
 
-    return 0;
-    $('#contpdf').attr('src', '/reportrecemp/exportPdf/' + data.data2);
-    $("#myModalpdf").modal('show');
 });
 
 $("#constancia").click(function()
@@ -249,9 +261,6 @@ $("#constancia").click(function()
 
     }
 
-    return 0;
-    $('#contpdf').attr('src', '/reportrecemp/exportPdf/' + data.data2);
-    $("#myModalpdf").modal('show');
 });
 
 
