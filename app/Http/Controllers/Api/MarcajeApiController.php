@@ -75,6 +75,7 @@ class MarcajeApiController extends Controller
             'tipo'     => 'required|in:E,S',
             'latitud'  => 'nullable|numeric',
             'longitud' => 'nullable|numeric',
+            'foto'     => 'nullable|image|max:5120',
         ]);
 
         $user    = $request->user();
@@ -133,6 +134,18 @@ class MarcajeApiController extends Controller
         $tokenActual    = $user->currentAccessToken();
         $dispositivo_id = $tokenActual ? $tokenActual->name : null;
 
+        // ── Guardar foto si viene adjunta ─────────────────────────────────────
+        $fotoNombre = null;
+        if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
+            $directorio = storage_path('imagenes/fotomark');
+            if (!is_dir($directorio)) {
+                mkdir($directorio, 0755, true);
+            }
+            $horaArchivo = Carbon::now()->format('Ymd_His');
+            $fotoNombre  = "{$emp_ced}_{$horaArchivo}.jpg";
+            $request->file('foto')->move($directorio, $fotoNombre);
+        }
+
         $marcaje = AppMarcaje::create([
             'emp_ced'        => $emp_ced,
             'emp_codh'       => $emp_codh,
@@ -142,6 +155,7 @@ class MarcajeApiController extends Controller
             'latitud'        => $request->latitud,
             'longitud'       => $request->longitud,
             'dispositivo_id' => $dispositivo_id,
+            'foto'           => $fotoNombre,
         ]);
 
         return response()->json([

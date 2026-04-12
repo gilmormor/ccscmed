@@ -20,6 +20,7 @@ class AppMarcaje extends Model
         'latitud',
         'longitud',
         'dispositivo_id',
+        'foto',
     ];
 
     protected $casts = [
