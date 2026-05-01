@@ -40,21 +40,26 @@ class MailEnviarRecHon extends Mailable
     public function build()
     {
         $nm_movnomtrab = $this->msg["nm_movnomtrab"];
+        $fromAddress   = config('mail.from.address');
+        $fromName      = config('mail.from.name');
+
         if($this->pdfPathRelPac != ""){
-            return $this->view('mails.enviarrechon')
+            return $this->from($fromAddress, $fromName)
+                        ->view('mails.enviarrechon')
                         ->attach($this->pdfPath, [
-                            'as' => "$nm_movnomtrab->mov_numrec.pdf", // Nombre del archivo adjunto
-                            'mime' => 'application/pdf', // Tipo MIME del archivo PDF
+                            'as' => "$nm_movnomtrab->mov_numrec.pdf",
+                            'mime' => 'application/pdf',
                         ])
                         ->attach($this->pdfPathRelPac, [
-                            'as' => "$nm_movnomtrab->mov_numrec" . "_relpac.pdf", // Nombre del archivo adjunto
-                            'mime' => 'application/pdf', // Tipo MIME del archivo PDF
+                            'as' => "$nm_movnomtrab->mov_numrec" . "_relpac.pdf",
+                            'mime' => 'application/pdf',
                         ]);
         }else{
-            return $this->view('mails.enviarrechon')
+            return $this->from($fromAddress, $fromName)
+                        ->view('mails.enviarrechon')
                         ->attach($this->pdfPath, [
-                            'as' => "$nm_movnomtrab->mov_numrec.pdf", // Nombre del archivo adjunto
-                            'mime' => 'application/pdf', // Tipo MIME del archivo PDF
+                            'as' => "$nm_movnomtrab->mov_numrec.pdf",
+                            'mime' => 'application/pdf',
                         ]);
         }
     }
