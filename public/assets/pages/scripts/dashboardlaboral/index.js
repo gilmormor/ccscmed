@@ -21,6 +21,21 @@ $(document).ready(function () {
         return $('#sel-anio').val() || new Date().getFullYear();
     }
 
+    /* ── Cédula activa (empleado o seleccionada por admin) ── */
+    function getCedula() {
+        return $('#cedula-activa').val() || '';
+    }
+
+    function setCedula(ced) {
+        $('#cedula-activa').val(ced);
+    }
+
+    /* ── Parámetro de cédula para querystring ── */
+    function cedParam() {
+        var c = getCedula();
+        return c ? '&emp_ced=' + c : '';
+    }
+
     /* ================================================================
        1. KPIs
        ================================================================ */
@@ -28,7 +43,7 @@ $(document).ready(function () {
         $('#kpi-sueldo, #kpi-honorarios, #kpi-recibos, #kpi-crecimiento')
             .html('<i class="fa fa-spinner fa-spin"></i>');
 
-        $.get('/dashboardlaboral/kpis', { anio: getAnio() }, function (r) {
+        $.get('/dashboardlaboral/kpis?anio=' + getAnio() + cedParam(), function (r) {
             $('#kpi-anio-lbl').text(r.anio);
             $('#kpi-sueldo').text(fmtMonto(r.sueldo_actual));
             $('#kpi-honorarios').text(fmtMonto(r.total_honorarios));
@@ -54,7 +69,7 @@ $(document).ready(function () {
        ================================================================ */
     function cargarEvolucion() {
         $('#loading-evolucion').show();
-        $.get('/dashboardlaboral/evolucion', function (r) {
+        $.get('/dashboardlaboral/evolucion?' + cedParam(), function (r) {
             $('#loading-evolucion').hide();
 
             var labels  = r.sueldos.map(function (s) { return s.periodo; });
@@ -127,7 +142,7 @@ $(document).ready(function () {
        ================================================================ */
     function cargarComposicion() {
         $('#loading-composicion').show();
-        $.get('/dashboardlaboral/composicion', function (r) {
+        $.get('/dashboardlaboral/composicion?' + cedParam(), function (r) {
             $('#loading-composicion').hide();
 
             var asi = parseFloat(r.asignaciones) || 0;
@@ -181,7 +196,7 @@ $(document).ready(function () {
     function iniciarTablaNomina() {
         if (tablaNomina) { tablaNomina.destroy(); }
         tablaNomina = $('#tabla-nomina').DataTable({
-            ajax: { url: '/dashboardlaboral/historial-nomina', dataSrc: 'data' },
+            ajax: { url: '/dashboardlaboral/historial-nomina?' + cedParam(), dataSrc: 'data' },
             pageLength: 8,
             order: [[0, 'desc']],
             columns: [
@@ -214,7 +229,7 @@ $(document).ready(function () {
     function iniciarTablaHonorarios() {
         if (tablaHonorarios) { tablaHonorarios.destroy(); }
         tablaHonorarios = $('#tabla-honorarios').DataTable({
-            ajax: { url: '/dashboardlaboral/historial-honorarios', dataSrc: 'data' },
+            ajax: { url: '/dashboardlaboral/historial-honorarios?' + cedParam(), dataSrc: 'data' },
             pageLength: 8,
             order: [[0, 'desc']],
             columns: [
@@ -254,7 +269,7 @@ $(document).ready(function () {
        6. Botones último recibo / honorario
        ================================================================ */
     $('#btn-ultimo-recibo').on('click', function () {
-        $.get('/dashboardlaboral/historial-nomina', function (r) {
+        $.get('/dashboardlaboral/historial-nomina?' + cedParam(), function (r) {
             if (r.data && r.data.length > 0) {
                 var row = r.data[0];
                 var url = '/reportrechon/exportPdf?nmcontrol_id=' + row.id +
@@ -268,7 +283,7 @@ $(document).ready(function () {
     });
 
     $('#btn-ultimo-hon').on('click', function () {
-        $.get('/dashboardlaboral/historial-honorarios', function (r) {
+        $.get('/dashboardlaboral/historial-honorarios?' + cedParam(), function (r) {
             if (r.data && r.data.length > 0) {
                 var row = r.data[0];
                 var url = '/reportrechon/exportPdf?nmcontrol_id=' + row.nmcontrol_id +
@@ -287,6 +302,62 @@ $(document).ready(function () {
     $('#sel-anio').on('change', function () {
         cargarKpis();
         cargarEvolucion();
+    });
+
+    /* ================================================================
+       8. Buscador de empleado (solo admin)
+       ================================================================ */
+    function recargarTodo() {
+        cargarKpis();
+        cargarEvolucion();
+        cargarComposicion();
+        if (tablaNomina)     { tablaNomina.destroy();     tablaNomina = null; }
+        if (tablaHonorarios) { tablaHonorarios.destroy(); tablaHonorarios = null; }
+        iniciarTablaNomina();
+        iniciarTablaHonorarios();
+    }
+
+    $('#btn-buscar-emp').on('click', function () {
+        var ced = $.trim($('#input-cedula-emp').val());
+        if (!ced || isNaN(ced)) {
+            swal('Atención', 'Ingresa una cédula numérica válida.', 'warning');
+            return;
+        }
+        var $btn = $(this).html('<i class="fa fa-spinner fa-spin"></i>').prop('disabled', true);
+
+        $.get('/dashboardlaboral/kpis?anio=' + getAnio() + '&emp_ced=' + ced, function (r) {
+            if (r.error) {
+                swal('No encontrado', 'La cédula ' + ced + ' no corresponde a ningún empleado registrado.', 'error');
+                $btn.html('<i class="fa fa-search"></i>').prop('disabled', false);
+                return;
+            }
+            setCedula(ced);
+            // Actualizar badge visible
+            $('#emp-result-label').html(
+                '<span class="emp-badge">' +
+                '<i class="fa fa-user"></i> C.I. ' + parseInt(ced).toLocaleString('es-VE') +
+                ' &nbsp;<button class="btn-clear" id="btn-limpiar-emp" title="Quitar filtro">✕</button>' +
+                '</span>'
+            );
+            $btn.html('<i class="fa fa-search"></i>').prop('disabled', false);
+            recargarTodo();
+        }).fail(function () {
+            swal('Error', 'No se pudo consultar la cédula ingresada.', 'error');
+            $btn.html('<i class="fa fa-search"></i>').prop('disabled', false);
+        });
+    });
+
+    // Enter en el input también busca
+    $('#input-cedula-emp').on('keypress', function (e) {
+        if (e.which === 13) $('#btn-buscar-emp').trigger('click');
+    });
+
+    // Limpiar filtro
+    $(document).on('click', '#btn-limpiar-emp', function () {
+        setCedula('');
+        $('#emp-result-label').html('');
+        $('#input-cedula-emp').val('');
+        recargarTodo();
     });
 
     /* ================================================================

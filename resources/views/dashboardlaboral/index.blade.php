@@ -134,6 +134,45 @@
     .badge-crec.neg { background: #fdf0f0; color: #e74c3c; }
     .badge-crec.neu { background: #f5f5f5; color: #888; }
 
+    /* ── Buscador empleado (admin) ── */
+    .dl-emp-search {
+        background: rgba(255,255,255,0.12);
+        border-radius: 8px;
+        padding: 10px 14px;
+        margin-top: 10px;
+    }
+    .dl-emp-search label { font-size: 0.76rem; opacity: .8; margin-bottom: 4px; display: block; }
+    .dl-emp-search .input-group input {
+        background: rgba(255,255,255,0.9);
+        border: none;
+        border-radius: 6px 0 0 6px;
+        font-size: 0.83rem;
+        color: #333;
+    }
+    .dl-emp-search .input-group .btn {
+        background: rgba(255,255,255,0.25);
+        border: none;
+        color: #fff;
+        border-radius: 0 6px 6px 0;
+    }
+    .dl-emp-result {
+        font-size: 0.78rem;
+        margin-top: 6px;
+        min-height: 16px;
+    }
+    .dl-emp-result .emp-badge {
+        background: rgba(255,255,255,0.2);
+        border-radius: 20px;
+        padding: 2px 10px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .dl-emp-result .emp-badge .btn-clear {
+        background: none; border: none; color: rgba(255,255,255,0.7);
+        padding: 0; font-size: 0.85rem; cursor: pointer; line-height:1;
+    }
+
     /* ── IA Banner ── */
     .dl-ia-banner {
         background: linear-gradient(135deg, #0d7e6e 0%, #1a3a5c 100%);
@@ -184,9 +223,23 @@
         @else
             <h2>Bienvenido, {{ auth()->user()->name ?? auth()->user()->usuario }}</h2>
             <p>Portal de Gestión Laboral</p>
+            {{-- Buscador de empleado para usuarios admin/no-empleado --}}
+            <div class="dl-emp-search">
+                <label><i class="fa fa-search"></i> Consultar empleado por cédula:</label>
+                <div class="input-group" style="max-width:320px">
+                    <input type="number" id="input-cedula-emp" class="form-control"
+                           placeholder="Ej: 2450604" min="1">
+                    <span class="input-group-btn">
+                        <button class="btn" id="btn-buscar-emp" type="button">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </span>
+                </div>
+                <div class="dl-emp-result" id="emp-result-label"></div>
+            </div>
         @endif
     </div>
-    <div class="text-right hidden-xs">
+    <div class="text-right hidden-xs" style="flex-shrink:0">
         <select id="sel-anio" class="dl-year-select">
             @for($y = date('Y'); $y >= date('Y') - 5; $y--)
                 <option value="{{ $y }}" {{ $y == date('Y') ? 'selected' : '' }}>{{ $y }}</option>
@@ -195,6 +248,8 @@
         <div style="font-size:0.72rem; opacity:.7; margin-top:4px;">Filtrar por año</div>
     </div>
 </div>
+{{-- cédula activa (JS la lee) --}}
+<input type="hidden" id="cedula-activa" value="{{ $esEmpleado && $nm_empleado ? $nm_empleado->emp_ced : '' }}">
 
 {{-- ── KPI CARDS ── --}}
 <div class="row" id="kpi-section">
