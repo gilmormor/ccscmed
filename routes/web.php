@@ -1406,6 +1406,15 @@ Route::get('dtefacturaanular/exportPdf', 'DteFacturaAnularController@exportPdf')
 Route::get('dtefacturaanular/totalizarindex', 'DteFacturaAnularController@totalizarindex')->name('dtefacturaanular_totalizarindex');
 
 
+/*RUTAS DASHBOARD LABORAL*/
+Route::get('dashboardlaboral', 'DashboardLaboralController@index')->name('dashboardlaboral');
+Route::get('dashboardlaboral/kpis', 'DashboardLaboralController@kpis')->name('dashboardlaboral_kpis');
+Route::get('dashboardlaboral/evolucion', 'DashboardLaboralController@evolucionIngresos')->name('dashboardlaboral_evolucion');
+Route::get('dashboardlaboral/composicion', 'DashboardLaboralController@composicionRecibo')->name('dashboardlaboral_composicion');
+Route::get('dashboardlaboral/historial-nomina', 'DashboardLaboralController@historialNomina')->name('dashboardlaboral_historial_nomina');
+Route::get('dashboardlaboral/historial-honorarios', 'DashboardLaboralController@historialHonorarios')->name('dashboardlaboral_historial_honorarios');
+Route::get('dashboardlaboral/constancia-pdf', 'DashboardLaboralController@constanciaPdf')->name('dashboardlaboral_constancia_pdf');
+
 /*RUTAS REPORTE RECIBO HONORARIOS*/
 Route::get('reportrechon', 'ReportRecHonController@index')->name('reportrechon');
 Route::get('reportrechon/reportrechonpage', 'ReportRecHonController@reportrechonpage')->name('reportrechonpage');
