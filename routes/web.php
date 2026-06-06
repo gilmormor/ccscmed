@@ -1415,6 +1415,20 @@ Route::get('dashboardlaboral/historial-nomina', 'DashboardLaboralController@hist
 Route::get('dashboardlaboral/historial-honorarios', 'DashboardLaboralController@historialHonorarios')->name('dashboardlaboral_historial_honorarios');
 Route::get('dashboardlaboral/constancia-pdf', 'DashboardLaboralController@constanciaPdf')->name('dashboardlaboral_constancia_pdf');
 
+/*RUTAS DASHBOARD ADMIN*/
+Route::get('dashboardadmin',                          'DashboardAdminController@index')->name('dashboardadmin');
+Route::get('dashboardadmin/kpis',                     'DashboardAdminController@kpis')->name('dashboardadmin_kpis');
+Route::get('dashboardadmin/evolucion',                'DashboardAdminController@evolucion')->name('dashboardadmin_evolucion');
+Route::get('dashboardadmin/distribucion',             'DashboardAdminController@distribucion')->name('dashboardadmin_distribucion');
+Route::get('dashboardadmin/top-conceptos',            'DashboardAdminController@topConceptos')->name('dashboardadmin_top_conceptos');
+Route::get('dashboardadmin/top-trabajadores',         'DashboardAdminController@topTrabajadores')->name('dashboardadmin_top_trabajadores');
+Route::get('dashboardadmin/comparativo-bs-usd',       'DashboardAdminController@comparativoBsUsd')->name('dashboardadmin_comparativo_bs_usd');
+Route::get('dashboardadmin/evolucion-dolar',          'DashboardAdminController@evolucionDolar')->name('dashboardadmin_evolucion_dolar');
+Route::get('dashboardadmin/movimientos',              'DashboardAdminController@movimientos')->name('dashboardadmin_movimientos');
+Route::get('dashboardadmin/ranking-conceptos',        'DashboardAdminController@rankingConceptos')->name('dashboardadmin_ranking_conceptos');
+Route::get('dashboardadmin/filtro-trabajadores',      'DashboardAdminController@filtroTrabajadores')->name('dashboardadmin_filtro_trabajadores');
+Route::get('dashboardadmin/filtro-conceptos',         'DashboardAdminController@filtroConceptos')->name('dashboardadmin_filtro_conceptos');
+
 /*RUTAS REPORTE RECIBO HONORARIOS*/
 Route::get('reportrechon', 'ReportRecHonController@index')->name('reportrechon');
 Route::get('reportrechon/reportrechonpage', 'ReportRecHonController@reportrechonpage')->name('reportrechonpage');
