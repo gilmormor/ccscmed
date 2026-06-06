@@ -298,8 +298,18 @@ $(document).ready(function () {
             order: [[0, 'desc']],
             language: dtES,
             columns: [
-                { data:'fdesde', title:'Desde' },
-                { data:'fhasta', title:'Hasta' },
+                {
+                    data:'fdesde', title:'Desde',
+                    render: function(data, type, row) {
+                        return (type === 'sort' || type === 'type') ? row.fecha_orden : data;
+                    }
+                },
+                {
+                    data:'fhasta', title:'Hasta',
+                    render: function(data, type, row) {
+                        return (type === 'sort' || type === 'type') ? row.fecha_orden : data;
+                    }
+                },
                 {
                     data:'asignaciones', title:'Asignaciones', className:'text-right',
                     render: function(d) { return fmtMonto(d); }
