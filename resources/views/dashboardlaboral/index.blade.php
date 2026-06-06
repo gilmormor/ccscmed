@@ -6,232 +6,256 @@
 
 @section("styles")
 <style>
-    /* ── Paleta corporativa ── */
+    /* ── Variables corporativas ── */
     :root {
         --dl-primary   : #1a3a5c;
         --dl-accent    : #0d7e6e;
         --dl-warning   : #e67e22;
         --dl-info      : #2980b9;
-        --dl-light     : #f4f6f9;
-        --dl-card-shadow: 0 2px 12px rgba(0,0,0,0.10);
+        --dl-danger    : #e74c3c;
+        --dl-shadow    : 0 2px 12px rgba(0,0,0,0.09);
+        --dl-radius    : 8px;
     }
 
-    /* ── Header de bienvenida ── */
+    /* ── Banner de bienvenida ── */
     .dl-welcome {
         background: linear-gradient(135deg, var(--dl-primary) 0%, #2c5f8a 100%);
-        border-radius: 8px;
-        padding: 22px 28px;
+        border-radius: var(--dl-radius);
+        padding: 20px 24px;
         color: #fff;
         margin-bottom: 20px;
         display: flex;
-        align-items: center;
-        gap: 20px;
+        align-items: flex-start;
+        gap: 18px;
     }
-    .dl-welcome .avatar {
-        width: 68px; height: 68px;
-        border-radius: 50%;
+    .dl-welcome .dl-avatar {
+        width: 60px; height: 60px; border-radius: 50%;
         background: rgba(255,255,255,0.15);
         display: flex; align-items: center; justify-content: center;
-        font-size: 2rem; flex-shrink: 0;
+        font-size: 1.7rem; flex-shrink: 0;
     }
-    .dl-welcome h2 { margin: 0 0 4px; font-size: 1.4rem; font-weight: 700; }
-    .dl-welcome p  { margin: 0; opacity: 0.85; font-size: 0.9rem; }
-    .dl-welcome .badge-empresa {
-        background: rgba(255,255,255,0.18);
-        border-radius: 20px;
-        padding: 3px 12px;
-        font-size: 0.78rem;
-        margin-top: 6px;
+    .dl-welcome .dl-info { flex: 1; min-width: 0; }
+    .dl-welcome h2 { margin: 0 0 3px; font-size: 1.3rem; font-weight: 700; }
+    .dl-welcome p  { margin: 0; opacity: .82; font-size: .87rem; }
+    .dl-welcome .dl-badge {
         display: inline-block;
+        background: rgba(255,255,255,0.15);
+        border-radius: 20px;
+        padding: 2px 11px;
+        font-size: .75rem;
+        margin-top: 6px;
     }
-
-    /* ── KPI Cards ── */
-    .dl-kpi-card {
-        background: #fff;
-        border-radius: 8px;
-        padding: 20px 22px;
-        box-shadow: var(--dl-card-shadow);
-        border-left: 4px solid var(--dl-primary);
-        margin-bottom: 20px;
-        transition: transform .15s;
+    .dl-welcome .dl-controls {
+        display: flex; flex-direction: column; align-items: flex-end;
+        gap: 8px; flex-shrink: 0;
     }
-    .dl-kpi-card:hover { transform: translateY(-2px); }
-    .dl-kpi-card.accent  { border-left-color: var(--dl-accent); }
-    .dl-kpi-card.warning { border-left-color: var(--dl-warning); }
-    .dl-kpi-card.info    { border-left-color: var(--dl-info); }
-    .dl-kpi-card .kpi-label {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: .04em;
-        color: #888;
-        font-weight: 600;
-        margin-bottom: 6px;
+    .dl-year-select {
+        font-size: .82rem; padding: 4px 8px;
+        border: 1px solid rgba(255,255,255,0.4);
+        border-radius: 5px;
+        background: rgba(255,255,255,0.12);
+        color: #fff;
+        cursor: pointer;
     }
-    .dl-kpi-card .kpi-value {
-        font-size: 1.65rem;
-        font-weight: 700;
-        color: var(--dl-primary);
-        line-height: 1.1;
-    }
-    .dl-kpi-card.accent  .kpi-value { color: var(--dl-accent); }
-    .dl-kpi-card.warning .kpi-value { color: var(--dl-warning); }
-    .dl-kpi-card.info    .kpi-value { color: var(--dl-info); }
-    .dl-kpi-card .kpi-sub {
-        font-size: 0.78rem;
-        color: #aaa;
-        margin-top: 4px;
-    }
-    .dl-kpi-card .kpi-icon {
-        font-size: 2rem;
-        float: right;
-        opacity: 0.15;
-        margin-top: -32px;
-    }
-
-    /* ── Paneles de gráficos ── */
-    .dl-panel {
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: var(--dl-card-shadow);
-        margin-bottom: 22px;
-    }
-    .dl-panel .dl-panel-header {
-        padding: 14px 20px 10px;
-        border-bottom: 1px solid #f0f0f0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-    .dl-panel .dl-panel-header h4 {
-        margin: 0;
-        font-size: 0.95rem;
-        font-weight: 700;
-        color: var(--dl-primary);
-    }
-    .dl-panel .dl-panel-body { padding: 16px 20px; }
-
-    /* ── Tabla de documentos ── */
-    .doc-row { display: flex; align-items: center; padding: 9px 0; border-bottom: 1px solid #f5f5f5; }
-    .doc-row:last-child { border-bottom: none; }
-    .doc-row .doc-icon { width: 34px; height: 34px; border-radius: 6px; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0; }
-    .doc-row .doc-info { flex: 1; }
-    .doc-row .doc-info strong { display: block; font-size: 0.85rem; color: #333; }
-    .doc-row .doc-info span   { font-size: 0.76rem; color: #999; }
-
-    /* ── Spinner de carga ── */
-    .dl-loading { text-align: center; padding: 30px; color: #bbb; }
-
-    /* ── Selector de año ── */
-    .dl-year-select { font-size: 0.82rem; padding: 3px 8px; border: 1px solid #ddd; border-radius: 4px; color: #555; }
-
-    /* ── Tabs de historial ── */
-    .nav-tabs-dl > li > a { font-size: 0.82rem; }
-    .nav-tabs-dl > li.active > a { color: var(--dl-primary); border-bottom: 2px solid var(--dl-primary); font-weight: 600; }
-
-    /* ── Crecimiento badge ── */
-    .badge-crec { font-size: 0.8rem; padding: 3px 9px; border-radius: 20px; font-weight: 600; }
-    .badge-crec.pos { background: #e8f8f5; color: #27ae60; }
-    .badge-crec.neg { background: #fdf0f0; color: #e74c3c; }
-    .badge-crec.neu { background: #f5f5f5; color: #888; }
+    .dl-year-select option { color: #333; background: #fff; }
+    .dl-year-lbl { font-size: .7rem; opacity: .7; text-align: right; }
 
     /* ── Buscador empleado (admin) ── */
-    .dl-emp-search {
-        background: rgba(255,255,255,0.12);
-        border-radius: 8px;
-        padding: 10px 14px;
-        margin-top: 10px;
+    .dl-emp-search { margin-top: 12px; }
+    .dl-emp-search label {
+        font-size: 13px; opacity: .88; margin-bottom: 5px;
+        display: block; font-weight: 500;
     }
-    .dl-emp-search label { font-size: 0.76rem; opacity: .8; margin-bottom: 4px; display: block; }
     .dl-emp-search .input-group input {
-        background: rgba(255,255,255,0.9);
-        border: none;
-        border-radius: 6px 0 0 6px;
-        font-size: 0.83rem;
-        color: #333;
+        background: rgba(255,255,255,.92); border: none;
+        border-radius: 6px 0 0 6px; font-size: 14px;
+        color: #333; padding: 8px 12px; height: 38px;
     }
-    .dl-emp-search .input-group .btn {
-        background: rgba(255,255,255,0.25);
-        border: none;
-        color: #fff;
-        border-radius: 0 6px 6px 0;
+    .dl-emp-search .input-group input::placeholder { color: #999; }
+    .dl-emp-search .input-group .btn-cedula {
+        background: rgba(255,255,255,.22); border: none; color: #fff;
+        height: 38px; padding: 0 12px; font-size: 13px;
+        border-radius: 0; white-space: nowrap;
     }
-    .dl-emp-result {
-        font-size: 0.78rem;
-        margin-top: 6px;
-        min-height: 16px;
+    .dl-emp-search .input-group .btn-nombre {
+        background: rgba(255,255,255,.12); border: none; color: #fff;
+        height: 38px; padding: 0 12px; font-size: 13px;
+        border-radius: 0 6px 6px 0; white-space: nowrap;
+        border-left: 1px solid rgba(255,255,255,.25);
     }
-    .dl-emp-result .emp-badge {
-        background: rgba(255,255,255,0.2);
-        border-radius: 20px;
-        padding: 2px 10px;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
+    .dl-emp-search .input-group .btn-cedula:hover,
+    .dl-emp-search .input-group .btn-nombre:hover {
+        background: rgba(255,255,255,.3);
     }
-    .dl-emp-result .emp-badge .btn-clear {
-        background: none; border: none; color: rgba(255,255,255,0.7);
-        padding: 0; font-size: 0.85rem; cursor: pointer; line-height:1;
+    .dl-emp-result { font-size: 13px; margin-top: 7px; min-height: 18px; }
+    .emp-badge {
+        background: rgba(255,255,255,.2); border-radius: 20px;
+        padding: 3px 12px; display: inline-flex; align-items: center; gap: 7px;
+        font-size: 13px;
+    }
+    .btn-clear {
+        background: none; border: none; color: rgba(255,255,255,.75);
+        padding: 0; font-size: 14px; cursor: pointer; line-height: 1;
     }
 
-    /* ── IA Banner ── */
-    .dl-ia-banner {
-        background: linear-gradient(135deg, #0d7e6e 0%, #1a3a5c 100%);
-        border-radius: 8px;
-        padding: 18px 22px;
-        color: #fff;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        margin-bottom: 22px;
+    /* ── Selector de año ── */
+    .dl-year-select {
+        font-size: 14px !important; padding: 6px 10px !important;
+        border: 1px solid rgba(255,255,255,.4) !important;
+        border-radius: 6px !important;
+        background: rgba(255,255,255,.12) !important;
+        color: #fff !important; cursor: pointer; min-width: 100px;
+        height: 36px;
     }
-    .dl-ia-banner .ia-icon { font-size: 2rem; flex-shrink: 0; }
-    .dl-ia-banner h5 { margin: 0 0 3px; font-weight: 700; }
-    .dl-ia-banner p  { margin: 0; font-size: 0.83rem; opacity: 0.88; }
-    .dl-ia-banner .btn-ia {
-        background: rgba(255,255,255,0.2);
-        color: #fff;
-        border: 1px solid rgba(255,255,255,0.4);
-        border-radius: 20px;
-        padding: 6px 18px;
-        font-size: 0.82rem;
-        white-space: nowrap;
-        flex-shrink: 0;
-        text-decoration: none;
+    .dl-year-select option { color: #333; background: #fff; font-size: 14px; }
+    .dl-year-lbl { font-size: 12px; opacity: .75; text-align: right; margin-top: 3px; }
+
+    /* ── Mejoras de legibilidad general ── */
+    #tabla-honorarios td,
+    #tabla-honorarios th { font-size: 13px !important; }
+    .dataTables_wrapper .dataTables_length select,
+    .dataTables_wrapper .dataTables_filter input { font-size: 13px; }
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate { font-size: 13px; }
+    .dl-panel-hd h4     { font-size: 14px; }
+    .dl-panel-hd .dl-panel-sub { font-size: 12px; }
+    .doc-info strong    { font-size: 14px; }
+    .doc-info span      { font-size: 12px; }
+
+    /* ── KPI Cards ── */
+    .dl-kpi {
+        background: #fff;
+        border-radius: var(--dl-radius);
+        padding: 18px 20px;
+        box-shadow: var(--dl-shadow);
+        border-left: 4px solid var(--dl-primary);
+        margin-bottom: 20px;
+        transition: transform .12s;
+        position: relative;
+        overflow: hidden;
     }
-    .dl-ia-banner .btn-ia:hover { background: rgba(255,255,255,0.3); }
+    .dl-kpi:hover { transform: translateY(-2px); }
+    .dl-kpi.accent  { border-left-color: var(--dl-accent); }
+    .dl-kpi.info    { border-left-color: var(--dl-info); }
+    .dl-kpi.warning { border-left-color: var(--dl-warning); }
+    .dl-kpi .kpi-label {
+        font-size: .73rem; text-transform: uppercase;
+        letter-spacing: .04em; color: #999; font-weight: 600; margin-bottom: 5px;
+    }
+    .dl-kpi .kpi-value {
+        font-size: 1.55rem; font-weight: 700; color: var(--dl-primary); line-height: 1.1;
+    }
+    .dl-kpi.accent  .kpi-value { color: var(--dl-accent); }
+    .dl-kpi.info    .kpi-value { color: var(--dl-info); }
+    .dl-kpi.warning .kpi-value { color: var(--dl-warning); }
+    .dl-kpi .kpi-sub { font-size: .76rem; color: #bbb; margin-top: 4px; }
+    .dl-kpi .kpi-icon {
+        position: absolute; right: 14px; top: 14px;
+        font-size: 2rem; opacity: .08;
+    }
+
+    /* ── Paneles generales ── */
+    .dl-panel {
+        background: #fff; border-radius: var(--dl-radius);
+        box-shadow: var(--dl-shadow); margin-bottom: 20px;
+    }
+    .dl-panel-hd {
+        padding: 13px 18px 10px;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    .dl-panel-hd h4 {
+        margin: 0; font-size: .9rem; font-weight: 700; color: var(--dl-primary);
+    }
+    .dl-panel-hd .dl-panel-sub { font-size: .76rem; color: #bbb; }
+    .dl-panel-bd { padding: 14px 18px; }
+
+    /* ── Centro de documentos ── */
+    .doc-row {
+        display: flex; align-items: center; padding: 10px 0;
+        border-bottom: 1px solid #f6f6f6;
+    }
+    .doc-row:last-child { border-bottom: none; }
+    .doc-icon {
+        width: 36px; height: 36px; border-radius: 7px;
+        display: flex; align-items: center; justify-content: center;
+        margin-right: 12px; flex-shrink: 0;
+    }
+    .doc-info strong { display: block; font-size: .84rem; color: #333; }
+    .doc-info span   { font-size: .75rem; color: #aaa; }
+
+    /* ── Banner IA ── */
+    .dl-ia {
+        background: linear-gradient(135deg, var(--dl-accent) 0%, var(--dl-primary) 100%);
+        border-radius: var(--dl-radius); padding: 16px 20px; color: #fff;
+        display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
+    }
+    .dl-ia .ia-ico { font-size: 1.8rem; flex-shrink: 0; }
+    .dl-ia h5 { margin: 0 0 2px; font-weight: 700; font-size: .95rem; }
+    .dl-ia p  { margin: 0; font-size: .8rem; opacity: .88; }
+    .btn-ia {
+        background: rgba(255,255,255,.18); color: #fff;
+        border: 1px solid rgba(255,255,255,.4); border-radius: 20px;
+        padding: 5px 16px; font-size: .8rem; white-space: nowrap;
+        flex-shrink: 0; text-decoration: none;
+    }
+    .btn-ia:hover { background: rgba(255,255,255,.3); color: #fff; }
+
+    /* ── Spinner ── */
+    .dl-spinner { text-align: center; padding: 24px; color: #ccc; font-size: .9rem; }
+
+    /* ── Modal PDF mejorado ── */
+    #dl-modal-pdf .modal-body { padding: 0; }
+    #dl-modal-pdf iframe { display: block; width: 100%; height: 520px; border: none; }
+    #dl-modal-pdf .modal-header { padding: 10px 15px; background: var(--dl-primary); }
+    #dl-modal-pdf .modal-header h4 { color: #fff; font-size: .95rem; margin: 0; }
+    #dl-modal-pdf .modal-header .close { color: #fff; opacity: .8; margin-top: 0; }
+    #dl-modal-pdf .modal-footer { padding: 8px 14px; }
+
+    @media (max-width: 767px) {
+        .dl-welcome { flex-wrap: wrap; }
+        .dl-welcome .dl-controls { flex-direction: row; align-items: center; width: 100%; }
+        #dl-modal-pdf iframe { height: 360px; }
+    }
 </style>
 @endsection
 
 @section('contenido')
 
-{{-- ── BIENVENIDA ── --}}
+{{-- ══════════════════════════════════════════════════════
+     BANNER DE BIENVENIDA
+══════════════════════════════════════════════════════ --}}
 <div class="dl-welcome">
-    <div class="avatar">
+    <div class="dl-avatar">
         <i class="fa fa-user-md"></i>
     </div>
-    <div style="flex:1">
+
+    <div class="dl-info">
         @if($nm_empleado)
             <h2>{{ ucwords(strtolower(trim($nm_empleado->emp_nom . ' ' . $nm_empleado->emp_ape))) }}</h2>
             <p>
-                Cédula: <strong>V-{{ number_format($nm_empleado->emp_ced, 0, ',', '.') }}</strong>
-                &nbsp;|&nbsp;
+                C.I. <strong>V-{{ number_format($nm_empleado->emp_ced, 0, ',', '.') }}</strong>
+                &nbsp;·&nbsp;
                 Ingreso: <strong>{{ $nm_empleado->emp_fecing ? date('d/m/Y', strtotime($nm_empleado->emp_fecing)) : '--' }}</strong>
             </p>
-            <span class="badge-empresa">
-                <i class="fa fa-building-o"></i>&nbsp;{{ strtoupper(auth()->user()->name ?? 'Sistema ccscmed') }}
-            </span>
+            <span class="dl-badge"><i class="fa fa-building-o"></i>&nbsp;Portal Laboral</span>
         @else
             <h2>Bienvenido, {{ auth()->user()->name ?? auth()->user()->usuario }}</h2>
-            <p>Portal de Gestión Laboral</p>
+            <p>Portal de Gestión Laboral — Honorarios Médicos</p>
             {{-- Buscador de empleado para usuarios admin/no-empleado --}}
             <div class="dl-emp-search">
-                <label><i class="fa fa-search"></i> Consultar empleado por cédula:</label>
-                <div class="input-group" style="max-width:320px">
+                <label><i class="fa fa-search"></i> Consultar empleado:</label>
+                <div class="input-group" style="max-width:400px">
                     <input type="number" id="input-cedula-emp" class="form-control"
-                           placeholder="Ej: 2450604" min="1">
+                           placeholder="Nro. de cédula..." min="1">
                     <span class="input-group-btn">
-                        <button class="btn" id="btn-buscar-emp" type="button">
-                            <i class="fa fa-search"></i>
+                        <button class="btn btn-cedula" id="btn-buscar-emp" type="button"
+                                title="Buscar por cédula">
+                            <i class="fa fa-search"></i> Buscar
+                        </button>
+                        <button class="btn btn-nombre" id="btn-buscar-nombre" type="button"
+                                title="Buscar por nombre o apellido">
+                            <i class="fa fa-user"></i> Por nombre
                         </button>
                     </span>
                 </div>
@@ -239,202 +263,236 @@
             </div>
         @endif
     </div>
-    <div class="text-right hidden-xs" style="flex-shrink:0">
+
+    <div class="dl-controls">
         <select id="sel-anio" class="dl-year-select">
+            <option value="" selected>Todos</option>
             @for($y = date('Y'); $y >= date('Y') - 5; $y--)
-                <option value="{{ $y }}" {{ $y == date('Y') ? 'selected' : '' }}>{{ $y }}</option>
+                <option value="{{ $y }}">{{ $y }}</option>
             @endfor
         </select>
-        <div style="font-size:0.72rem; opacity:.7; margin-top:4px;">Filtrar por año</div>
+        <span class="dl-year-lbl">Filtrar año</span>
     </div>
 </div>
-{{-- cédula activa (JS la lee) --}}
+{{-- cédula activa leída por JS --}}
 <input type="hidden" id="cedula-activa" value="{{ $esEmpleado && $nm_empleado ? $nm_empleado->emp_ced : '' }}">
 
-{{-- ── KPI CARDS ── --}}
-<div class="row" id="kpi-section">
+
+{{-- ══════════════════════════════════════════════════════
+     KPI CARDS
+══════════════════════════════════════════════════════ --}}
+<div class="row">
+    {{-- Último Neto --}}
     <div class="col-xs-12 col-sm-6 col-md-3">
-        <div class="dl-kpi-card">
-            <div class="kpi-label"><i class="fa fa-money"></i> Sueldo Actual</div>
-            <div class="kpi-value" id="kpi-sueldo"><i class="fa fa-spinner fa-spin"></i></div>
-            <div class="kpi-sub" id="kpi-periodo">Último período</div>
+        <div class="dl-kpi">
+            <div class="kpi-label"><i class="fa fa-money"></i> Último Neto</div>
+            <div class="kpi-value" id="kpi-ultimo-hon"><i class="fa fa-spinner fa-spin"></i></div>
+            <div class="kpi-sub" id="kpi-periodo">Asig − Ded · último período</div>
             <i class="fa fa-money kpi-icon"></i>
         </div>
     </div>
+    {{-- Neto total --}}
     <div class="col-xs-12 col-sm-6 col-md-3">
-        <div class="dl-kpi-card accent">
-            <div class="kpi-label"><i class="fa fa-stethoscope"></i> Honorarios <span id="kpi-anio-lbl"></span></div>
-            <div class="kpi-value" id="kpi-honorarios"><i class="fa fa-spinner fa-spin"></i></div>
-            <div class="kpi-sub">Total cobrado en el año</div>
-            <i class="fa fa-stethoscope kpi-icon"></i>
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-6 col-md-3">
-        <div class="dl-kpi-card info">
-            <div class="kpi-label"><i class="fa fa-file-text-o"></i> Recibos Disponibles</div>
-            <div class="kpi-value" id="kpi-recibos"><i class="fa fa-spinner fa-spin"></i></div>
-            <div class="kpi-sub">Períodos con nómina</div>
-            <i class="fa fa-file-text-o kpi-icon"></i>
-        </div>
-    </div>
-    <div class="col-xs-12 col-sm-6 col-md-3">
-        <div class="dl-kpi-card warning">
-            <div class="kpi-label"><i class="fa fa-line-chart"></i> Crecimiento Salarial</div>
-            <div class="kpi-value" id="kpi-crecimiento"><i class="fa fa-spinner fa-spin"></i></div>
-            <div class="kpi-sub">vs año anterior</div>
+        <div class="dl-kpi accent">
+            <div class="kpi-label"><i class="fa fa-line-chart"></i> Neto <span id="kpi-anio-lbl"></span></div>
+            <div class="kpi-value" id="kpi-hon-12m"><i class="fa fa-spinner fa-spin"></i></div>
+            <div class="kpi-sub" id="kpi-hon-sub">Total neto</div>
             <i class="fa fa-line-chart kpi-icon"></i>
         </div>
     </div>
+    {{-- Períodos disponibles --}}
+    <div class="col-xs-12 col-sm-6 col-md-3">
+        <div class="dl-kpi info">
+            <div class="kpi-label"><i class="fa fa-file-text-o"></i> Recibos Disponibles</div>
+            <div class="kpi-value" id="kpi-periodos"><i class="fa fa-spinner fa-spin"></i></div>
+            <div class="kpi-sub">Períodos con recibo</div>
+            <i class="fa fa-file-text-o kpi-icon"></i>
+        </div>
+    </div>
+    {{-- Promedio mensual --}}
+    <div class="col-xs-12 col-sm-6 col-md-3">
+        <div class="dl-kpi warning">
+            <div class="kpi-label"><i class="fa fa-bar-chart"></i> Promedio Mensual</div>
+            <div class="kpi-value" id="kpi-promedio"><i class="fa fa-spinner fa-spin"></i></div>
+            <div class="kpi-sub">Neto promedio por mes</div>
+            <i class="fa fa-bar-chart kpi-icon"></i>
+        </div>
+    </div>
 </div>
 
-{{-- ── GRÁFICOS ── --}}
+
+{{-- ══════════════════════════════════════════════════════
+     GRÁFICOS
+══════════════════════════════════════════════════════ --}}
 <div class="row">
-    {{-- Evolución de ingresos --}}
+    {{-- Evolución mensual --}}
     <div class="col-xs-12 col-md-8">
         <div class="dl-panel">
-            <div class="dl-panel-header">
-                <h4><i class="fa fa-area-chart" style="color:var(--dl-primary)"></i>&nbsp; Evolución de Ingresos — últimos períodos</h4>
-                <small class="text-muted">Nómina y Honorarios</small>
+            <div class="dl-panel-hd">
+                <h4><i class="fa fa-bar-chart" style="color:var(--dl-primary)"></i>&nbsp; Evolución de Ingresos</h4>
+                <span class="dl-panel-sub">Asignaciones · Deducciones · Neto — agrupado por mes</span>
             </div>
-            <div class="dl-panel-body">
+            <div class="dl-panel-bd">
+                <div class="dl-spinner" id="loading-evolucion" style="display:none">
+                    <i class="fa fa-spinner fa-spin"></i> Cargando...
+                </div>
                 <canvas id="chart-evolucion" height="110"></canvas>
-                <div class="dl-loading" id="loading-evolucion" style="display:none"><i class="fa fa-spinner fa-spin"></i> Cargando...</div>
+                <p id="evolucion-empty" style="display:none; text-align:center; color:#ccc; padding:30px 0; margin:0">
+                    Sin datos de honorarios disponibles.
+                </p>
             </div>
         </div>
     </div>
 
-    {{-- Composición del recibo --}}
+    {{-- Honorarios por tipo de documento --}}
     <div class="col-xs-12 col-md-4">
         <div class="dl-panel">
-            <div class="dl-panel-header">
-                <h4><i class="fa fa-pie-chart" style="color:var(--dl-accent)"></i>&nbsp; Composición del Recibo</h4>
-                <small class="text-muted">Último período</small>
+            <div class="dl-panel-hd">
+                <h4><i class="fa fa-pie-chart" style="color:var(--dl-accent)"></i>&nbsp; Por Tipo de Documento</h4>
+                <span class="dl-panel-sub">Histórico total</span>
             </div>
-            <div class="dl-panel-body" style="position:relative; min-height:220px">
-                <canvas id="chart-composicion" height="180"></canvas>
-                <div class="dl-loading" id="loading-composicion" style="display:none"><i class="fa fa-spinner fa-spin"></i></div>
-                <div id="composicion-totales" class="text-center" style="margin-top:10px; font-size:0.83rem; color:#666"></div>
+            <div class="dl-panel-bd" style="min-height:240px; position:relative">
+                <div class="dl-spinner" id="loading-composicion">
+                    <i class="fa fa-spinner fa-spin"></i>
+                </div>
+                <canvas id="chart-composicion" height="180" style="display:none"></canvas>
+                <div id="composicion-totales" class="text-center" style="margin-top:8px; font-size:.8rem; color:#777"></div>
+                <p id="composicion-empty" style="display:none; text-align:center; color:#ccc; padding:24px 0; margin:0">
+                    Sin datos de honorarios.
+                </p>
             </div>
         </div>
     </div>
 </div>
 
-{{-- ── BANNER IA ── --}}
+
+{{-- ══════════════════════════════════════════════════════
+     BANNER IA
+══════════════════════════════════════════════════════ --}}
 @if(Route::has('ia'))
-<div class="dl-ia-banner">
-    <div class="ia-icon">🤖</div>
+<div class="dl-ia">
+    <div class="ia-ico">🤖</div>
     <div style="flex:1">
         <h5>Asistente IA de Nómina</h5>
-        <p>Pregunta en lenguaje natural: "¿Cuánto recibí en honorarios en 2025?" · "¿Cuál fue mi deducción más alta?"</p>
+        <p>Pregunta en lenguaje natural: "¿Cuánto recibí en honorarios en 2025?" · "¿Cuál fue mi mayor pago?"</p>
     </div>
-    <a href="{{ route('ia') }}" class="btn-ia"><i class="fa fa-external-link"></i> Abrir Asistente</a>
+    <a href="{{ route('ia') }}" class="btn-ia"><i class="fa fa-external-link"></i> Abrir</a>
 </div>
 @endif
 
-{{-- ── DOCUMENTOS + HISTORIAL ── --}}
+
+{{-- ══════════════════════════════════════════════════════
+     DOCUMENTOS + HISTORIAL
+══════════════════════════════════════════════════════ --}}
 <div class="row">
-    {{-- Centro de documentos --}}
+    {{-- Centro de Documentos ── --}}
     <div class="col-xs-12 col-md-4">
         <div class="dl-panel">
-            <div class="dl-panel-header">
+            <div class="dl-panel-hd">
                 <h4><i class="fa fa-folder-open" style="color:var(--dl-warning)"></i>&nbsp; Centro de Documentos</h4>
             </div>
-            <div class="dl-panel-body">
+            <div class="dl-panel-bd">
+
+                {{-- Constancia de Trabajo --}}
                 <div class="doc-row">
                     <div class="doc-icon" style="background:#fdf0e0">
                         <i class="fa fa-file-pdf-o" style="color:var(--dl-warning)"></i>
                     </div>
-                    <div class="doc-info">
+                    <div class="doc-info" style="flex:1">
                         <strong>Constancia de Trabajo</strong>
-                        <span>Generada al instante con tus datos actuales</span>
+                        <span>Generada al instante con tus datos</span>
                     </div>
-                    <a href="{{ route('dashboardlaboral_constancia_pdf') }}" target="_blank"
-                       class="btn btn-xs btn-warning" title="Descargar PDF">
-                        <i class="fa fa-download"></i>
-                    </a>
-                </div>
-
-                <div class="doc-row">
-                    <div class="doc-icon" style="background:#e8f4ff">
-                        <i class="fa fa-file-text-o" style="color:var(--dl-info)"></i>
-                    </div>
-                    <div class="doc-info">
-                        <strong>Recibo de Nómina</strong>
-                        <span>Último período disponible</span>
-                    </div>
-                    <button class="btn btn-xs btn-info" id="btn-ultimo-recibo" title="Ver último recibo">
-                        <i class="fa fa-eye"></i>
+                    <button class="btn btn-xs btn-warning" id="btn-constancia" title="Ver Constancia">
+                        <i class="fa fa-eye"></i> Ver
                     </button>
                 </div>
 
+                {{-- Último Recibo de Honorarios --}}
                 <div class="doc-row">
                     <div class="doc-icon" style="background:#e8f8f5">
                         <i class="fa fa-stethoscope" style="color:var(--dl-accent)"></i>
                     </div>
-                    <div class="doc-info">
-                        <strong>Recibo de Honorarios</strong>
-                        <span>Último período disponible</span>
+                    <div class="doc-info" style="flex:1">
+                        <strong>Último Recibo de Honorarios</strong>
+                        <span>Período más reciente disponible</span>
                     </div>
-                    <button class="btn btn-xs btn-success" id="btn-ultimo-hon" title="Ver último honorario">
-                        <i class="fa fa-eye"></i>
+                    <button class="btn btn-xs btn-success" id="btn-ultimo-hon" title="Ver Recibo">
+                        <i class="fa fa-eye"></i> Ver
                     </button>
                 </div>
+
             </div>
         </div>
     </div>
 
-    {{-- Historial con tabs --}}
+    {{-- Historial de Recibos ── --}}
     <div class="col-xs-12 col-md-8">
         <div class="dl-panel">
-            <div class="dl-panel-header">
-                <h4><i class="fa fa-history" style="color:var(--dl-info)"></i>&nbsp; Historial de Pagos</h4>
+            <div class="dl-panel-hd">
+                <h4><i class="fa fa-history" style="color:var(--dl-info)"></i>&nbsp; Historial de Recibos</h4>
+                <span class="dl-panel-sub">Todos los períodos</span>
             </div>
-            <div class="dl-panel-body" style="padding-top:0">
-                <ul class="nav nav-tabs nav-tabs-dl" style="margin-bottom:14px">
-                    <li class="active"><a href="#tab-nomina" data-toggle="tab">Nómina</a></li>
-                    <li><a href="#tab-honorarios" data-toggle="tab">Honorarios</a></li>
-                </ul>
-                <div class="tab-content">
-                    {{-- Tab Nómina --}}
-                    <div class="tab-pane active" id="tab-nomina">
-                        <table id="tabla-nomina" class="table table-hover table-condensed" style="font-size:0.83rem; width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Desde</th>
-                                    <th>Hasta</th>
-                                    <th class="text-right">Sueldo</th>
-                                    <th class="text-center">Recibo</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                    {{-- Tab Honorarios --}}
-                    <div class="tab-pane" id="tab-honorarios">
-                        <table id="tabla-honorarios" class="table table-hover table-condensed" style="font-size:0.83rem; width:100%">
-                            <thead>
-                                <tr>
-                                    <th>Desde</th>
-                                    <th>Hasta</th>
-                                    <th class="text-right">Total Hon.</th>
-                                    <th class="text-center">Estado</th>
-                                    <th class="text-center">Recibo</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                </div>
+            <div class="dl-panel-bd" style="padding-top:8px">
+                <table id="tabla-honorarios" class="table table-hover table-condensed"
+                       style="font-size:.82rem; width:100%">
+                    <thead>
+                        <tr>
+                            <th>Desde</th>
+                            <th>Hasta</th>
+                            <th class="text-right">Asignaciones</th>
+                            <th class="text-right">Deducciones</th>
+                            <th class="text-right">Neto</th>
+                            <th class="text-center">Recibo</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
 
-@include('generales.modalpdf')
+
+{{-- ══════════════════════════════════════════════════════
+     MODAL PDF MEJORADO (propio del módulo)
+══════════════════════════════════════════════════════ --}}
+<div class="modal fade" id="dl-modal-pdf" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="dl-modal-pdf-titulo">Documento</h4>
+            </div>
+            <div class="modal-body">
+                <iframe id="dl-modal-pdf-frame" src="" frameborder="0"
+                        allowfullscreen scrolling="yes"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button id="dl-modal-pdf-print" class="btn btn-default" title="Imprimir">
+                    <i class="fa fa-print"></i> Imprimir
+                </button>
+                <a id="dl-modal-pdf-download" href="#" target="_blank"
+                   class="btn btn-primary" title="Abrir en nueva pestaña para descargar">
+                    <i class="fa fa-download"></i> Descargar
+                </a>
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    <i class="fa fa-times"></i> Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Modal buscador de empleado por nombre (reutilizado de reportrechongen) --}}
+@include('generales.buscarempleado')
 
 @endsection
 
 @section("scripts")
 <script src="{{ autoVer('assets/pages/scripts/general.js') }}"></script>
+{{-- buscar.js inicializa la tabla de empleados y define copiar_ced() globalmente --}}
+<script src="{{ autoVer('assets/pages/scripts/empleado/buscar.js') }}"></script>
 <script src="{{ autoVer('assets/pages/scripts/dashboardlaboral/index.js') }}"></script>
 @endsection

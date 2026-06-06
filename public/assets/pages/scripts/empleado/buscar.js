@@ -23,7 +23,7 @@ function configTablaEmpleado(){
             {data: 'emp_email'}
         ],
 		"language": {
-            "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+            "url": "/assets/pages/scripts/datatables/Spanish.json"
         },
         "createdRow": function ( row, data, index ) {
             aux_nfila++;

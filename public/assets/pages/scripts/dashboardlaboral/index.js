@@ -1,372 +1,457 @@
 /* ================================================================
    Dashboard Laboral — Portal Mi Nómina & Honorarios
-   ccscmed | Chart.js + DataTables
+   ccscmed · Chart.js + DataTables (ES)
    ================================================================ */
 
 $(document).ready(function () {
 
     var chartEvolucion   = null;
     var chartComposicion = null;
-    var tablaNomina      = null;
-    var tablaHonorarios  = null;
+    var tablaHistorial   = null;
+
+    /* ── DataTables en español ── */
+    var dtES = {
+        processing:   'Procesando...',
+        search:       'Buscar:',
+        lengthMenu:   'Mostrar _MENU_ registros',
+        info:         'Mostrando _START_ a _END_ de _TOTAL_ registros',
+        infoEmpty:    'Mostrando 0 registros',
+        infoFiltered: '(filtrado de _MAX_ registros totales)',
+        zeroRecords:  'No se encontraron resultados',
+        emptyTable:   'No hay datos disponibles',
+        paginate: { first:'Primera', previous:'Anterior', next:'Siguiente', last:'Última' }
+    };
 
     /* ── Formateo de montos ── */
     function fmtMonto(val) {
-        val = parseFloat(val) || 0;
-        return 'Bs ' + val.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return 'Bs ' + parseFloat(val || 0).toFixed(2);
     }
 
-    /* ── Año seleccionado ── */
-    function getAnio() {
-        return $('#sel-anio').val() || new Date().getFullYear();
+    /* ── Helpers de estado ── */
+    function getAnio()    { return $('#sel-anio').val(); }
+    function getCedula()  { return $('#cedula-activa').val() || ''; }
+    function setCedula(c) { $('#cedula-activa').val(c); }
+
+    function buildQS(extra) {
+        var p = {};
+        var a = getAnio(), c = getCedula();
+        if (a) p.anio    = a;
+        if (c) p.emp_ced = c;
+        if (extra) $.extend(p, extra);
+        var qs = $.param(p);
+        return qs ? '?' + qs : '';
     }
 
-    /* ── Cédula activa (empleado o seleccionada por admin) ── */
-    function getCedula() {
-        return $('#cedula-activa').val() || '';
+    /* ================================================================
+       SPINNER EN BOTONES
+       Cualquier botón que dispare una acción backend debe llamar
+       btnLoading($btn) al inicio y se restaura automáticamente.
+       ================================================================ */
+    var _activeBtn     = null;
+    var _activeBtnHtml = null;
+
+    function btnLoading($btn) {
+        if (!$btn || !$btn.length) return;
+        // Nunca sobreescribir si ya hay un botón activo en espera
+        // (evita guardar el spinner como "html original")
+        if (_activeBtn) return;
+        _activeBtn     = $btn;
+        _activeBtnHtml = $btn.html();
+        $btn.prop('disabled', true)
+            .html('<i class="fa fa-spinner fa-spin"></i>');
     }
 
-    function setCedula(ced) {
-        $('#cedula-activa').val(ced);
+    function btnRestore() {
+        if (_activeBtn) {
+            _activeBtn.prop('disabled', false).html(_activeBtnHtml);
+            _activeBtn     = null;
+            _activeBtnHtml = null;
+        }
     }
 
-    /* ── Parámetro de cédula para querystring ── */
-    function cedParam() {
-        var c = getCedula();
-        return c ? '&emp_ced=' + c : '';
+    /* ================================================================
+       MODAL PDF centralizado
+       $btn: botón que originó la acción — muestra spinner hasta que
+             el PDF carga o el usuario cierra el modal.
+       ================================================================ */
+    function abrirPdfModal(url, titulo, $btn) {
+        btnLoading($btn);
+
+        $('#dl-modal-pdf-titulo').text(titulo || 'Documento');
+        $('#dl-modal-pdf-download').attr('href', url);
+
+        var $frame = $('#dl-modal-pdf-frame');
+        $frame.attr('src', '');
+
+        // Restaurar botón cuando el PDF termina de cargarse en el iframe
+        $frame.off('load').on('load', function () {
+            btnRestore();
+        });
+
+        $('#dl-modal-pdf-print').off('click').on('click', function () {
+            var f = document.getElementById('dl-modal-pdf-frame');
+            if (f && f.contentWindow) {
+                try { f.contentWindow.focus(); f.contentWindow.print(); }
+                catch(e) { window.open(url, '_blank'); }
+            }
+        });
+
+        $('#dl-modal-pdf').modal('show');
+        // Asignar src después del show para que el iframe se inicie correctamente
+        setTimeout(function() { $frame.attr('src', url); }, 100);
+    }
+
+    // Restaurar botón si el modal se cierra antes de que termine la carga
+    $('#dl-modal-pdf').on('hidden.bs.modal', function () {
+        $('#dl-modal-pdf-frame').attr('src', '');
+        btnRestore();
+    });
+
+    /**
+     * URL del recibo incluyendo emp_ced cuando el admin
+     * consulta un empleado ajeno.
+     */
+    function buildPdfUrl(nmcontrol_id, mov_nummon) {
+        var url = '/reportrechon/exportPdf?nmcontrol_id=' + nmcontrol_id +
+                  '&mov_nummon=' + mov_nummon;
+        var ced = getCedula();
+        if (ced) url += '&emp_ced=' + ced;
+        return url;
     }
 
     /* ================================================================
        1. KPIs
        ================================================================ */
     function cargarKpis() {
-        $('#kpi-sueldo, #kpi-honorarios, #kpi-recibos, #kpi-crecimiento')
+        $('#kpi-ultimo-hon, #kpi-hon-12m, #kpi-periodos, #kpi-promedio')
             .html('<i class="fa fa-spinner fa-spin"></i>');
 
-        $.get('/dashboardlaboral/kpis?anio=' + getAnio() + cedParam(), function (r) {
-            $('#kpi-anio-lbl').text(r.anio);
-            $('#kpi-sueldo').text(fmtMonto(r.sueldo_actual));
-            $('#kpi-honorarios').text(fmtMonto(r.total_honorarios));
-            $('#kpi-recibos').text(r.total_recibos);
+        var anio = getAnio();
+        $.get('/dashboardlaboral/kpis' + buildQS(), function (r) {
+            if (r.sin_cedula) {
+                // Admin sin empleado seleccionado — mostrar guión, no es un error
+                $('#kpi-ultimo-hon, #kpi-hon-12m, #kpi-periodos, #kpi-promedio').text('—');
+                $('#kpi-periodo').text('Selecciona un empleado para ver datos');
+                return;
+            }
+            $('#kpi-ultimo-hon').text(fmtMonto(r.ultimo_neto));
+            $('#kpi-hon-12m').text(fmtMonto(r.total_neto));
+            $('#kpi-periodos').text(r.total_periodos);
+            $('#kpi-promedio').text(fmtMonto(r.promedio));
 
-            var cVal = parseFloat(r.crecimiento) || 0;
-            var cls  = cVal > 0 ? 'pos' : (cVal < 0 ? 'neg' : 'neu');
-            var signo = cVal > 0 ? '+' : '';
-            $('#kpi-crecimiento').html('<span class="badge-crec ' + cls + '">' + signo + cVal + '%</span>');
+            $('#kpi-anio-lbl').text(anio ? anio : '(histórico)');
+            $('#kpi-hon-sub').text(anio ? 'Neto año ' + anio : 'Neto histórico total');
 
-            if (r.periodo_desde && r.periodo_hasta) {
-                var fd = new Date(r.periodo_desde).toLocaleDateString('es-VE', {day:'2-digit',month:'short',year:'numeric'});
-                var fh = new Date(r.periodo_hasta).toLocaleDateString('es-VE', {day:'2-digit',month:'short',year:'numeric'});
-                $('#kpi-periodo').text(fd + ' — ' + fh);
+            if (r.periodo_fdesde && r.periodo_fhasta) {
+                $('#kpi-periodo').text(r.periodo_fdesde + ' — ' + r.periodo_fhasta);
             }
         }).fail(function () {
-            $('#kpi-sueldo, #kpi-honorarios, #kpi-recibos, #kpi-crecimiento').text('—');
+            $('#kpi-ultimo-hon, #kpi-hon-12m, #kpi-periodos, #kpi-promedio').text('—');
         });
     }
 
     /* ================================================================
-       2. Gráfico Evolución de Ingresos (línea + área)
+       2. Gráfico Evolución mensual — neto por mes
        ================================================================ */
     function cargarEvolucion() {
         $('#loading-evolucion').show();
-        $.get('/dashboardlaboral/evolucion?' + cedParam(), function (r) {
+        $('#evolucion-empty').hide();
+        if (chartEvolucion) { chartEvolucion.destroy(); chartEvolucion = null; }
+
+        $.get('/dashboardlaboral/evolucion' + buildQS(), function (r) {
             $('#loading-evolucion').hide();
+            if (r.sin_cedula) { $('#evolucion-empty').show(); return; }
 
-            var labels  = r.sueldos.map(function (s) { return s.periodo; });
-            var dataSud = r.sueldos.map(function (s) { return parseFloat(s.monto) || 0; });
+            var meses = r.meses || [];
+            if (!meses.length) { $('#evolucion-empty').show(); return; }
 
-            // Mapear honorarios al mismo eje de períodos
-            var honMap = {};
-            r.honorarios.forEach(function (h) { honMap[h.periodo] = parseFloat(h.monto) || 0; });
-            var dataHon = labels.map(function (l) { return honMap[l] || 0; });
+            var labels = meses.map(function(m) { return m.mes_label; });
+            var dataAsig = meses.map(function(m) { return parseFloat(m.asignaciones) || 0; });
+            var dataDed  = meses.map(function(m) { return parseFloat(m.deducciones)  || 0; });
+            var dataNeto = meses.map(function(m) {
+                return (parseFloat(m.asignaciones) || 0) - (parseFloat(m.deducciones) || 0);
+            });
 
             var ctx = document.getElementById('chart-evolucion').getContext('2d');
-            if (chartEvolucion) chartEvolucion.destroy();
-
             chartEvolucion = new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Nómina (Bs)',
-                            data: dataSud,
-                            borderColor: '#1a3a5c',
-                            backgroundColor: 'rgba(26,58,92,0.08)',
-                            fill: true,
-                            tension: 0.4,
-                            pointRadius: 4,
-                            pointBackgroundColor: '#1a3a5c'
+                            label: 'Asignaciones (Bs)',
+                            data: dataAsig,
+                            backgroundColor: 'rgba(13,126,110,0.72)',
+                            borderColor: '#0d7e6e',
+                            borderWidth: 1,
+                            borderRadius: 3
                         },
                         {
-                            label: 'Honorarios (Bs)',
-                            data: dataHon,
-                            borderColor: '#0d7e6e',
-                            backgroundColor: 'rgba(13,126,110,0.08)',
-                            fill: true,
+                            label: 'Deducciones (Bs)',
+                            data: dataDed,
+                            backgroundColor: 'rgba(231,76,60,0.65)',
+                            borderColor: '#e74c3c',
+                            borderWidth: 1,
+                            borderRadius: 3
+                        },
+                        {
+                            label: 'Neto (Bs)',
+                            data: dataNeto,
+                            type: 'line',
+                            borderColor: '#1a3a5c',
+                            backgroundColor: 'rgba(26,58,92,0.08)',
+                            fill: false,
                             tension: 0.4,
                             pointRadius: 4,
-                            pointBackgroundColor: '#0d7e6e'
+                            pointBackgroundColor: '#1a3a5c',
+                            borderWidth: 2
                         }
                     ]
                 },
                 options: {
                     responsive: true,
-                    plugins: {
-                        legend: { position: 'top', labels: { font: { size: 11 } } },
-                        tooltip: {
-                            callbacks: {
-                                label: function (ctx) {
-                                    return ctx.dataset.label + ': ' + fmtMonto(ctx.parsed.y);
-                                }
+                    legend: { position:'top', labels:{ fontSize:11, padding:10 } },
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                var label = data.datasets[tooltipItem.datasetIndex].label || '';
+                                return label + ': Bs ' + parseFloat(tooltipItem.yLabel || 0).toFixed(2);
                             }
                         }
                     },
                     scales: {
-                        y: {
+                        yAxes: [{
                             ticks: {
-                                callback: function (v) { return 'Bs ' + v.toLocaleString('es-VE'); },
-                                font: { size: 10 }
+                                beginAtZero: true,
+                                callback: function(v) { return 'Bs ' + parseFloat(v).toFixed(2); },
+                                fontSize: 10
                             },
-                            grid: { color: 'rgba(0,0,0,0.05)' }
-                        },
-                        x: { ticks: { font: { size: 10 } } }
+                            gridLines: { color: 'rgba(0,0,0,0.04)' }
+                        }],
+                        xAxes: [{ ticks:{ fontSize:10 }, gridLines:{ display:false } }]
                     }
                 }
             });
-        }).fail(function () { $('#loading-evolucion').text('Sin datos disponibles.'); });
+        }).fail(function() { $('#loading-evolucion').hide(); $('#evolucion-empty').show(); });
     }
 
     /* ================================================================
-       3. Gráfico Composición del Recibo (dona)
+       3. Donut — honorarios por tipo de documento (nm_honpacientedet)
+       Siempre histórico total, independiente del año
        ================================================================ */
     function cargarComposicion() {
         $('#loading-composicion').show();
-        $.get('/dashboardlaboral/composicion?' + cedParam(), function (r) {
+        $('#chart-composicion').hide();
+        $('#composicion-empty').hide();
+        if (chartComposicion) { chartComposicion.destroy(); chartComposicion = null; }
+
+        var qs = getCedula() ? '?emp_ced=' + getCedula() : '';
+        $.get('/dashboardlaboral/composicion' + qs, function (r) {
             $('#loading-composicion').hide();
+            if (r.sin_cedula) { $('#composicion-empty').show(); return; }
+            var tipos = r.tipos || [];
+            if (!tipos.length || !r.total) { $('#composicion-empty').show(); return; }
 
-            var asi = parseFloat(r.asignaciones) || 0;
-            var ded = parseFloat(r.deducciones)  || 0;
-
+            var labels = tipos.map(function(t) { return t.tipo; });
+            var data   = tipos.map(function(t) { return parseFloat(t.total) || 0; });
+            var colors = ['#0d7e6e','#1a3a5c','#e67e22','#2980b9','#8e44ad','#e74c3c'];
             var ctx = document.getElementById('chart-composicion').getContext('2d');
-            if (chartComposicion) chartComposicion.destroy();
+            $('#chart-composicion').show();
 
             chartComposicion = new Chart(ctx, {
                 type: 'doughnut',
-                data: {
-                    labels: ['Asignaciones', 'Deducciones'],
-                    datasets: [{
-                        data: [asi, ded],
-                        backgroundColor: ['#0d7e6e', '#e74c3c'],
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
-                },
+                data: { labels:labels, datasets:[{ data:data,
+                    backgroundColor: colors.slice(0, labels.length),
+                    borderWidth:2, borderColor:'#fff' }] },
                 options: {
                     responsive: true,
-                    cutout: '65%',
-                    plugins: {
-                        legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10 } },
-                        tooltip: {
-                            callbacks: {
-                                label: function (ctx) {
-                                    var total = asi + ded;
-                                    var pct   = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : 0;
-                                    return ctx.label + ': ' + fmtMonto(ctx.parsed) + ' (' + pct + '%)';
-                                }
+                    cutoutPercentage: 60,
+                    legend: { position:'bottom', labels:{ fontSize:10, padding:8 } },
+                    tooltips: {
+                        callbacks: {
+                            label: function(tooltipItem, data) {
+                                var label  = data.labels[tooltipItem.index] || '';
+                                var value  = data.datasets[0].data[tooltipItem.index] || 0;
+                                var pct    = r.total > 0 ? ((value / r.total) * 100).toFixed(1) : 0;
+                                return label + ': Bs ' + parseFloat(value).toFixed(2) + ' (' + pct + '%)';
                             }
                         }
                     }
                 }
             });
-
-            var total = asi + ded;
-            var pctD  = total > 0 ? ((ded / total) * 100).toFixed(1) : 0;
             $('#composicion-totales').html(
-                '<span style="color:#0d7e6e"><i class="fa fa-arrow-up"></i> ' + fmtMonto(asi) + '</span>' +
-                '&nbsp;&nbsp;' +
-                '<span style="color:#e74c3c"><i class="fa fa-arrow-down"></i> ' + fmtMonto(ded) + ' (' + pctD + '%)</span>'
+                '<strong>' + fmtMonto(r.total) + '</strong> total · ' +
+                tipos.length + ' tipo(s)'
             );
-        }).fail(function () { $('#loading-composicion').text('—'); });
+        }).fail(function() { $('#loading-composicion').hide(); $('#composicion-empty').show(); });
     }
 
     /* ================================================================
-       4. DataTable Historial Nómina
+       4. DataTable — historial de recibos (nm_movhist + nm_control)
        ================================================================ */
-    function iniciarTablaNomina() {
-        if (tablaNomina) { tablaNomina.destroy(); }
-        tablaNomina = $('#tabla-nomina').DataTable({
-            ajax: { url: '/dashboardlaboral/historial-nomina?' + cedParam(), dataSrc: 'data' },
-            pageLength: 8,
+    function iniciarTablaHistorial() {
+        if (tablaHistorial) { tablaHistorial.destroy(); tablaHistorial = null; }
+
+        tablaHistorial = $('#tabla-honorarios').DataTable({
+            ajax: { url: '/dashboardlaboral/historial-honorarios' + buildQS(), dataSrc:'data' },
+            pageLength: 10,
             order: [[0, 'desc']],
+            language: dtES,
             columns: [
-                { data: 'fdesde' },
-                { data: 'fhasta' },
+                { data:'fdesde', title:'Desde' },
+                { data:'fhasta', title:'Hasta' },
                 {
-                    data: 'mov_sueldo',
-                    className: 'text-right',
-                    render: function (d) { return fmtMonto(d); }
+                    data:'asignaciones', title:'Asignaciones', className:'text-right',
+                    render: function(d) { return fmtMonto(d); }
                 },
                 {
-                    data: null,
-                    className: 'text-center',
-                    orderable: false,
-                    render: function (row) {
-                        return '<a href="/reportrechon/exportPdf?nmcontrol_id=' + row.id +
-                            '&mov_nummon=' + row.cot_numnom +
-                            '" target="_blank" class="btn btn-xs btn-primary" title="Ver PDF">' +
-                            '<i class="fa fa-file-pdf-o"></i> PDF</a>';
+                    data:'deducciones', title:'Deducciones', className:'text-right',
+                    render: function(d) {
+                        return '<span style="color:#e74c3c">' + fmtMonto(d) + '</span>';
+                    }
+                },
+                {
+                    data:'neto', title:'Neto', className:'text-right',
+                    render: function(d) {
+                        var v = parseFloat(d) || 0;
+                        var color = v >= 0 ? '#0d7e6e' : '#e74c3c';
+                        return '<strong style="color:' + color + '">' + fmtMonto(v) + '</strong>';
+                    }
+                },
+                {
+                    data:null, title:'Recibo', className:'text-center', orderable:false,
+                    render: function(row) {
+                        return '<button class="btn btn-xs btn-success btn-ver-pdf" ' +
+                            'data-ctrl="' + row.nmcontrol_id + '" ' +
+                            'data-nom="'  + row.cot_numnom   + '" ' +
+                            'data-desde="' + row.fdesde + '" ' +
+                            'data-hasta="' + row.fhasta + '">' +
+                            '<i class="fa fa-file-pdf-o"></i> Ver</button>';
                     }
                 }
-            ],
-            language: window.datatablesLangES || {}
+            ]
         });
     }
 
     /* ================================================================
-       5. DataTable Historial Honorarios
+       5. Botones de documentos
        ================================================================ */
-    function iniciarTablaHonorarios() {
-        if (tablaHonorarios) { tablaHonorarios.destroy(); }
-        tablaHonorarios = $('#tabla-honorarios').DataTable({
-            ajax: { url: '/dashboardlaboral/historial-honorarios?' + cedParam(), dataSrc: 'data' },
-            pageLength: 8,
-            order: [[0, 'desc']],
-            columns: [
-                { data: 'fdesde' },
-                { data: 'fhasta' },
-                {
-                    data: 'total_honorarios',
-                    className: 'text-right',
-                    render: function (d) { return fmtMonto(d); }
-                },
-                {
-                    data: 'pagado',
-                    className: 'text-center',
-                    render: function (d) {
-                        return d == 1
-                            ? '<span class="label label-success">Pagado</span>'
-                            : '<span class="label label-warning">Pendiente</span>';
-                    }
-                },
-                {
-                    data: null,
-                    className: 'text-center',
-                    orderable: false,
-                    render: function (row) {
-                        return '<a href="/reportrechon/exportPdf?nmcontrol_id=' + row.nmcontrol_id +
-                            '&mov_nummon=' + row.cot_numnom +
-                            '" target="_blank" class="btn btn-xs btn-success" title="Ver PDF">' +
-                            '<i class="fa fa-file-pdf-o"></i> PDF</a>';
-                    }
-                }
-            ],
-            language: window.datatablesLangES || {}
-        });
-    }
-
-    /* ================================================================
-       6. Botones último recibo / honorario
-       ================================================================ */
-    $('#btn-ultimo-recibo').on('click', function () {
-        $.get('/dashboardlaboral/historial-nomina?' + cedParam(), function (r) {
-            if (r.data && r.data.length > 0) {
-                var row = r.data[0];
-                var url = '/reportrechon/exportPdf?nmcontrol_id=' + row.id +
-                          '&mov_nummon=' + row.cot_numnom;
-                $('#contpdf').attr('src', url);
-                $('#myModalpdf').modal('show');
-            } else {
-                swal('Sin datos', 'No hay recibos de nómina disponibles.', 'info');
-            }
-        });
+    $('#btn-constancia').on('click', function () {
+        // La constancia necesita una cédula válida — empleado logueado o seleccionado por admin
+        var ced = getCedula();
+        var empCedula = $('#cedula-activa').val() || ced;
+        if (!empCedula) {
+            swal('Sin empleado', 'Selecciona un empleado primero usando el buscador.', 'info');
+            return;
+        }
+        var url = '/dashboardlaboral/constancia-pdf' + (ced ? '?emp_ced='+ced : '');
+        abrirPdfModal(url, 'Constancia de Trabajo', $(this));
     });
 
     $('#btn-ultimo-hon').on('click', function () {
-        $.get('/dashboardlaboral/historial-honorarios?' + cedParam(), function (r) {
+        var $btn = $(this);
+        // 1. Activar spinner y guardar el HTML original ("Ver")
+        btnLoading($btn);
+
+        var qs = getCedula() ? '?emp_ced='+getCedula() : '';
+        $.get('/dashboardlaboral/historial-honorarios' + qs, function(r) {
             if (r.data && r.data.length > 0) {
                 var row = r.data[0];
-                var url = '/reportrechon/exportPdf?nmcontrol_id=' + row.nmcontrol_id +
-                          '&mov_nummon=' + row.cot_numnom;
-                $('#contpdf').attr('src', url);
-                $('#myModalpdf').modal('show');
+                var url = buildPdfUrl(row.nmcontrol_id, row.cot_numnom);
+                // 2. Abrir modal SIN pasar $btn — btnLoading ya fue llamado arriba
+                //    _activeBtn ya apunta a $btn con el HTML "Ver" guardado
+                //    abrirPdfModal no sobreescribe _activeBtnHtml
+                abrirPdfModal(url, 'Recibo — ' + row.fdesde + ' al ' + row.fhasta);
             } else {
-                swal('Sin datos', 'No hay recibos de honorarios disponibles.', 'info');
+                btnRestore(); // AJAX ok pero sin datos
+                swal('Sin datos', 'No hay recibos disponibles.', 'info');
             }
+        }).fail(function() {
+            btnRestore(); // Error de red
         });
     });
 
+    $(document).on('click', '.btn-ver-pdf', function () {
+        var $btn = $(this);
+        btnLoading($btn);
+        var url  = buildPdfUrl($btn.data('ctrl'), $btn.data('nom'));
+        abrirPdfModal(url, 'Recibo — ' + $btn.data('desde') + ' al ' + $btn.data('hasta'));
+    });
+
     /* ================================================================
-       7. Cambio de año → recargar KPIs y gráficos
+       6. Selector de año
        ================================================================ */
     $('#sel-anio').on('change', function () {
         cargarKpis();
         cargarEvolucion();
+        iniciarTablaHistorial();
     });
 
     /* ================================================================
-       8. Buscador de empleado (solo admin)
+       7. Buscador de empleado (admin)
        ================================================================ */
     function recargarTodo() {
         cargarKpis();
         cargarEvolucion();
         cargarComposicion();
-        if (tablaNomina)     { tablaNomina.destroy();     tablaNomina = null; }
-        if (tablaHonorarios) { tablaHonorarios.destroy(); tablaHonorarios = null; }
-        iniciarTablaNomina();
-        iniciarTablaHonorarios();
+        iniciarTablaHistorial();
     }
 
     $('#btn-buscar-emp').on('click', function () {
         var ced = $.trim($('#input-cedula-emp').val());
-        if (!ced || isNaN(ced)) {
-            swal('Atención', 'Ingresa una cédula numérica válida.', 'warning');
-            return;
-        }
+        if (!ced || isNaN(ced)) { swal('Atención', 'Ingresa una cédula numérica válida.', 'warning'); return; }
         var $btn = $(this).html('<i class="fa fa-spinner fa-spin"></i>').prop('disabled', true);
-
-        $.get('/dashboardlaboral/kpis?anio=' + getAnio() + '&emp_ced=' + ced, function (r) {
+        $.get('/dashboardlaboral/kpis?emp_ced=' + ced, function (r) {
+            $btn.html('<i class="fa fa-search"></i>').prop('disabled', false);
             if (r.error) {
-                swal('No encontrado', 'La cédula ' + ced + ' no corresponde a ningún empleado registrado.', 'error');
-                $btn.html('<i class="fa fa-search"></i>').prop('disabled', false);
+                swal('No encontrado', 'Cédula ' + parseInt(ced).toLocaleString('es-VE') + ' no registrada.', 'error');
                 return;
             }
             setCedula(ced);
-            // Actualizar badge visible
             $('#emp-result-label').html(
-                '<span class="emp-badge">' +
-                '<i class="fa fa-user"></i> C.I. ' + parseInt(ced).toLocaleString('es-VE') +
-                ' &nbsp;<button class="btn-clear" id="btn-limpiar-emp" title="Quitar filtro">✕</button>' +
-                '</span>'
+                '<span class="emp-badge"><i class="fa fa-user"></i> C.I. ' +
+                parseInt(ced).toLocaleString('es-VE') +
+                ' &nbsp;<button class="btn-clear" id="btn-limpiar-emp">✕</button></span>'
             );
-            $btn.html('<i class="fa fa-search"></i>').prop('disabled', false);
             recargarTodo();
-        }).fail(function () {
-            swal('Error', 'No se pudo consultar la cédula ingresada.', 'error');
+        }).fail(function() {
             $btn.html('<i class="fa fa-search"></i>').prop('disabled', false);
+            swal('Error', 'No se pudo consultar la cédula.', 'error');
         });
     });
 
-    // Enter en el input también busca
-    $('#input-cedula-emp').on('keypress', function (e) {
+    $('#input-cedula-emp').on('keypress', function(e) {
         if (e.which === 13) $('#btn-buscar-emp').trigger('click');
     });
 
-    // Limpiar filtro
-    $(document).on('click', '#btn-limpiar-emp', function () {
-        setCedula('');
-        $('#emp-result-label').html('');
+    // Botón "Por nombre" — abre el modal de búsqueda de empleados
+    $('#btn-buscar-nombre').on('click', function () {
         $('#input-cedula-emp').val('');
+        $('#myModalBusqueda').modal('show');
+    });
+
+    $(document).on('click', '#btn-limpiar-emp', function() {
+        setCedula(''); $('#emp-result-label').html(''); $('#input-cedula-emp').val('');
         recargarTodo();
     });
 
+    /*
+     * Sobreescribimos copiar_ced() definida en empleado/buscar.js
+     * para que copie la cédula al campo del dashboard (no a #cedula)
+     */
+    window.copiar_ced = function (id, ced) {
+        $('#myModalBusqueda').modal('hide');
+        $('#input-cedula-emp').val(ced);
+        // Disparamos la búsqueda automáticamente al seleccionar
+        $('#btn-buscar-emp').trigger('click');
+    };
+
     /* ================================================================
-       8. Inicializar al cargar
+       INIT
        ================================================================ */
     cargarKpis();
     cargarEvolucion();
     cargarComposicion();
-    iniciarTablaNomina();
-    iniciarTablaHonorarios();
+    iniciarTablaHistorial();
 
 });
