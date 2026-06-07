@@ -21,7 +21,7 @@ class DashboardAdminController extends Controller
     {
         return "
             FROM nm_movhist
-            INNER JOIN nm_movhismonext ON nm_movhist.mov_id        = nm_movhismonext.mov_id
+            LEFT JOIN  nm_movhismonext ON nm_movhist.mov_id        = nm_movhismonext.mov_id
             INNER JOIN nm_control      ON nm_control.cot_numnom    = nm_movhist.mov_nummon
             INNER JOIN nm_empleados    ON nm_empleados.emp_ced     = nm_movhist.emp_ced
             INNER JOIN nm_conceptos    ON nm_conceptos.con_cod     = nm_movhist.mov_codcon
@@ -63,7 +63,7 @@ class DashboardAdminController extends Controller
         if ($request->filled('conceptos')) {
             $conceptos = array_values(array_filter(
                 array_map('intval', explode(',', $request->conceptos)),
-                fn($v) => $v > 0
+                function($v) { return $v > 0; }
             ));
             if (!empty($conceptos)) {
                 $ph = implode(',', array_fill(0, count($conceptos), '?'));
@@ -283,16 +283,19 @@ class DashboardAdminController extends Controller
         $rows = DB::select("
             SELECT
                 DATE_FORMAT(nm_control.cot_fdesde,'%d/%m/%Y')              AS fecha,
+                DATE_FORMAT(nm_control.cot_fhasta,'%d/%m/%Y')              AS fhasta,
                 nm_movhist.emp_ced,
                 CONCAT(nm_empleados.emp_nom,' ',nm_empleados.emp_ape)       AS trabajador,
                 nm_conceptos.con_desc                                        AS concepto,
                 nm_movhist.mov_tipocon                                       AS tipo,
+                nm_movhist.mov_monto                                         AS mov_monto,
                 nm_movhismonext.mme_montomone                                AS monto_bs,
                 nm_movhismonext.mme_montodl                                  AS monto_usd,
                 nm_movhismonext.mme_tasacambi                                AS tasa,
-                nm_control.cot_fdesde                                        AS fecha_ord
+                DATE_FORMAT(nm_control.cot_fdesde,'%Y%m%d')                 AS fecha_ord,
+                nm_movhist.mov_codcon                                        AS cod_con
             " . $this->baseFrom() . $w . "
-            ORDER BY nm_control.cot_fdesde DESC, nm_movhist.emp_ced ASC
+            ORDER BY nm_control.cot_fdesde ASC, nm_movhist.mov_codcon ASC
             LIMIT 200
         ", $b);
 
@@ -311,11 +314,12 @@ class DashboardAdminController extends Controller
                 nm_conceptos.con_desc                      AS concepto,
                 nm_movhist.mov_tipocon                     AS tipo,
                 COUNT(*)                                   AS frecuencia,
-                SUM(nm_movhismonext.mme_montomone)         AS total_bs,
+                SUM(nm_movhist.mov_monto)                  AS total_monto,
+                SUM(nm_movhismonext.mme_montomone)         AS total_bsme,
                 SUM(nm_movhismonext.mme_montodl)           AS total_usd
             " . $this->baseFrom() . $w . "
             GROUP BY nm_movhist.mov_codcon, nm_conceptos.con_desc, nm_movhist.mov_tipocon
-            ORDER BY total_bs DESC
+            ORDER BY total_monto DESC
         ", $b);
 
         return response()->json(['data' => $rows]);

@@ -425,9 +425,37 @@ $(document).ready(function () {
             ajax: { url:'/dashboardadmin/movimientos' + buildQS(), dataSrc:'data' },
             pageLength: 10,
             language: dtES,
-            order: [[0, 'desc']],
+            order: [[0, 'asc'], [9, 'asc']],
+            dom: '<"row"<"col-sm-6"B><"col-sm-6"f>>rt<"row"<"col-sm-5"i><"col-sm-7"p>>',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Excel',
+                    className: 'btn btn-success btn-sm',
+                    title: null,
+                    filename: 'movimientos_' + new Date().toISOString().slice(0,10),
+                    exportOptions: { columns: ':visible' }
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Imprimir',
+                    className: 'btn btn-default btn-sm',
+                    title: 'Últimos Movimientos',
+                    exportOptions: { columns: ':visible' },
+                    customize: function(win) {
+                        $(win.document.body).css('font-size','11px');
+                        $(win.document.body).find('table').addClass('compact').css('font-size','10px');
+                    }
+                }
+            ],
             columns: [
-                { data:'fecha',      title:'Fecha' },
+                {
+                    data:'fecha', title:'Desde',
+                    render: function(data, type, row) {
+                        return (type === 'sort' || type === 'type') ? row.fecha_ord : data;
+                    }
+                },
+                { data:'fhasta',     title:'Hasta' },
                 { data:'emp_ced',    title:'C.I.',  className:'text-right' },
                 { data:'trabajador', title:'Trabajador' },
                 { data:'concepto',   title:'Concepto' },
@@ -440,17 +468,34 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    data:'monto_bs',  title:'Bs', className:'text-right',
+                    data:'mov_monto', title:'Monto', className:'text-right',
                     render: function(d, type, row) {
-                        if (type !== 'display') return parseFloat(d||0);
+                        var val = parseFloat(d||0);
+                        if (row.tipo === 'D') val = -val;
+                        if (type !== 'display') return val;
                         var color = row.tipo === 'A' ? 'color:var(--da-accent)' : 'color:var(--da-red)';
-                        return '<span style="' + color + '">' + parseFloat(d||0).toFixed(2) + '</span>';
+                        return '<span style="' + color + '">' + val.toFixed(2) + '</span>';
+                    }
+                },
+                {
+                    data:'monto_bs',  title:'Bs ME', className:'text-right',
+                    render: function(d, type, row) {
+                        if (d === null) return type === 'display' ? '—' : '';
+                        var val = parseFloat(d);
+                        if (row.tipo === 'D') val = -val;
+                        return type === 'display' ? val.toFixed(2) : val;
                     }
                 },
                 {
                     data:'monto_usd', title:'USD', className:'text-right',
-                    render: function(d) { return parseFloat(d||0).toFixed(2); }
-                }
+                    render: function(d, type, row) {
+                        if (d === null) return type === 'display' ? '—' : '';
+                        var val = parseFloat(d);
+                        if (row.tipo === 'D') val = -val;
+                        return type === 'display' ? val.toFixed(2) : val;
+                    }
+                },
+                { data:'cod_con', title:'', visible:false }
             ]
         });
     }
@@ -466,6 +511,28 @@ $(document).ready(function () {
             pageLength: 10,
             language: dtES,
             order: [[3, 'desc']],
+            dom: '<"row"<"col-sm-6"B><"col-sm-6"f>>rt<"row"<"col-sm-5"i><"col-sm-7"p>>',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    text: '<i class="fa fa-file-excel-o"></i> Excel',
+                    className: 'btn btn-success btn-sm',
+                    title: null,
+                    filename: 'ranking_conceptos_' + new Date().toISOString().slice(0,10),
+                    exportOptions: { columns: ':visible' }
+                },
+                {
+                    extend: 'print',
+                    text: '<i class="fa fa-print"></i> Imprimir',
+                    className: 'btn btn-default btn-sm',
+                    title: 'Ranking de Conceptos',
+                    exportOptions: { columns: ':visible' },
+                    customize: function(win) {
+                        $(win.document.body).css('font-size','11px');
+                        $(win.document.body).find('table').addClass('compact').css('font-size','10px');
+                    }
+                }
+            ],
             columns: [
                 { data:'concepto',  title:'Concepto' },
                 {
@@ -478,12 +545,173 @@ $(document).ready(function () {
                 },
                 { data:'frecuencia', title:'#', className:'text-center' },
                 {
-                    data:'total_bs', title:'Bs', className:'text-right',
-                    render: function(d) { return parseFloat(d||0).toFixed(2); }
+                    data:'total_monto', title:'Bs', className:'text-right',
+                    render: function(d, type, row) {
+                        var val = parseFloat(d||0);
+                        if (row.tipo === 'D') val = -val;
+                        return type === 'display' ? val.toFixed(2) : val;
+                    }
+                },
+                {
+                    data:'total_bsme', title:'BsMe', className:'text-right',
+                    render: function(d, type, row) {
+                        if (d === null) return type === 'display' ? '—' : '';
+                        var val = parseFloat(d);
+                        if (row.tipo === 'D') val = -val;
+                        return type === 'display' ? val.toFixed(2) : val;
+                    }
+                },
+                {
+                    data:'total_usd', title:'$', className:'text-right',
+                    render: function(d, type, row) {
+                        if (d === null) return type === 'display' ? '—' : '';
+                        var val = parseFloat(d);
+                        if (row.tipo === 'D') val = -val;
+                        return type === 'display' ? val.toFixed(2) : val;
+                    }
                 }
             ]
         });
     }
+
+    /* ================================================================
+       IMPRIMIR PANEL INDIVIDUAL
+       ================================================================ */
+
+    /* ── Estilos compartidos para todas las impresiones ── */
+    var _css =
+        '@page { margin: 0mm; }' +
+        'html, body { margin: 0; padding: 0; }' +
+        'body { padding: 10mm; font-family: Arial, sans-serif; font-size: 11px;' +
+        '       print-color-adjust: exact; -webkit-print-color-adjust: exact; }' +
+        'h3 { font-size: 14px !important; font-weight: bold; margin: 0 0 8px 0; color: #1a3a5c;' +
+        '     border-bottom: 2px solid #0d7e6e; padding-bottom: 5px; page-break-after: avoid; }' +
+        'img { max-width: 100%; height: auto; display: block; page-break-before: avoid; }' +
+        'table { width: 100%; border-collapse: collapse; page-break-before: avoid; }' +
+        'th { background: #1a3a5c !important; color: #fff !important; padding: 5px 8px; font-size: 10px;' +
+        '     print-color-adjust: exact; -webkit-print-color-adjust: exact; }' +
+        'th.r, td.r { text-align: right; }' +
+        'th.c, td.c { text-align: center; }' +
+        'td { padding: 4px 8px; border-bottom: 1px solid #eee; font-size: 10px; }' +
+        'tr:nth-child(even) td { background: #f7f9fc; print-color-adjust: exact; -webkit-print-color-adjust: exact; }';
+
+    /* ── Helper: imprime HTML usando iframe oculto (evita problemas de window.open) ── */
+    function _doPrint(html) {
+        var fid = '__da_print_frame';
+        $('#' + fid).remove();
+
+        var $frame = $('<iframe id="' + fid + '">').css({
+            position: 'fixed', top: '-9999px', left: '-9999px',
+            width: '1px', height: '1px', border: 'none'
+        }).appendTo('body');
+
+        var doc = $frame[0].contentWindow.document;
+        doc.open(); doc.write(html); doc.close();
+
+        var check = setInterval(function() {
+            if (doc.readyState === 'complete') {
+                clearInterval(check);
+                $frame[0].contentWindow.focus();
+                $frame[0].contentWindow.print();
+                setTimeout(function() { $('#' + fid).remove(); }, 3000);
+            }
+        }, 50);
+    }
+
+    /* Gráfico: captura canvas como imagen PNG y lanza impresión */
+    function imprimirGrafico(titulo, canvasId) {
+        var canvas = document.getElementById(canvasId);
+        if (!canvas || canvas.style.display === 'none') {
+            swal('Aviso', 'El gráfico aún no ha cargado.', 'warning');
+            return;
+        }
+        var img = canvas.toDataURL('image/png', 1.0);
+        _doPrint(
+            '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + titulo + '</title>' +
+            '<style>' + _css + '</style></head><body>' +
+            '<h3>' + titulo + '</h3>' +
+            '<img src="' + img + '">' +
+            '</body></html>'
+        );
+    }
+
+    /* Tabla: toma TODAS las filas del DataTable y construye HTML limpio */
+    function imprimirTabla(titulo, dtInstance, columnas) {
+        var filas = dtInstance.rows().data().toArray();
+
+        var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + titulo + '</title>' +
+            '<style>' + _css + '</style></head><body>' +
+            '<h3>' + titulo + '</h3>' +
+            '<table><thead><tr>';
+
+        columnas.forEach(function(col) {
+            html += '<th class="' + (col.cls || '') + '">' + col.label + '</th>';
+        });
+        html += '</tr></thead><tbody>';
+
+        filas.forEach(function(row) {
+            html += '<tr>';
+            columnas.forEach(function(col) {
+                var val = col.render
+                    ? col.render(row)
+                    : (row[col.data] !== null && row[col.data] !== undefined ? row[col.data] : '—');
+                html += '<td class="' + (col.cls || '') + '">' + val + '</td>';
+            });
+            html += '</tr>';
+        });
+
+        html += '</tbody></table></body></html>';
+        _doPrint(html);
+    }
+
+    /* Definición de columnas para cada tabla */
+    var colsMov = [
+        { data:'fecha',      label:'Desde' },
+        { data:'fhasta',     label:'Hasta' },
+        { data:'emp_ced',    label:'C.I.',       cls:'r' },
+        { data:'trabajador', label:'Trabajador' },
+        { data:'concepto',   label:'Concepto' },
+        { data:'tipo',       label:'Tipo',  cls:'c',
+          render: function(r){ return r.tipo === 'A' ? 'Asig.' : 'Ded.'; } },
+        { data:'mov_monto',  label:'Monto', cls:'r',
+          render: function(r){ var v=parseFloat(r.mov_monto||0); if(r.tipo==='D') v=-v; return v.toFixed(2); } },
+        { data:'monto_bs',   label:'Bs ME', cls:'r',
+          render: function(r){ if(r.monto_bs===null) return '—'; var v=parseFloat(r.monto_bs); if(r.tipo==='D') v=-v; return v.toFixed(2); } },
+        { data:'monto_usd',  label:'USD',   cls:'r',
+          render: function(r){ if(r.monto_usd===null) return '—'; var v=parseFloat(r.monto_usd); if(r.tipo==='D') v=-v; return v.toFixed(2); } }
+    ];
+
+    var colsRanking = [
+        { data:'concepto',    label:'Concepto' },
+        { data:'tipo',        label:'Tipo',  cls:'c',
+          render: function(r){ return r.tipo === 'A' ? 'Asig.' : 'Ded.'; } },
+        { data:'frecuencia',  label:'#',     cls:'c' },
+        { data:'total_monto', label:'Bs',    cls:'r',
+          render: function(r){ var v=parseFloat(r.total_monto||0); if(r.tipo==='D') v=-v; return v.toFixed(2); } },
+        { data:'total_bsme',  label:'BsMe',  cls:'r',
+          render: function(r){ if(r.total_bsme===null) return '—'; var v=parseFloat(r.total_bsme); if(r.tipo==='D') v=-v; return v.toFixed(2); } },
+        { data:'total_usd',   label:'$',     cls:'r',
+          render: function(r){ if(r.total_usd===null) return '—'; var v=parseFloat(r.total_usd); if(r.tipo==='D') v=-v; return v.toFixed(2); } }
+    ];
+
+    /* Click handler centralizado */
+    $(document).on('click', '.da-btn-panel-print', function() {
+        var tipo   = $(this).data('print');
+        var titulo = $(this).data('titulo');
+
+        if (tipo === 'grafico') {
+            imprimirGrafico(titulo, $(this).data('canvas'));
+        } else if (tipo === 'tabla') {
+            var tabla = $(this).data('tabla');
+            if (tabla === 'mov') {
+                if (!dtMov) { swal('Aviso', 'La tabla aún no ha cargado.', 'warning'); return; }
+                imprimirTabla(titulo, dtMov, colsMov);
+            } else {
+                if (!dtRanking) { swal('Aviso', 'La tabla aún no ha cargado.', 'warning'); return; }
+                imprimirTabla(titulo, dtRanking, colsRanking);
+            }
+        }
+    });
 
     /* ================================================================
        CARGAR TODO

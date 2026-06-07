@@ -3,6 +3,7 @@
 @section('titulo') Dashboard Administrativo — Nómina @endsection
 
 @section("styles")
+<link rel="stylesheet" href="{{ autoVer('assets/lte/bower_components/datatables.net.button/css/buttons.dataTables.min.css') }}">
 <style>
 /* ═══════════════════════════════════════════════════
    DASHBOARD ADMIN — Variables y reset
@@ -122,6 +123,13 @@
 }
 .da-panel-hd h4 { margin: 0; font-size: 13px; font-weight: 700; color: var(--da-primary); }
 .da-panel-hd .da-panel-sub { font-size: 11px; color: #bbb; }
+.da-btn-panel-print {
+    background: none; border: 1px solid #ddd; border-radius: 5px;
+    padding: 4px 9px; cursor: pointer; color: #aaa; font-size: 13px;
+    transition: all .15s; white-space: nowrap; flex-shrink: 0; margin-left: 10px;
+    line-height: 1.4;
+}
+.da-btn-panel-print:hover { color: #1a3a5c; border-color: #1a3a5c; background: #f0f4f8; }
 .da-panel-bd { padding: 14px 18px; }
 .da-spinner { text-align: center; padding: 30px; color: #ccc; font-size: .85rem; }
 
@@ -159,6 +167,27 @@
 @media(max-width: 767px) {
     .da-filter-bar .row > div { margin-bottom: 8px; }
     .da-kpi .da-kpi-val { font-size: 1.1rem; }
+}
+/* ── Print ── */
+@media print {
+    .da-filter-bar, .da-status-bar,
+    .main-header, .main-sidebar, .control-sidebar,
+    .content-header, .breadcrumb,
+    .dt-buttons, .dataTables_filter, .dataTables_length,
+    .dataTables_paginate, .dataTables_info { display: none !important; }
+
+    .content-wrapper { margin-left: 0 !important; padding: 0 !important; }
+    .da-panel { box-shadow: none !important; border: 1px solid #ccc !important; }
+    .da-section-title { color: #333 !important; }
+
+    canvas { max-width: 100% !important; }
+
+    table { page-break-inside: avoid; }
+    .col-xs-12, .col-md-12, .col-md-8, .col-md-4,
+    .col-md-6, .col-md-3, .col-md-2 { width: 100% !important; float: none !important; }
+
+    .row { display: block !important; }
+    .da-kpi-card { display: inline-block !important; width: 30% !important; margin: 4px !important; }
 }
 </style>
 @endsection
@@ -216,7 +245,7 @@
         {{-- Acciones --}}
         <div class="col-xs-12 col-sm-6 col-md-2">
             <div class="da-filter-title">&nbsp;</div>
-            <div style="display:flex; gap:6px; margin-top:4px">
+            <div style="display:flex; gap:6px; margin-top:4px; flex-wrap:wrap">
                 <button class="btn-da-aplicar" id="da-btn-aplicar">
                     <i class="fa fa-search"></i> Aplicar
                 </button>
@@ -322,8 +351,8 @@
     <div class="col-xs-12 col-md-8">
         <div class="da-panel">
             <div class="da-panel-hd">
-                <h4><i class="fa fa-area-chart" style="color:var(--da-primary)"></i>&nbsp; Evolución Mensual</h4>
-                <span class="da-panel-sub">Asignaciones · Deducciones · Neto — por mes</span>
+                <div><h4><i class="fa fa-area-chart" style="color:var(--da-primary)"></i>&nbsp; Evolución Mensual</h4><span class="da-panel-sub">Asignaciones · Deducciones · Neto — por mes</span></div>
+                <button class="da-btn-panel-print" data-print="grafico" data-canvas="chart-evolucion" data-titulo="Evolución Mensual" title="Imprimir"><i class="fa fa-print"></i></button>
             </div>
             <div class="da-panel-bd">
                 <div class="da-spinner" id="sp-evolucion"><i class="fa fa-spinner fa-spin"></i> Cargando...</div>
@@ -336,8 +365,8 @@
     <div class="col-xs-12 col-md-4">
         <div class="da-panel">
             <div class="da-panel-hd">
-                <h4><i class="fa fa-pie-chart" style="color:var(--da-accent)"></i>&nbsp; Asig. vs Deducciones</h4>
-                <span class="da-panel-sub">Distribución en Bs</span>
+                <div><h4><i class="fa fa-pie-chart" style="color:var(--da-accent)"></i>&nbsp; Asig. vs Deducciones</h4><span class="da-panel-sub">Distribución en Bs</span></div>
+                <button class="da-btn-panel-print" data-print="grafico" data-canvas="chart-distribucion" data-titulo="Asig. vs Deducciones" title="Imprimir"><i class="fa fa-print"></i></button>
             </div>
             <div class="da-panel-bd" style="min-height:200px;position:relative">
                 <div class="da-spinner" id="sp-distribucion"><i class="fa fa-spinner fa-spin"></i></div>
@@ -359,8 +388,8 @@
     <div class="col-xs-12 col-md-6">
         <div class="da-panel">
             <div class="da-panel-hd">
-                <h4><i class="fa fa-list-ol" style="color:var(--da-orange)"></i>&nbsp; Top 10 Conceptos</h4>
-                <span class="da-panel-sub">Mayor monto acumulado en Bs</span>
+                <div><h4><i class="fa fa-list-ol" style="color:var(--da-orange)"></i>&nbsp; Top 10 Conceptos</h4><span class="da-panel-sub">Mayor monto acumulado en Bs</span></div>
+                <button class="da-btn-panel-print" data-print="grafico" data-canvas="chart-top-conceptos" data-titulo="Top 10 Conceptos" title="Imprimir"><i class="fa fa-print"></i></button>
             </div>
             <div class="da-panel-bd">
                 <div class="da-spinner" id="sp-top-conceptos"><i class="fa fa-spinner fa-spin"></i></div>
@@ -373,8 +402,8 @@
     <div class="col-xs-12 col-md-6">
         <div class="da-panel">
             <div class="da-panel-hd">
-                <h4><i class="fa fa-trophy" style="color:var(--da-blue)"></i>&nbsp; Top 10 Trabajadores</h4>
-                <span class="da-panel-sub">Mayor asignación acumulada en Bs</span>
+                <div><h4><i class="fa fa-trophy" style="color:var(--da-blue)"></i>&nbsp; Top 10 Trabajadores</h4><span class="da-panel-sub">Mayor asignación acumulada en Bs</span></div>
+                <button class="da-btn-panel-print" data-print="grafico" data-canvas="chart-top-trab" data-titulo="Top 10 Trabajadores" title="Imprimir"><i class="fa fa-print"></i></button>
             </div>
             <div class="da-panel-bd">
                 <div class="da-spinner" id="sp-top-trab"><i class="fa fa-spinner fa-spin"></i></div>
@@ -396,8 +425,8 @@
     <div class="col-xs-12 col-md-8">
         <div class="da-panel">
             <div class="da-panel-hd">
-                <h4><i class="fa fa-exchange" style="color:var(--da-blue)"></i>&nbsp; Comparativo Bs vs USD</h4>
-                <span class="da-panel-sub">Asignaciones mensuales en ambas monedas</span>
+                <div><h4><i class="fa fa-exchange" style="color:var(--da-blue)"></i>&nbsp; Comparativo Bs vs USD</h4><span class="da-panel-sub">Asignaciones mensuales en ambas monedas</span></div>
+                <button class="da-btn-panel-print" data-print="grafico" data-canvas="chart-comparativo" data-titulo="Comparativo Bs vs USD" title="Imprimir"><i class="fa fa-print"></i></button>
             </div>
             <div class="da-panel-bd">
                 <div class="da-spinner" id="sp-comparativo"><i class="fa fa-spinner fa-spin"></i></div>
@@ -410,8 +439,8 @@
     <div class="col-xs-12 col-md-4">
         <div class="da-panel">
             <div class="da-panel-hd">
-                <h4><i class="fa fa-dollar" style="color:var(--da-orange)"></i>&nbsp; Evolución Tasa $</h4>
-                <span class="da-panel-sub">Tasa de cambio en nómina</span>
+                <div><h4><i class="fa fa-dollar" style="color:var(--da-orange)"></i>&nbsp; Evolución Tasa $</h4><span class="da-panel-sub">Tasa de cambio en nómina</span></div>
+                <button class="da-btn-panel-print" data-print="grafico" data-canvas="chart-dolar" data-titulo="Evolución Tasa $" title="Imprimir"><i class="fa fa-print"></i></button>
             </div>
             <div class="da-panel-bd" style="min-height:200px;position:relative">
                 <div class="da-spinner" id="sp-dolar"><i class="fa fa-spinner fa-spin"></i></div>
@@ -430,23 +459,26 @@
 <div class="da-section-title"><i class="fa fa-table"></i> Detalle</div>
 <div class="row">
 
-    <div class="col-xs-12 col-md-8">
+    <div class="col-xs-12 col-md-12">
         <div class="da-panel">
             <div class="da-panel-hd">
-                <h4><i class="fa fa-history" style="color:var(--da-primary)"></i>&nbsp; Últimos Movimientos</h4>
-                <span class="da-panel-sub">Hasta 200 registros más recientes</span>
+                <div><h4><i class="fa fa-history" style="color:var(--da-primary)"></i>&nbsp; Últimos Movimientos</h4><span class="da-panel-sub">Hasta 200 registros más recientes</span></div>
+                <button class="da-btn-panel-print" data-print="tabla" data-tabla="mov" data-titulo="Últimos Movimientos" title="Imprimir tabla"><i class="fa fa-print"></i></button>
             </div>
             <div class="da-panel-bd" style="padding-top:8px">
                 <table id="da-tabla-mov" class="table table-hover table-condensed" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Fecha</th>
+                            <th>Desde</th>
+                            <th>Hasta</th>
                             <th>C.I.</th>
                             <th>Trabajador</th>
                             <th>Concepto</th>
                             <th class="text-center">Tipo</th>
-                            <th class="text-right">Bs</th>
+                            <th class="text-right">Monto</th>
+                            <th class="text-right">Bs ME</th>
                             <th class="text-right">USD</th>
+                            <th style="display:none"></th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -455,11 +487,11 @@
         </div>
     </div>
 
-    <div class="col-xs-12 col-md-4">
+    <div class="col-xs-12 col-md-12">
         <div class="da-panel">
             <div class="da-panel-hd">
-                <h4><i class="fa fa-sort-amount-desc" style="color:var(--da-accent)"></i>&nbsp; Ranking Conceptos</h4>
-                <span class="da-panel-sub">Total acumulado por concepto</span>
+                <div><h4><i class="fa fa-sort-amount-desc" style="color:var(--da-accent)"></i>&nbsp; Ranking Conceptos</h4><span class="da-panel-sub">Total acumulado por concepto</span></div>
+                <button class="da-btn-panel-print" data-print="tabla" data-tabla="ranking" data-titulo="Ranking Conceptos" title="Imprimir tabla"><i class="fa fa-print"></i></button>
             </div>
             <div class="da-panel-bd" style="padding-top:8px">
                 <table id="da-tabla-ranking" class="table table-hover table-condensed" style="width:100%">
@@ -469,6 +501,8 @@
                             <th class="text-center">Tipo</th>
                             <th class="text-center">#</th>
                             <th class="text-right">Bs</th>
+                            <th class="text-right">BsMe</th>
+                            <th class="text-right">$</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -483,5 +517,9 @@
 
 @section("scripts")
 <script src="{{ autoVer('assets/pages/scripts/general.js') }}"></script>
+<script src="{{ autoVer('assets/lte/bower_components/datatables.net.button/js/jszip.min.js') }}"></script>
+<script src="{{ autoVer('assets/lte/bower_components/datatables.net.button/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ autoVer('assets/lte/bower_components/datatables.net.button/js/buttons.html5.min.js') }}"></script>
+<script src="{{ autoVer('assets/lte/bower_components/datatables.net.button/js/buttons.print.min.js') }}"></script>
 <script src="{{ autoVer('assets/pages/scripts/dashboardadmin/index.js') }}"></script>
 @endsection
