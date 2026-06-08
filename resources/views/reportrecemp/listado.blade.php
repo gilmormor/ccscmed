@@ -37,7 +37,6 @@
 			</td>
 		</tr>
 	</table>
-	{{ public_path('storage/imagenes/logos/' . $nm_empresa->logo) }}
 	<table id="factura_cliente">
 		<tr>
 			<td class="info_cliente">
