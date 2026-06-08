@@ -95,7 +95,7 @@
         el (la) ciudadano(a)
         <span class="bold">{{ trim($nm_movnomtrab->emp_nom) }} {{ trim($nm_movnomtrab->emp_ape) }}</span>,
         titular de la cédula de identidad No.
-        <span class="bold">{{ substr($nm_movnomtrab->emp_rif, 0, 1) . '-' . number_format((int)$nm_movnomtrab->emp_ced, 0, '', '.') }}</span>,
+        <span class="bold">{{ substr($nm_movnomtrab->emp_nac, 0, 1) . '-' . number_format((int)$nm_movnomtrab->emp_ced, 0, '', '.') }}</span>,
         trabaja en esta empresa desde el {{fechaEnLetras($nm_movnomtrab->mov_fecing)}},
         desempeña actualmente el cargo de
         <span class="bold">{{ trim($nm_movnomtrab->car_desc) }}</span>,

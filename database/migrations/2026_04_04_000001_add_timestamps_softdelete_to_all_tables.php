@@ -19,12 +19,10 @@ class AddTimestampsSoftdeleteToAllTables extends Migration
 
     public function up()
     {
-        $baseDatos = env('DB_DATABASE');
-        $tablas    = DB::select('SHOW TABLES');
-        $columna   = 'Tables_in_' . $baseDatos;
+        $tablas = DB::select('SHOW TABLES');
 
         foreach ($tablas as $tabla) {
-            $nombre = $tabla->$columna;
+            $nombre = array_values((array) $tabla)[0];
 
             if (in_array($nombre, $this->tablasExcluidas)) {
                 continue;
@@ -55,12 +53,10 @@ class AddTimestampsSoftdeleteToAllTables extends Migration
 
     public function down()
     {
-        $baseDatos = env('DB_DATABASE');
-        $tablas    = DB::select('SHOW TABLES');
-        $columna   = 'Tables_in_' . $baseDatos;
+        $tablas = DB::select('SHOW TABLES');
 
         foreach ($tablas as $tabla) {
-            $nombre = $tabla->$columna;
+            $nombre = array_values((array) $tabla)[0];
 
             if (in_array($nombre, $this->tablasExcluidas)) {
                 continue;

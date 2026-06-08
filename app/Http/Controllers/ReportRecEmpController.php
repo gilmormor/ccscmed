@@ -71,7 +71,7 @@ class ReportRecEmpController extends Controller
             //$aux_cedula = "2450604";
         }
         $nm_empresa = DB::table('nm_empresa')
-            ->select('emp_codh', 'emp_nombre', 'emp_rif','logo')
+            ->select('emp_codh', 'emp_nombre', 'emp_rif','logo','gru_cod')
             ->where('emp_codh', $request->emp_codh)
             ->first();
 
@@ -99,6 +99,7 @@ class ReportRecEmpController extends Controller
             ->where('nm_movhist.emp_ced', $aux_cedula)
             ->where('nm_movhist.mov_nummon', $request->mov_nummon)
             ->where('nm_movhist.emp_codh', $request->emp_codh)
+            ->where('nm_conceptos.gru_cod', $nm_empresa->gru_cod)
             ->get();
 
         $nm_tiponomina = DB::table('nm_tiponomina')
@@ -197,6 +198,7 @@ class ReportRecEmpController extends Controller
                 'm.mov_numrec',
                 'm.mov_fecing',
                 'm.mov_sueldo',
+                'e.emp_nac',
                 'e.emp_ape',
                 'e.emp_nom',
                 'e.emp_rif',
