@@ -71,7 +71,6 @@ class ReportRecEmpController extends Controller
             //$aux_cedula = "2450604";
         }
         $nm_empresa = DB::table('nm_empresa')
-            ->select('emp_codh', 'emp_nombre', 'emp_rif','logo','gru_cod')
             ->where('emp_codh', $request->emp_codh)
             ->first();
 

@@ -2,6 +2,16 @@
 <!--<img class="anulada" src="img/anulado.png" alt="Anulada">-->
 <br>
 <br>
+@if(isset($nm_empresa->color) and $nm_empresa->color!="")
+	<style>
+		.h3{
+			background: {{ $nm_empresa->color }} !important;
+		}
+		#factura_detalle thead th{
+			background: {{ $nm_empresa->color }} !important;
+		}
+	</style>
+@endif
 <div id="page_pdf">
 	<table id="factura_head">
 		<tr>
