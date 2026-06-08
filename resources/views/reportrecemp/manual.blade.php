@@ -170,6 +170,27 @@
         a { color: rgb(0, 120, 110); }
     </style>
 </head>
+@if(isset($empresa->color) and $empresa->color!="")
+	<style>
+		.section-title{
+			background: {{ $empresa->color }} !important;
+		}
+		.field-table th{
+			background: {{ $empresa->color }} !important;
+		}
+        .header-title p{
+			background: {{ $empresa->color }} !important;
+		}
+        .step-num span {
+            background: {{ $empresa->color }} !important;
+        }
+        .badge {
+            background: {{ $empresa->color }} !important;
+        }
+        a { color: {{ $empresa->color }} !important; }
+    </style>
+@endif
+
 <body>
 
 <!-- ══════════════════════════════════════════════
@@ -178,7 +199,7 @@
 <table class="header-table">
     <tr>
         <td class="header-logo">
-            <img src="{{ public_path('storage/imagenes/logos/ccsc.png') }}">
+            <img src="{{ public_path('storage/imagenes/logos/' . $empresa->logo) }}"  width="100" alt="Logo Empresa">
         </td>
         <td class="header-title">
             <h1>Manual de Usuario</h1>
@@ -194,7 +215,7 @@
 ═══════════════════════════════════════════════ -->
 <div class="section-title">1. Introducción</div>
 <p>
-    El <strong>Sistema de Consulta de Recibos de Pago Online</strong> del Centro Clínico San Cristóbal
+    El <strong>Sistema de Consulta de Recibos de Pago Online</strong> del {{ trim($empresa->nombre) }} es una plataforma digital diseñada para facilitar a los trabajadores el acceso a su información de nómina de manera rápida, segura y desde cualquier lugar. A través de este sistema, cada empleado pu
     le permite consultar y descargar en formato PDF sus recibos de pago correspondientes a cada período
     de nómina, así como generar su <strong>Constancia de Trabajo</strong> cuando la necesite,
     todo desde cualquier dispositivo con acceso a Internet.
@@ -386,7 +407,7 @@
 
 <!-- ── PIE DE PÁGINA ── -->
 <div class="footer">
-    Centro Clínico San Cristóbal &nbsp;|&nbsp; Sistema de Consulta de Recibos de Pago Online
+    {{ trim($empresa->nombre) }} &nbsp;|&nbsp; Sistema de Consulta de Recibos de Pago Online
     &nbsp;|&nbsp; Manual de Usuario Rol Trabajador &nbsp;|&nbsp; {{ date('Y') }}
 </div>
 
