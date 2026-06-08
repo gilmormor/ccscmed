@@ -21,7 +21,7 @@ class ReportRecHonGenController extends Controller
     public function periodos(Request $request)
     {
         //dd($request);
-        $nominaPeriodos = Nm_MovHist::periodosnompersona($request);
+        $nominaPeriodos = Nm_MovHist::periodosnompersonahon($request);
         return $nominaPeriodos;
     }
     

@@ -23,7 +23,7 @@ class ReportRecHonController extends Controller
     public function index()
     {
         can('listar-recibo-honorarios');
-        $nominaPeriodos = Nm_MovHist::periodosnompersona("");
+        $nominaPeriodos = Nm_MovHist::periodosnompersonahon("");
         $aux_mesanno = mesanno(date("Y") . date("m"));
         //dd($nominaPeriodos);
 

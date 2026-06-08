@@ -44,7 +44,28 @@ class Nm_MovHist extends Model
         return $datas;
 
     }
+    public static function periodosnompersonahon($request){
+        if(isset($request->emp_ced)){
+            $aux_cedula = $request->emp_ced;
+        }else{
+            $user = Usuario::findOrFail(auth()->id());
+            $aux_cedula = $user->usuario;
+            //$aux_cedula = "2450604";
+        }
 
+        $sql = "SELECT nm_control.*,
+        DATE_FORMAT(cot_fdesde, '%d/%m/%Y') AS fdesde,
+        DATE_FORMAT(cot_fhasta, '%d/%m/%Y') AS fhasta
+        FROM nm_movhist INNER JOIN nm_control
+        ON nm_movhist.mov_nummon = nm_control.cot_numnom
+        where nm_movhist.emp_ced = $aux_cedula 
+        group by nm_movhist.mov_nummon 
+        order by nm_control.cot_fdesde desc;";
+
+        $datas = DB::select($sql);
+        return $datas;
+
+    }
     public static function periodosnompersona($request){
         //dd($request);
         $aux_condfecha=" and cot_fdesde<='2018-08-15'  ";
