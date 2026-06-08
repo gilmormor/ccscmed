@@ -33,6 +33,7 @@
 					<p><strong>Fecha:</strong> {{date("d/m/Y h:i:s A")}}</p>
 					<p><strong>Nro. Recibo:</strong> {{$nm_movnomtrab->mov_numrec}}</p>
 					<p><strong>Periodo:</strong> {{date('d/m/Y', strtotime($nm_control->cot_fdesde))}} al {{date('d/m/Y', strtotime($nm_control->cot_fhasta))}}</p>
+					<p><strong>Periodo:</strong> {{ public_path('storage/imagenes/logos/' . $nm_empresa->logo) }}</p>
 				</div>
 			</td>
 		</tr>
