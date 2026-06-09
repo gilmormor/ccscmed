@@ -416,25 +416,34 @@ $(document).ready(function () {
     }
 
     /* ================================================================
-       8. Tabla Últimos Movimientos
+       8. Tabla Últimos Movimientos — serverSide (yajra DataTables)
+          Primera llamada: inicializa la tabla.
+          Llamadas siguientes: actualiza URL y recarga.
        ================================================================ */
     function cargarMovimientos() {
-        if (dtMov) { dtMov.destroy(); dtMov = null; $('#da-tabla-mov tbody').empty(); }
+        if (dtMov) {
+            /* Ya inicializada: solo actualizar URL y recargar */
+            dtMov.ajax.url('/dashboardadmin/movimientos' + buildQS()).load();
+            return;
+        }
 
         dtMov = $('#da-tabla-mov').DataTable({
-            ajax: { url:'/dashboardadmin/movimientos' + buildQS(), dataSrc:'data' },
-            pageLength: 10,
-            language: dtES,
-            order: [[0, 'asc'], [9, 'asc']],
-            dom: '<"row"<"col-sm-6"B><"col-sm-6"f>>rt<"row"<"col-sm-5"i><"col-sm-7"p>>',
+            serverSide : true,
+            processing : true,
+            ajax       : '/dashboardadmin/movimientos' + buildQS(),
+            pageLength : 10,
+            lengthMenu : [[10, 25, 50, 100, -1], ['10', '25', '50', '100', 'Todos']],
+            language   : dtES,
+            order      : [[9, 'asc']],   /* columna 9 = fecha_ord (yyyymmdd) */
+            dom        : '<"row"<"col-sm-6"B><"col-sm-6"f>>rt<"row"<"col-sm-5"i><"col-sm-7"p>>',
             buttons: [
                 {
-                    extend: 'excelHtml5',
+                    /* Excel descarga todos los registros desde el servidor (sin límite) */
                     text: '<i class="fa fa-file-excel-o"></i> Excel',
                     className: 'btn btn-success btn-sm',
-                    title: null,
-                    filename: 'movimientos_' + new Date().toISOString().slice(0,10),
-                    exportOptions: { columns: ':visible' }
+                    action: function() {
+                        window.location = '/dashboardadmin/movimientos-export' + buildQS();
+                    }
                 },
                 {
                     extend: 'print',
@@ -449,14 +458,9 @@ $(document).ready(function () {
                 }
             ],
             columns: [
-                {
-                    data:'fecha', title:'Desde',
-                    render: function(data, type, row) {
-                        return (type === 'sort' || type === 'type') ? row.fecha_ord : data;
-                    }
-                },
+                { data:'fecha',      title:'Desde' },
                 { data:'fhasta',     title:'Hasta' },
-                { data:'emp_ced',    title:'C.I.',  className:'text-right' },
+                { data:'emp_ced',    title:'C.I.',       className:'text-right' },
                 { data:'trabajador', title:'Trabajador' },
                 { data:'concepto',   title:'Concepto' },
                 {
@@ -478,7 +482,7 @@ $(document).ready(function () {
                     }
                 },
                 {
-                    data:'monto_bs',  title:'Bs ME', className:'text-right',
+                    data:'monto_bs', title:'Bs ME', className:'text-right',
                     render: function(d, type, row) {
                         if (d === null) return type === 'display' ? '—' : '';
                         var val = parseFloat(d);
@@ -495,7 +499,7 @@ $(document).ready(function () {
                         return type === 'display' ? val.toFixed(2) : val;
                     }
                 },
-                { data:'cod_con', title:'', visible:false }
+                { data:'fecha_ord', title:'', visible:false }   /* col 9: orden real */
             ]
         });
     }
@@ -714,6 +718,22 @@ $(document).ready(function () {
     });
 
     /* ================================================================
+       PLACEHOLDER INICIAL — se muestra hasta que el usuario presiona Aplicar
+       ================================================================ */
+    function mostrarPlaceholders() {
+        var msg = '<p style="text-align:center;color:#ccc;padding:28px 0;margin:0">' +
+                  '<i class="fa fa-filter" style="font-size:18px"></i><br>' +
+                  '<small>Selecciona los filtros y presiona <strong>Aplicar</strong></small></p>';
+
+        ['evolucion','distribucion','top-conceptos','top-trab','comparativo','dolar'].forEach(function(k) {
+            $('#sp-' + k).hide();
+            $('#chart-' + k).hide();
+            $('#empty-' + k).html(msg).show();
+        });
+        $('#da-donut-legend').hide();
+    }
+
+    /* ================================================================
        CARGAR TODO
        ================================================================ */
     function cargarTodo() {
@@ -830,10 +850,11 @@ $(document).ready(function () {
     });
 
     /* ================================================================
-       INICIALIZACIÓN
+       INICIALIZACIÓN — solo filtros y placeholder, SIN consultas
        ================================================================ */
     cargarFiltroTrabajadores();
     cargarFiltroConceptos();
-    cargarTodo();
+    mostrarPlaceholders();
+    actualizarStatusBar();
 
 });

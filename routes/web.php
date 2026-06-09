@@ -1461,6 +1461,7 @@ Route::get('dashboardadmin/movimientos',              'DashboardAdminController@
 Route::get('dashboardadmin/ranking-conceptos',        'DashboardAdminController@rankingConceptos')->name('dashboardadmin_ranking_conceptos');
 Route::get('dashboardadmin/filtro-trabajadores',      'DashboardAdminController@filtroTrabajadores')->name('dashboardadmin_filtro_trabajadores');
 Route::get('dashboardadmin/filtro-conceptos',         'DashboardAdminController@filtroConceptos')->name('dashboardadmin_filtro_conceptos');
+Route::get('dashboardadmin/movimientos-export',       'DashboardAdminController@movimientosExport')->name('dashboardadmin_movimientos_export');
 
 /*RUTAS REPORTE RECIBO HONORARIOS*/
 Route::get('reportrechon', 'ReportRecHonController@index')->name('reportrechon');

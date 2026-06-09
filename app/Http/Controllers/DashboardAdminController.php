@@ -292,14 +292,81 @@ class DashboardAdminController extends Controller
                 nm_movhismonext.mme_montomone                                AS monto_bs,
                 nm_movhismonext.mme_montodl                                  AS monto_usd,
                 nm_movhismonext.mme_tasacambi                                AS tasa,
-                DATE_FORMAT(nm_control.cot_fdesde,'%Y%m%d')                 AS fecha_ord,
-                nm_movhist.mov_codcon                                        AS cod_con
+                DATE_FORMAT(nm_control.cot_fdesde,'%Y%m%d')                 AS fecha_ord
             " . $this->baseFrom() . $w . "
             ORDER BY nm_control.cot_fdesde ASC, nm_movhist.mov_codcon ASC
-            LIMIT 200
         ", $b);
 
-        return response()->json(['data' => $rows]);
+        return datatables(collect($rows))->make(true);
+    }
+
+    /* ------------------------------------------------------------------
+     * Exportar TODOS los movimientos a CSV (descarga directa)
+     * ------------------------------------------------------------------ */
+    public function movimientosExport(Request $request)
+    {
+        $b = []; $w = $this->buildWhere($request, $b);
+
+        $rows = DB::select("
+            SELECT
+                DATE_FORMAT(nm_control.cot_fdesde,'%d/%m/%Y')              AS fecha,
+                DATE_FORMAT(nm_control.cot_fhasta,'%d/%m/%Y')              AS fhasta,
+                nm_movhist.emp_ced,
+                CONCAT(nm_empleados.emp_nom,' ',nm_empleados.emp_ape)       AS trabajador,
+                nm_conceptos.con_desc                                        AS concepto,
+                nm_movhist.mov_tipocon                                       AS tipo,
+                nm_movhist.mov_monto                                         AS mov_monto,
+                nm_movhismonext.mme_montomone                                AS monto_bs,
+                nm_movhismonext.mme_montodl                                  AS monto_usd,
+                nm_movhismonext.mme_tasacambi                                AS tasa
+            " . $this->baseFrom() . $w . "
+            ORDER BY nm_control.cot_fdesde ASC, nm_movhist.mov_codcon ASC
+        ", $b);
+
+        $filename = 'movimientos_' . date('Y-m-d') . '.csv';
+        $headers  = [
+            'Content-Type'        => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Pragma'              => 'no-cache',
+            'Cache-Control'       => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires'             => '0',
+        ];
+
+        $callback = function () use ($rows) {
+            $file = fopen('php://output', 'w');
+            fputs($file, "\xEF\xBB\xBF"); // BOM UTF-8 para que Excel muestre tildes
+
+            fputcsv($file, ['Desde','Hasta','C.I.','Trabajador','Concepto','Tipo','Monto','Bs ME','USD','Tasa'], ';');
+
+            foreach ($rows as $row) {
+                $monto = (float) $row->mov_monto;
+                $bs    = $row->monto_bs  !== null ? (float) $row->monto_bs  : null;
+                $usd   = $row->monto_usd !== null ? (float) $row->monto_usd : null;
+
+                if ($row->tipo === 'D') {
+                    $monto = -$monto;
+                    if ($bs  !== null) $bs  = -$bs;
+                    if ($usd !== null) $usd = -$usd;
+                }
+
+                fputcsv($file, [
+                    $row->fecha,
+                    $row->fhasta,
+                    $row->emp_ced,
+                    $row->trabajador,
+                    $row->concepto,
+                    $row->tipo === 'A' ? 'Asig.' : 'Ded.',
+                    number_format($monto, 2, '.', ''),
+                    $bs  !== null ? number_format($bs,  2, '.', '') : '',
+                    $usd !== null ? number_format($usd, 2, '.', '') : '',
+                    $row->tasa !== null ? number_format((float)$row->tasa, 2, '.', '') : '',
+                ], ';');
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     /* ------------------------------------------------------------------
