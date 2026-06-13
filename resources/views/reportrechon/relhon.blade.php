@@ -1,4 +1,10 @@
 <link rel="stylesheet" href="{{asset("assets/css/rechonpac.css")}}">
+@if(isset($empresa[0]) and isset($empresa[0]['color']) and $empresa[0]['color']!="")
+<style>
+	.h4 { background: {{ $empresa[0]['color'] }} !important; }
+	#factura_detalleccsc thead th { background: {{ $empresa[0]['color'] }} !important; }
+</style>
+@endif
 <!--<img class="anulada" src="img/anulado.png" alt="Anulada">-->
 <br>
 <br>
