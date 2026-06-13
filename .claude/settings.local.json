@@ -12,7 +12,20 @@
       "Bash(mkdir -p C:/laragon/www/softmark-app/src/services)",
       "Bash(mkdir -p C:/laragon/www/softmark-app/src/context)",
       "Bash(npx expo:*)",
-      "Bash(/c/laragon/bin/php/php-7.4.33-Win32-VC15-x64/php.exe artisan:*)"
+      "Bash(/c/laragon/bin/php/php-7.4.33-Win32-VC15-x64/php.exe artisan:*)",
+      "PowerShell(\\(Get-Item \"C:\\\\Users\\\\SisPlastiServi\\\\Downloads\\\\laravel-2026-06-11.log\"\\).Length; \\(Get-Content \"C:\\\\Users\\\\SisPlastiServi\\\\Downloads\\\\laravel-2026-06-11.log\" | Measure-Object -Line\\).Lines)",
+      "PowerShell(Select-String -Path \"C:\\\\Users\\\\SisPlastiServi\\\\Downloads\\\\laravel-2026-06-11.log\" -Pattern '^\\\\[2026' | ForEach-Object { $_.Line.Substring\\(0, [Math]::Min\\(160, $_.Line.Length\\)\\) })",
+      "Bash(findstr /R \"DB_ APP_\")",
+      "Bash(git checkout *)",
+      "mcp__Claude_in_Chrome__navigate",
+      "mcp__Claude_in_Chrome__computer",
+      "mcp__Claude_in_Chrome__browser_batch",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(C:/laragon/bin/php/php-7.4.33-Win32-VC15-x64/php.exe -r ' *)",
+      "mcp__Claude_in_Chrome__find",
+      "mcp__Claude_in_Chrome__form_input",
+      "Bash(where wkhtmltopdf *)"
     ]
   }
 }

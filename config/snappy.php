@@ -35,7 +35,7 @@ return [
     
     'pdf' => [
     'enabled' => true,
-    'binary' => env('"WKHTMLTOPDF_BINARY"', '/usr/local/bin/wkhtmltopdf'), // ← ¡con comillas dobles dentro!
+    'binary' => env('WKHTMLTOPDF_BINARY', '/usr/local/bin/wkhtmltopdf'),
     'timeout' => false,
     'options' => [
         'lowquality' => true,

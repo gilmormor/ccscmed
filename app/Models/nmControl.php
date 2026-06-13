@@ -102,7 +102,7 @@ class nmControl extends Model
             $nomach = 'RelPacHon_' . implode('_', $nm_control->nmcontrolnomclss->pluck('ccl_nronomciclos')->toArray()) . '_' . $cedula_formateada . '_' . $primer_apellido . $primer_nombre;
 
             $pdf = SnappyPdf::loadView('reportrechon.relhon', compact(
-                'nm_control', 'nm_empleado', 'empresa', 'usuario', 'request', 'pacdets', 'nroNominaCiclos'
+                'nm_control', 'nm_empleado', 'empresa', 'pacdets', 'nroNominaCiclos'
             ));
             $pdf->setPaper('a4', 'landscape');
             return [
