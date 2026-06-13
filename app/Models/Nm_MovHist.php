@@ -76,29 +76,37 @@ class Nm_MovHist extends Model
             $aux_cedula = $user->usuario;
         }
 
-        $aux_cond_empresa = "";
         if (!empty($emp_codh)) {
-            $aux_cond_empresa = "AND nm_movnomtrab.emp_codh = $emp_codh
-            AND nm_control.emp_codh = $emp_codh";
+            // Query compleja multi-empresa (AppMovil: usa nm_movnomtrab + nm_tiponomina + filtro cono monetario)
+            $sql = "SELECT nm_control.cot_tipo,nm_control.cot_numnom,mov_codcar,mov_codubica,
+                nm_tiponomina.tmo_desc,
+                DATE_FORMAT(cot_fdesde, '%d/%m/%Y') AS fdesde,
+                DATE_FORMAT(cot_fhasta, '%d/%m/%Y') AS fhasta
+                FROM nm_movnomtrab INNER JOIN nm_control
+                ON nm_movnomtrab.mov_numnom = nm_control.cot_numnom
+                INNER JOIN nm_movhist
+                ON nm_movhist.mov_nummon = nm_movnomtrab.mov_numnom
+                AND nm_movhist.emp_ced = nm_movnomtrab.mov_ced
+                AND nm_movhist.emp_codh = nm_movnomtrab.emp_codh
+                INNER JOIN nm_tiponomina
+                ON nm_tiponomina.tmo_cod = nm_control.cot_tipo AND nm_tiponomina.gru_cod = nm_movnomtrab.gru_cod and nm_tiponomina.emp_codh = nm_movnomtrab.emp_codh
+                where nm_movnomtrab.mov_ced = '$aux_cedula'
+                AND nm_movnomtrab.emp_codh = $emp_codh
+                AND nm_control.emp_codh = $emp_codh
+                $aux_condfecha
+                group by nm_movnomtrab.mov_numnom
+                order by nm_control.cot_fdesde desc;";
+        } else {
+            // Query simple (ccscmedreal: usa solo nm_movhist, sin filtro de empresa ni de cono monetario)
+            $sql = "SELECT nm_control.*,
+                DATE_FORMAT(cot_fdesde, '%d/%m/%Y') AS fdesde,
+                DATE_FORMAT(cot_fhasta, '%d/%m/%Y') AS fhasta
+                FROM nm_movhist INNER JOIN nm_control
+                ON nm_movhist.mov_nummon = nm_control.cot_numnom
+                where nm_movhist.emp_ced = '$aux_cedula'
+                group by nm_movhist.mov_nummon
+                order by nm_control.cot_fdesde desc;";
         }
-
-        $sql = "SELECT nm_control.cot_tipo,nm_control.cot_numnom,mov_codcar,mov_codubica,
-            nm_tiponomina.tmo_desc,
-            DATE_FORMAT(cot_fdesde, '%d/%m/%Y') AS fdesde,
-            DATE_FORMAT(cot_fhasta, '%d/%m/%Y') AS fhasta
-            FROM nm_movnomtrab INNER JOIN nm_control
-            ON nm_movnomtrab.mov_numnom = nm_control.cot_numnom
-            INNER JOIN nm_movhist
-            ON nm_movhist.mov_nummon = nm_movnomtrab.mov_numnom
-            AND nm_movhist.emp_ced = nm_movnomtrab.mov_ced
-            AND nm_movhist.emp_codh = nm_movnomtrab.emp_codh
-            INNER JOIN nm_tiponomina
-            ON nm_tiponomina.tmo_cod = nm_control.cot_tipo AND nm_tiponomina.gru_cod = nm_movnomtrab.gru_cod and nm_tiponomina.emp_codh = nm_movnomtrab.emp_codh
-            where nm_movnomtrab.mov_ced = '$aux_cedula'
-            $aux_cond_empresa
-            $aux_condfecha
-            group by nm_movnomtrab.mov_numnom
-            order by nm_control.cot_fdesde desc;";
 
         //dd($sql);
         $datas = DB::select($sql);
