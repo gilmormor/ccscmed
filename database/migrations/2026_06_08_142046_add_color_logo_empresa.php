@@ -14,8 +14,12 @@ class AddColorLogoEmpresa extends Migration
     public function up()
     {
         Schema::table('empresa', function (Blueprint $table) {
-            $table->string('logo')->after('moneda_id')->nullable();
-            $table->string('color')->after('logo')->nullable();
+            if (!Schema::hasColumn('empresa', 'logo')) {
+                $table->string('logo')->after('moneda_id')->nullable();
+            }
+            if (!Schema::hasColumn('empresa', 'color')) {
+                $table->string('color')->after('logo')->nullable();
+            }
         });
     }
 

@@ -48,27 +48,40 @@ class Nm_MovHist extends Model
     public static function periodosnompersona($request){
         //dd($request);
         $aux_condfecha=" and cot_fdesde<='2018-08-15'  ";
-		if ($request->cono_monetario=="0")
+        $cono_monetario = is_object($request) ? ($request->cono_monetario ?? null) : null;
+        $fecha_desde    = is_object($request) ? ($request->fecha_desde    ?? null) : null;
+        $fecha_hasta    = is_object($request) ? ($request->fecha_hasta    ?? null) : null;
+        $emp_ced        = is_object($request) ? ($request->emp_ced        ?? null) : null;
+        $emp_codh       = is_object($request) ? ($request->emp_codh       ?? null) : null;
+
+		if ($cono_monetario=="0")
 			$aux_condfecha=" and cot_fdesde>='2018-08-16' and cot_fdesde<='2021-09-30' ";
-		if ($request->cono_monetario=="2")
+		if ($cono_monetario=="2")
 			$aux_condfecha=" and cot_fdesde>='2021-10-01'  ";
 
         // Filtro adicional por rango mes/año (formato: mm/yyyy)
-        if (!empty($request->fecha_desde) && preg_match('/^\d{2}\/\d{4}$/', $request->fecha_desde)) {
-            $p = explode('/', $request->fecha_desde);
+        if (!empty($fecha_desde) && preg_match('/^\d{2}\/\d{4}$/', $fecha_desde)) {
+            $p = explode('/', $fecha_desde);
             $aux_condfecha .= " and cot_fdesde >= '{$p[1]}-{$p[0]}-01'";
         }
-        if (!empty($request->fecha_hasta) && preg_match('/^\d{2}\/\d{4}$/', $request->fecha_hasta)) {
-            $p = explode('/', $request->fecha_hasta);
+        if (!empty($fecha_hasta) && preg_match('/^\d{2}\/\d{4}$/', $fecha_hasta)) {
+            $p = explode('/', $fecha_hasta);
             $aux_condfecha .= " and cot_fdesde <= LAST_DAY('{$p[1]}-{$p[0]}-01')";
         }
 
-        if(!empty($request->emp_ced)){
-            $aux_cedula = $request->emp_ced;
+        if(!empty($emp_ced)){
+            $aux_cedula = $emp_ced;
         }else{
             $user = Usuario::findOrFail(auth()->id());
             $aux_cedula = $user->usuario;
         }
+
+        $aux_cond_empresa = "";
+        if (!empty($emp_codh)) {
+            $aux_cond_empresa = "AND nm_movnomtrab.emp_codh = $emp_codh
+            AND nm_control.emp_codh = $emp_codh";
+        }
+
         $sql = "SELECT nm_control.cot_tipo,nm_control.cot_numnom,mov_codcar,mov_codubica,
             nm_tiponomina.tmo_desc,
             DATE_FORMAT(cot_fdesde, '%d/%m/%Y') AS fdesde,
@@ -82,8 +95,7 @@ class Nm_MovHist extends Model
             INNER JOIN nm_tiponomina
             ON nm_tiponomina.tmo_cod = nm_control.cot_tipo AND nm_tiponomina.gru_cod = nm_movnomtrab.gru_cod and nm_tiponomina.emp_codh = nm_movnomtrab.emp_codh
             where nm_movnomtrab.mov_ced = $aux_cedula
-            AND nm_movnomtrab.emp_codh = $request->emp_codh
-            AND nm_control.emp_codh = $request->emp_codh
+            $aux_cond_empresa
             $aux_condfecha
             group by nm_movnomtrab.mov_numnom
             order by nm_control.cot_fdesde desc;";

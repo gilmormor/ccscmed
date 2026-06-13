@@ -14,7 +14,9 @@ class AddColorNmEmpresa extends Migration
     public function up()
     {
         Schema::table('nm_empresa', function (Blueprint $table) {
-            $table->string('color', 20);
+            if (!Schema::hasColumn('nm_empresa', 'color')) {
+                $table->string('color', 20);
+            }
         });
     }
 

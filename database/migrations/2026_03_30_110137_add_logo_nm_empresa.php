@@ -14,7 +14,9 @@ class AddLogoNmEmpresa extends Migration
     public function up()
     {
         Schema::table('nm_empresa', function (Blueprint $table) {
-            $table->string('logo')->comment('Logo empresa')->after('emp_telf');
+            if (!Schema::hasColumn('nm_empresa', 'logo')) {
+                $table->string('logo')->comment('Logo empresa')->after('emp_telf');
+            }
         });
     }
 

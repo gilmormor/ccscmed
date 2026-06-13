@@ -14,8 +14,12 @@ class AddRegionPaisNmEmpresa extends Migration
     public function up()
     {
         Schema::table('nm_empresa', function (Blueprint $table) {
-            $table->string('region')->comment('Región empresa')->after('ciudad');
-            $table->string('pais')->comment('País empresa')->after('region');
+            if (!Schema::hasColumn('nm_empresa', 'region')) {
+                $table->string('region')->comment('Región empresa')->after('ciudad');
+            }
+            if (!Schema::hasColumn('nm_empresa', 'pais')) {
+                $table->string('pais')->comment('País empresa')->after('region');
+            }
         });
     }
 

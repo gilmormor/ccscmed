@@ -14,8 +14,12 @@ class AddCiudadNmEmpresa extends Migration
     public function up()
     {
         Schema::table('nm_empresa', function (Blueprint $table) {
-            $table->string('ciudad')->comment('Ciudad donde se encuentra la empresa')->after('emp_direc');
-            $table->string('emp_telf', 100)->change(); // nuevo tamaño
+            if (!Schema::hasColumn('nm_empresa', 'ciudad')) {
+                $table->string('ciudad')->comment('Ciudad donde se encuentra la empresa')->after('emp_direc');
+            }
+            if (Schema::hasColumn('nm_empresa', 'emp_telf')) {
+                $table->string('emp_telf', 100)->change();
+            }
         });
     }
 
