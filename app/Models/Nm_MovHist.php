@@ -37,7 +37,7 @@ class Nm_MovHist extends Model
         $sql = "SELECT nm_empresa.emp_codh,nm_empresa.emp_nombre
                     FROM nm_empleados inner join nm_empresa
                     ON nm_empleados.emp_codh = nm_empresa.emp_codh
-                    WHERE nm_empleados.emp_ced = $aux_cedula
+                    WHERE nm_empleados.emp_ced = '$aux_cedula'
                     group by nm_empresa.emp_codh;";
 
         $datas = DB::select($sql);
@@ -94,7 +94,7 @@ class Nm_MovHist extends Model
             AND nm_movhist.emp_codh = nm_movnomtrab.emp_codh
             INNER JOIN nm_tiponomina
             ON nm_tiponomina.tmo_cod = nm_control.cot_tipo AND nm_tiponomina.gru_cod = nm_movnomtrab.gru_cod and nm_tiponomina.emp_codh = nm_movnomtrab.emp_codh
-            where nm_movnomtrab.mov_ced = $aux_cedula
+            where nm_movnomtrab.mov_ced = '$aux_cedula'
             $aux_cond_empresa
             $aux_condfecha
             group by nm_movnomtrab.mov_numnom
