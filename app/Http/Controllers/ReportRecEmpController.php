@@ -58,7 +58,7 @@ class ReportRecEmpController extends Controller
     public function periodos(Request $request){
         $datas = Nm_MovHist::periodosnompersona($request);
         return datatables($datas)->toJson();
-    }
+    } 
 
     public function exportPdf(Request $request)
     {
