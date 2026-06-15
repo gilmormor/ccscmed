@@ -199,7 +199,9 @@
 <table class="header-table">
     <tr>
         <td class="header-logo">
-            <img src="{{ public_path('storage/imagenes/logos/' . $empresa->logo) }}"  width="100" alt="Logo Empresa">
+            @if(!empty($empresa->logo) && file_exists(public_path('storage/imagenes/logos/' . $empresa->logo)))
+                <img src="{{ public_path('storage/imagenes/logos/' . $empresa->logo) }}" width="100" alt="Logo Empresa">
+            @endif
         </td>
         <td class="header-title">
             <h1>Manual de Usuario</h1>

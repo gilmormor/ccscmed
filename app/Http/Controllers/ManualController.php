@@ -9,8 +9,13 @@ class ManualController extends Controller
 {
     public function reciboPago()
     {
-        $empresa = DB::table('empresa')
-            ->first();
+        ini_set('memory_limit', '256M');
+
+        $empresa = DB::table('empresa')->first();
+
+        if (!$empresa) {
+            abort(404, 'No se encontró configuración de empresa.');
+        }
 
         $pdf = PDF::loadView('reportrecemp.manual', compact('empresa'))->setPaper('a4', 'portrait');
         return $pdf->stream('Manual_Usuario_ReciboPago.pdf');
