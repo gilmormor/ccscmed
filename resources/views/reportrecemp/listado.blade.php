@@ -19,7 +19,7 @@
 				<div>
 					{{-- <img src="{{asset("assets/$theme/dist/img/logo_large.png")}}" style="max-width:1200%;width:auto;height:auto;"> --}}
 					@if(!empty($nm_empresa->logo))
-					<img src={{ public_path('storage/imagenes/logos/' . $nm_empresa->logo) }} style="max-width:800%;width:auto;height:auto;">
+					<img src={{ public_path('storage/imagenes/logos/' . $nm_empresa->logo) }} style="max-width:100%;width:150px;height:auto;">
 					@endif
 				</div>
 			</td>
