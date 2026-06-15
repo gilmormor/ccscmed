@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Admin\Menu;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -26,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Paginator::useBootstrapThree();
         Schema::defaultStringLength(191);
 
         View::composer("theme.lte.aside", function ($view) {

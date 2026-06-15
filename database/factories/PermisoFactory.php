@@ -1,13 +1,19 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use Faker\Generator as Faker;
 use App\Models\Admin\Permiso;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Permiso::class, function (Faker $faker) {
-    return [
-        'nombre' => $faker->word,
-        'slug' => $faker->word,
-    ];
-});
+class PermisoFactory extends Factory
+{
+    protected $model = Permiso::class;
+
+    public function definition()
+    {
+        return [
+            'nombre' => $this->faker->word,
+            'slug'   => $this->faker->word,
+        ];
+    }
+}
