@@ -62,7 +62,9 @@ class ReportRecEmpController extends Controller
 
     public function exportPdf(Request $request)
     {
+        ini_set('memory_limit', '256M');
         //dd($request);
+        $usuario = null;
         if(isset($request->emp_ced)){
             $aux_cedula = $request->emp_ced;
         }else{
@@ -167,6 +169,7 @@ class ReportRecEmpController extends Controller
     }
 
     public function constanciaTrabajo(Request $request){
+        ini_set('memory_limit', '256M');
         if(isset($request->emp_ced)){
             $aux_cedula = $request->emp_ced;
         }else{
@@ -236,6 +239,7 @@ class ReportRecEmpController extends Controller
     }
     public function relHonPdf(Request $request)
     {
+        ini_set('memory_limit', '256M');
         //dd($request);
         $data = nmControl::generarPDFRelHon($request);
         if(!isset($data["pdf"])){
