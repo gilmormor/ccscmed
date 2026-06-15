@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\SerializaFechasLegacy;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ImportComunaGilmerEproplas extends Model
 {
+    use SerializaFechasLegacy;
     use SoftDeletes;
     protected $table = "importcomunagilmereproplas";
     protected $fillable = ['comuna_id','comuna_id_eproplas','usuariodel_id'];

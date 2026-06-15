@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\SerializaFechasLegacy;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MotivoNc extends Model
 {
+    use SerializaFechasLegacy;
     use SoftDeletes;
     protected $table = "motivonc";
     protected $fillable = [

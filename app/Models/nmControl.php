@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use App\Models\Seguridad\Usuario;
+use App\Models\Concerns\SerializaFechasLegacy;
 use Illuminate\Database\Eloquent\Model;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use Illuminate\Support\Facades\DB;
 
 class nmControl extends Model
 {
+    use SerializaFechasLegacy;
     protected $table = "nm_control";
     protected $fillable = [
         'cot_tipo',

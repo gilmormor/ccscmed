@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Concerns\SerializaFechasLegacy;
 class InvMovModuloBodEnt extends Model
 {
+    use SerializaFechasLegacy;
     protected $table = "invmovmodulobodent";
     protected $fillable = [
         'invmovmodulo_id',

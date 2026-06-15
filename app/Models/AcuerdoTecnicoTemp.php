@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\SerializaFechasLegacy;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 use SplFileInfo;
 
 class AcuerdoTecnicoTemp extends Model
 {
+    use SerializaFechasLegacy;
     use SoftDeletes;
     protected $table = "acuerdotecnicotemp";
     protected $fillable = [

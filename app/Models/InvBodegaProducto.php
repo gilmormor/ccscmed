@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\SerializaFechasLegacy;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
 
 class InvBodegaProducto extends Model
 {
+    use SerializaFechasLegacy;
     use SoftDeletes;
     protected $table = "invbodegaproducto";
     protected $fillable = [

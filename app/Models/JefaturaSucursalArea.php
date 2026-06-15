@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\SerializaFechasLegacy;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class JefaturaSucursalArea extends Model
 {
+    use SerializaFechasLegacy;
     use SoftDeletes;
     protected $table = "jefatura_sucursal_area";
     protected $fillable = ['sucursal_area_id','jefatura_id','persona_id'];

@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\SerializaFechasLegacy;
 use Illuminate\Support\Str;
 
 class AppActivacion extends Model
 {
+    use SerializaFechasLegacy;
     protected $table = 'app_activaciones';
 
     protected $fillable = [

@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use App\Models\Seguridad\Usuario;
+use App\Models\Concerns\SerializaFechasLegacy;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DespachoSol extends Model
 {
+    use SerializaFechasLegacy;
     use SoftDeletes;
     protected $table = "despachosol";
     protected $fillable = [

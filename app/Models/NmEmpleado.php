@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use App\Models\Seguridad\Usuario;
+use App\Models\Concerns\SerializaFechasLegacy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
 class NmEmpleado extends Model
 {
+    use SerializaFechasLegacy;
     protected $table = "nm_empleados";
     protected $fillable = [
         'emp_nac',

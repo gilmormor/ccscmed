@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\SerializaFechasLegacy;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Session;
 
 
 class NotaVentaDetalle extends Model
 {
+    use SerializaFechasLegacy;
     use SoftDeletes;
     protected $table = "notaventadetalle";
     protected $fillable = [
