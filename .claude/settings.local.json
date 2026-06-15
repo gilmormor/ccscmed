@@ -25,7 +25,16 @@
       "Bash(C:/laragon/bin/php/php-7.4.33-Win32-VC15-x64/php.exe -r ' *)",
       "mcp__Claude_in_Chrome__find",
       "mcp__Claude_in_Chrome__form_input",
-      "Bash(where wkhtmltopdf *)"
+      "Bash(where wkhtmltopdf *)",
+      "Bash(C:/laragon/bin/php/php-7.4.33-Win32-VC15-x64/php.exe C:/laragon/bin/composer/composer.phar update --with-all-dependencies)",
+      "Bash(grep -rn '\\\\${\\\\|\"\\\\${' C:/laragon/www/ccscmedlaravel11/app/ --include=\"*.php\")",
+      "Bash(grep -v \"^\\\\s*//\")",
+      "Bash(\"C:/laragon/bin/php/php-8.3.14-Win32-vs16-x64/php.exe\" \"C:/laragon/bin/composer/composer.phar\" update --no-interaction)",
+      "Bash(dir \"C:/laragon/bin/php\")",
+      "Bash(\"C:/laragon/bin/php/php-8.3.30-nts-Win32-vs16-x64/php.exe\" -v)",
+      "Bash(\"C:/laragon/bin/php/php-8.3.30-nts-Win32-vs16-x64/php.exe\" \"C:/laragon/bin/composer/composer.phar\" update --no-interaction)",
+      "Bash(\"C:/laragon/bin/php/php-8.3.30-nts-Win32-vs16-x64/php.exe\" \"C:/laragon/bin/composer/composer.phar\" audit)",
+      "Bash(\"C:/laragon/bin/php/php-8.3.30-nts-Win32-vs16-x64/php.exe\" artisan *)"
     ]
   }
 }

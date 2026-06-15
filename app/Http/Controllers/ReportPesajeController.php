@@ -13,7 +13,7 @@ use App\Models\Producto;
 use App\Models\Seguridad\Usuario;
 use App\Models\Sucursal;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class ReportPesajeController extends Controller
 {

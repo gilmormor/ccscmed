@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Empresa;
 use App\Models\Nm_MovHist;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 
 class ReportEnviarEmailConErrorGenController extends Controller

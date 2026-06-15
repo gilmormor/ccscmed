@@ -6,7 +6,7 @@ use App\Models\AcuerdoTecnicoTemp;
 use App\Models\Cliente;
 use App\Models\Empresa;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class AcuerdoTecnicoTempController extends Controller
 {
