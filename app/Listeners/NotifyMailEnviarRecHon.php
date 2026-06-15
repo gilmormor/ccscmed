@@ -101,7 +101,7 @@ class NotifyMailEnviarRecHon
                 //$pdf = PDF::loadView('reportdtefac.listado', compact('datas','empresa','usuario','request'))->setPaper('a4', 'landscape');
                 // Guarda el PDF en una ubicación temporal
                 $pdfPath = storage_path("app/temp/$nm_movnomtrab->mov_numrec.pdf");
-                $pdf->save($pdfPath, true);
+                file_put_contents($pdfPath, $pdf->output());
                 $empresa = Empresa::findOrFail(1);
                 $notificaciones["nm_empleado"] = $nm_empleado;
                 $notificaciones["nm_movnomtrab"] = $nm_movnomtrab;
@@ -125,7 +125,7 @@ class NotifyMailEnviarRecHon
                     $pdf = $data["pdf"];
                     $nomach = $data["nomach"];
                     $pdfPathRelPac = storage_path("app/temp/$nm_movnomtrab->mov_numrec" . "_relpac.pdf");
-                    $pdf->save($pdfPathRelPac, true);
+                    file_put_contents($pdfPathRelPac, $pdf->output());
                 }
 
 

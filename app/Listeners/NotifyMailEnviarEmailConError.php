@@ -49,7 +49,7 @@ class NotifyMailEnviarEmailConError
             $pdf = PDF::loadView('reportenviaremailconerror.listado', compact('datos','empresa'));
             // Guarda el PDF en una ubicación temporal
             $pdfPath = storage_path("app/temp/enviaremailconerror.pdf");
-            $pdf->save($pdfPath);
+            file_put_contents($pdfPath, $pdf->output());
             $empresa = Empresa::findOrFail(1);
             /* $notificaciones["nm_empleado"] = $nm_empleado;
             $notificaciones["nm_movnomtrab"] = $nm_movnomtrab;
