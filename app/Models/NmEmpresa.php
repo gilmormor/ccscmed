@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Concerns\SerializaFechasLegacy;
 class NmEmpresa extends Model
 {
+    use SerializaFechasLegacy;
     protected $table      = 'nm_empresa';
     protected $primaryKey = 'emp_codh';
     public    $keyType    = 'string';

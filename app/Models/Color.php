@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\SerializaFechasLegacy;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Color extends Model
 {
+    use SerializaFechasLegacy;
     use SoftDeletes;
     protected $table = "color";
     protected $fillable = [

@@ -9,7 +9,7 @@ use App\Models\nmControl;
 use App\Models\Seguridad\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use Illuminate\Routing\Route;
 
@@ -41,10 +41,10 @@ class ReportRecHonController extends Controller
     public function exportPdf(Request $request)
     {
         //dd($request);
+        $usuario = Usuario::findOrFail(auth()->id());
         if(isset($request->emp_ced)){
             $aux_cedula = $request->emp_ced;
         }else{
-            $usuario = Usuario::findOrFail(auth()->id());
             $aux_cedula = $usuario->usuario;
             //$aux_cedula = "2450604";
         }

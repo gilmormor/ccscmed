@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Concerns\SerializaFechasLegacy;
 class nmHonPacienteDet extends Model
 {
+    use SerializaFechasLegacy;
     protected $table = "nm_honpacientedet";
     protected $fillable = [
         'nm_controlnomcls_id',

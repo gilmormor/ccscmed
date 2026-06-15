@@ -14,7 +14,7 @@ use App\Models\InvBodegaProducto;
 use App\Models\Producto;
 use App\Models\Seguridad\Usuario;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\DB;
 
 class ProductoController extends Controller

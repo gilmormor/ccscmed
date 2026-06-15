@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\SerializaFechasLegacy;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Provincia extends Model
 {
+    use SerializaFechasLegacy;
     use SoftDeletes;
     protected $table = "provincia";
     protected $fillable = ['nombre','region_id','usuariodel_id'];

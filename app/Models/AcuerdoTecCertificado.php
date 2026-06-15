@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\SerializaFechasLegacy;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AcuerdoTecCertificado extends Model
 {
+    use SerializaFechasLegacy;
     use SoftDeletes;
     protected $table = "acuerdotectemp_certificado";
     protected $fillable = ['acuerdotecnicotemp_id','certificado_id','usuariodel_id'];

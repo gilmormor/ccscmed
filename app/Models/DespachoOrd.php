@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use App\Events\GuardarFacturaDespacho;
+use App\Models\Concerns\SerializaFechasLegacy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
 class DespachoOrd extends Model
 {
+    use SerializaFechasLegacy;
     use SoftDeletes;
     protected $table = "despachoord";
     protected $fillable = [

@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Concerns\SerializaFechasLegacy;
 class DespachoOrdDet_InvBodegaProducto extends Model
 {
+    use SerializaFechasLegacy;
     protected $table = "despachoorddet_invbodegaproducto";
     protected $fillable = [
         'despachoorddet_id',

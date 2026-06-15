@@ -8,7 +8,7 @@ use App\Models\Seguridad\Usuario;
 use App\Models\Sucursal;
 use App\Models\Vendedor;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 
 class ReportDTEComisionxVendController extends Controller
 {

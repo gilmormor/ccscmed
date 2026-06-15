@@ -6,7 +6,7 @@ use App\Models\Empresa;
 use App\Models\InvMov;
 use App\Models\Seguridad\Usuario;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\DB;
 
 class InvMovController extends Controller

@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Concerns\SerializaFechasLegacy;
 class AreaProduccionSucLinea extends Model
 {
+    use SerializaFechasLegacy;
     protected $table = "areaproduccionsuclinea";
     protected $fillable = [
         'areaproduccionsuc_id',

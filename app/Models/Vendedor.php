@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Seguridad\Usuario;
+use App\Models\Concerns\SerializaFechasLegacy;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class Vendedor extends Model
 {
+    use SerializaFechasLegacy;
     use SoftDeletes;
     protected $table = "vendedor";
     protected $fillable = [

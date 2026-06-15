@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\Concerns\SerializaFechasLegacy;
 class EstadisticaVentaGI extends Model
 {
+    use SerializaFechasLegacy;
     protected $table = "estadisticaventagi";
     protected $fillable = [
         'sucursal_id',

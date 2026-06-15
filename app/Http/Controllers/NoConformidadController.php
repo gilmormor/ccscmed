@@ -333,7 +333,7 @@ class NoConformidadController extends Controller
                 // Obtenemos el nombre
                 $nombre=array_pop($nombre_extension);
                 // Creamos la ruta de destino
-                $archivo_destino = DIR_DESCARGAS . DIRECTORY_SEPARATOR .$id.'-'. utf8_decode($nombre) . '.' . $extension;
+                $archivo_destino = DIR_DESCARGAS . DIRECTORY_SEPARATOR .$id.'-'. mb_convert_encoding($nombre, 'ISO-8859-1', 'UTF-8') . '.' . $extension;
                 // Mover el archivo de la carpeta temporal a la nueva ubicación
                 if(move_uploaded_file($ficheros['tmp_name'][$i], $archivo_destino)) {
                     // Activamos el indicador de proceso correcto

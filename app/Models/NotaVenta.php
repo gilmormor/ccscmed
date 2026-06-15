@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\SerializaFechasLegacy;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
@@ -11,6 +12,7 @@ use SplFileInfo;
 
 class NotaVenta extends Model
 {
+    use SerializaFechasLegacy;
     use SoftDeletes;
     protected $table = "notaventa";
     protected $fillable = [

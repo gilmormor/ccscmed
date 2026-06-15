@@ -45,7 +45,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use SplFileInfo;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Support\Facades\File;
 use PhpParser\Node\Stmt\Foreach_;
 use Illuminate\Support\Facades\Storage;

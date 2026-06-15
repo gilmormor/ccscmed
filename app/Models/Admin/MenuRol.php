@@ -3,11 +3,13 @@
 namespace App\Models\Admin;
 
 use App\Models\Seguridad\UsuarioRol;
+use App\Models\Concerns\SerializaFechasLegacy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MenuRol extends Model
 {
+    use SerializaFechasLegacy;
     use SoftDeletes;
     protected $table = "menu_rol";
     protected $fillable = [

@@ -3,6 +3,7 @@
 namespace App\Models\Seguridad;
 
 use App\Models\Admin\Rol;
+use App\Models\Concerns\SerializaFechasLegacy;
 use App\Models\NoConformidad;
 use App\Models\Persona;
 use App\Models\Sucursal;
@@ -17,6 +18,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class Usuario extends Authenticatable
 {
+    use SerializaFechasLegacy;
     use HasApiTokens, SoftDeletes;
     protected $remember_token = false;
     protected $table = 'usuario';

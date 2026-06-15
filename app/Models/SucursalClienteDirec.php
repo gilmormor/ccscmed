@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\SerializaFechasLegacy;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SucursalClienteDirec extends Model
 {
+    use SerializaFechasLegacy;
     use SoftDeletes;
     protected $table = "sucursalclientedirec";
     protected $fillable = ['sucursal_id','clientedirec_id','vendedor_id'];

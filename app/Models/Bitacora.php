@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use App\Models\Seguridad\Usuario;
+use App\Models\Concerns\SerializaFechasLegacy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Bitacora extends Model
 {
+    use SerializaFechasLegacy;
     use SoftDeletes;
     protected $table = "bitacora";
     protected $fillable = [

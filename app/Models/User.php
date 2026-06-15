@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\ClienteBloqueado;
+use App\Models\Concerns\SerializaFechasLegacy;
 use App\Models\Despacho;
 use App\Models\DespachoOrd;
 use App\Models\NoConformidad;
@@ -16,6 +17,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
+    use SerializaFechasLegacy;
     use Notifiable;
     use SoftDeletes;
     protected $table = "usuario";
