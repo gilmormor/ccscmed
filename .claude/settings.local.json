@@ -34,7 +34,22 @@
       "Bash(\"C:/laragon/bin/php/php-8.3.30-nts-Win32-vs16-x64/php.exe\" -v)",
       "Bash(\"C:/laragon/bin/php/php-8.3.30-nts-Win32-vs16-x64/php.exe\" \"C:/laragon/bin/composer/composer.phar\" update --no-interaction)",
       "Bash(\"C:/laragon/bin/php/php-8.3.30-nts-Win32-vs16-x64/php.exe\" \"C:/laragon/bin/composer/composer.phar\" audit)",
-      "Bash(\"C:/laragon/bin/php/php-8.3.30-nts-Win32-vs16-x64/php.exe\" artisan *)"
+      "Bash(\"C:/laragon/bin/php/php-8.3.30-nts-Win32-vs16-x64/php.exe\" artisan *)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "mcp__Claude_in_Chrome__get_page_text",
+      "mcp__Claude_in_Chrome__javascript_tool",
+      "Bash(C:/laragon/bin/php/php-8.3.30-nts-Win32-vs16-x64/php.exe -r ' *)",
+      "Bash(git push *)",
+      "Bash(\"C:/laragon/bin/php/php-8.3.30-nts-Win32-vs16-x64/php.exe\" composer.phar update --with-all-dependencies)",
+      "Bash(\"C:/laragon/bin/php/php-8.3.30-nts-Win32-vs16-x64/php.exe\" \"C:/ProgramData/ComposerSetup/bin/composer.phar\" update --with-all-dependencies)",
+      "Bash(\"C:/laragon/bin/php/php-8.3.30-nts-Win32-vs16-x64/php.exe\" \"C:/laragon/bin/composer/composer\" update --with-all-dependencies)",
+      "Bash(\"C:/laragon/bin/php/php-8.3.30-nts-Win32-vs16-x64/php.exe\" \"C:/laragon/bin/composer/composer.phar\" update --with-all-dependencies)",
+      "Bash(grep -n '$usuario' resources/views/reportrecemp/listado.blade.php)",
+      "Bash(git pull *)",
+      "Bash(git stash *)",
+      "Bash(findstr \"DB_DATABASE\" .env)",
+      "PowerShell(head -20)",
+      "PowerShell(git add .gitignore)"
     ]
   }
 }
