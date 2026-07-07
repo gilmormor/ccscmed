@@ -546,7 +546,7 @@ function num2letras($num, $fem = false, $dec = true) {
          $n2 = $num[1]; 
          $t = ' ' . $matdec[$n2] . $t; 
       } 
-      $n = $num[0]; 
+      $n = (int)$num[0]; 
 	 
 	  
       if ($n == 1) { 
