@@ -49,7 +49,9 @@
       "Bash(git stash *)",
       "Bash(findstr \"DB_DATABASE\" .env)",
       "PowerShell(head -20)",
-      "PowerShell(git add .gitignore)"
+      "PowerShell(git add .gitignore)",
+      "mcp__claude-in-chrome__tabs_context_mcp",
+      "mcp__claude-in-chrome__browser_batch"
     ]
   }
 }

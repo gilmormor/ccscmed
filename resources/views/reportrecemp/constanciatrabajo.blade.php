@@ -100,8 +100,8 @@
         desempeña actualmente el cargo de
         <span class="bold">{{ trim($nm_movnomtrab->car_desc) }}</span>,
         devenga un salario integral mensual de
-        <span class="bold">{{ strtoupper(num2letras($nm_movnomtrab->mov_sueldo,false)) }}</span>
-        (<span class="bold">Bs.{{ number_format($nm_movnomtrab->mov_sueldo, 2, ',', '.') }}</span>),
+        <span class="bold">{{ strtoupper(num2letras(number_format((float)trim($nm_movnomtrab->mov_sueldo ?? 0), 2, '.', ''), false)) }}</span>
+        (<span class="bold">Bs.{{ number_format((float)trim($nm_movnomtrab->mov_sueldo ?? 0), 2, ',', '.') }}</span>),
         y recibe el beneficio de alimentación diario.
     </div>
 
