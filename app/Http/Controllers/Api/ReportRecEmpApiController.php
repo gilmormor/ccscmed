@@ -208,7 +208,7 @@ class ReportRecEmpApiController extends Controller
                     ->on('m.emp_codh', '=', 'c.emp_codh');
             })
             ->select('m.mov_numnom', 'm.mov_numrec', 'm.mov_fecing', 'm.mov_sueldo',
-                     'e.emp_ape', 'e.emp_nom', 'e.emp_rif', 'c.car_desc', 'e.emp_ced')
+                     'e.emp_ape', 'e.emp_nom', 'e.emp_rif', 'c.car_desc', 'e.emp_ced', 'e.emp_nac')
             ->where('m.emp_codh', $request->emp_codh)
             ->where('m.mov_ced', $aux_cedula)
             ->where('m.mov_numnom', $request->mov_nummon)
