@@ -10,7 +10,6 @@ Recibo Empleados
 @section("styles")
 <style>
 @media (max-width: 767px) {
-    /* Mostrar texto completo sin truncar */
     .bootstrap-select .dropdown-menu li a span.text {
         white-space: normal !important;
         overflow: visible !important;
@@ -18,21 +17,38 @@ Recibo Empleados
         word-break: break-word;
         display: block;
     }
-    /* Reservar espacio para el scrollbar a la derecha */
     .bootstrap-select .dropdown-menu li a {
         white-space: normal !important;
         padding-right: 18px !important;
     }
-    /* Scrollbar siempre visible y scroll táctil suave */
     .bootstrap-select .dropdown-menu div.inner {
         overflow-y: scroll !important;
         -webkit-overflow-scrolling: touch;
     }
-    /* El dropdown ocupa el ancho del contenedor */
     .bootstrap-select .dropdown-menu {
         width: 100% !important;
         min-width: 0 !important;
     }
+}
+
+/* Pulso de atención en botón Filtrar períodos */
+@keyframes btn-pulso {
+    0%   { box-shadow: 0 0 0 0 rgba(52,152,219,.8); }
+    70%  { box-shadow: 0 0 0 10px rgba(52,152,219,0); }
+    100% { box-shadow: 0 0 0 0 rgba(52,152,219,0); }
+}
+.btn-atencion {
+    animation: btn-pulso 1.5s infinite;
+}
+
+/* Campo período vacío al intentar imprimir */
+.periodo-requerido .btn.dropdown-toggle {
+    border: 2px solid #e74c3c !important;
+    box-shadow: 0 0 5px rgba(231,76,60,.4) !important;
+}
+.periodo-requerido-label {
+    color: #e74c3c;
+    font-weight: bold;
 }
 </style>
 @endsection

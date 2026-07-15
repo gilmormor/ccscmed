@@ -26,9 +26,15 @@ $(document).ready(function () {
         todayHighlight: true
     });
 
+    // Pulso inicial para llamar la atención sobre el botón
+    $('#btnFiltrarPeriodos').addClass('btn-atencion');
+
     $('#btnFiltrarPeriodos').on('click', function() {
         if ($('#emp_codh').val() != "") {
             periodos();
+            $(this).removeClass('btn-atencion');
+            $('#mov_nummon').closest('.bootstrap-select').removeClass('periodo-requerido');
+            $('#mov_nummon').closest('.col-xs-12.col-md-8').prev().find('label').removeClass('periodo-requerido-label');
         }
     });
 
@@ -211,56 +217,53 @@ function empresasPorCedula(){
 }
 
 
+function alertaCamposRequeridos(data1) {
+    var sinPeriodo = data1.mov_nummon == "";
+    var sinEmpresa = data1.emp_codh == "";
+
+    // Marcar visualmente el campo Período si está vacío
+    if (sinPeriodo) {
+        $('#mov_nummon').closest('.bootstrap-select').addClass('periodo-requerido');
+        $('#mov_nummon').closest('.col-xs-12.col-md-8').prev().find('label').addClass('periodo-requerido-label');
+        $('#btnFiltrarPeriodos').addClass('btn-atencion');
+    }
+
+    var texto = sinPeriodo
+        ? 'Seleccione la Empresa, luego haga clic en "Filtrar períodos" y elija un Período de la lista.'
+        : 'Debe seleccionar el Cono Monetario, Empresa y Período' + ($('#emp_ced').length ? ' y Cédula' : '') + '.';
+
+    swal({
+        title: 'Faltan datos requeridos',
+        text: texto,
+        icon: 'warning',
+        buttons: { confirm: "Aceptar" },
+    });
+}
+
 $("#btnpdf2").click(function()
 {
     aux_titulo = 'Recibo de pago';
     data = datosRecEmp();
-    //console.log(data);
     var cedValida = ($('#emp_ced').length === 0) || (data.data1.emp_ced != "");
     if(data.data1.cono_monetario != "" && data.data1.emp_codh != "" && data.data1.mov_nummon != "" && cedValida){
         $('#contpdf').attr('src', '/reportrecemp/exportPdf/' + data.data2);
         $("#myModalpdf").modal('show');
     }else{
-        swal({
-        title: 'Debe seleccionar el Cono Monetario, Empresa, Periodo' + ($('#emp_ced').length ? ' y Cédula' : '') + '.',
-        text: "",
-        icon: 'warning',
-        buttons: {
-            confirm: "Aceptar"
-        },
-        }).then((value) => {
-            if (value) {
-            }
-        });
-
+        alertaCamposRequeridos(data.data1);
     }
-
 });
 
 $("#constancia").click(function()
 {
-    aux_titulo = 'Recibo de pago';
+    aux_titulo = 'Constancia de Trabajo';
     data = datosRecEmp();
-    //console.log(data);
     var cedValida = ($('#emp_ced').length === 0) || (data.data1.emp_ced != "");
     if(data.data1.cono_monetario != "" && data.data1.emp_codh != "" && data.data1.mov_nummon != "" && cedValida){
         $('#contpdf').attr('src', '/reportrecemp/constanciaTrabajo/' + data.data2);
         $("#myModalpdf").modal('show');
     }else{
-        swal({
-        title: 'Debe seleccionar el Cono Monetario, Empresa, Periodo' + ($('#emp_ced').length ? ' y Cédula' : '') + '.',
-        text: "",
-        icon: 'warning',
-        buttons: {
-            confirm: "Aceptar"
-        },
-        }).then((value) => {
-            if (value) {
-            }
-        });
-
+        alertaCamposRequeridos(data.data1);
     }
-
 });
 
 
