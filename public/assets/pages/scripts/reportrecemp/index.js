@@ -26,6 +26,13 @@ $(document).ready(function () {
         todayHighlight: true
     });
 
+    // Si solo hay 1 empresa disponible (vista empleado), seleccionarla automáticamente
+    var opcionesEmpresa = $('#emp_codh option[value!=""]');
+    if (opcionesEmpresa.length === 1) {
+        $('#emp_codh').val(opcionesEmpresa.first().val());
+        $(".selectpicker").selectpicker('refresh');
+    }
+
     // Pulso inicial para llamar la atención sobre el botón
     $('#btnFiltrarPeriodos').addClass('btn-atencion');
 
@@ -98,13 +105,17 @@ function periodos(){
             success: function(response) {
                 //console.log(response.data);
                 for (let i = 0; i < response.data.length; i++) {
-                    $("#mov_nummon").append(`<option value="${response.data[i].cot_numnom}" 
+                    $("#mov_nummon").append(`<option value="${response.data[i].cot_numnom}"
                         mov_codcar="${response.data[i].mov_codcar}"
                         cot_tipo="${response.data[i].cot_tipo}"
                         mov_codubica="${response.data[i].mov_codubica}"
                         >
                             ${response.data[i].fdesde} al ${response.data[i].fhasta} ${response.data[i].tmo_desc}
                         </option>`)
+                }
+                var primerPeriodo = $('#mov_nummon option[value!=""]').first();
+                if (primerPeriodo.length) {
+                    $('#mov_nummon').val(primerPeriodo.val());
                 }
                 $(".selectpicker").selectpicker('refresh');
             },
@@ -207,6 +218,9 @@ function empresasPorCedula(){
             }
             for(var i = 0; i < response.data.length; i++){
                 $('#emp_codh').append('<option value="' + response.data[i].emp_codh + '">' + response.data[i].emp_nombre + '</option>');
+            }
+            if (response.data.length === 1) {
+                $('#emp_codh').val(response.data[0].emp_codh);
             }
             $(".selectpicker").selectpicker('refresh');
         },

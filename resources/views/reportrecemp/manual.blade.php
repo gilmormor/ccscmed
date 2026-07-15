@@ -178,8 +178,8 @@
 		.field-table th{
 			background: {{ $empresa->color }} !important;
 		}
-        .header-title p{
-			background: {{ $empresa->color }} !important;
+        .header-title h1{
+			color: {{ $empresa->color }} !important;
 		}
         .step-num span {
             background: {{ $empresa->color }} !important;
@@ -305,24 +305,31 @@
 <table class="step-row"><tr><td class="step-num"><span>1</span></td><td class="step-text">Haga clic en el menú <strong>Reporte</strong>.</td></tr></table>
 <table class="step-row"><tr><td class="step-num"><span>2</span></td><td class="step-text">Seleccione la opción <strong>Recibo Emp</strong>.<br><span style="font-size:10px;">Ruta de acceso: <strong>Reporte &rarr; Recibo Emp</strong></span></td></tr></table>
 <table class="step-row"><tr><td class="step-num"><span>3</span></td><td class="step-text">Seleccione el <strong>Cono Monetario</strong> correspondiente al período que desea consultar (por defecto aparece <strong>BsD</strong>).</td></tr></table>
-<table class="step-row"><tr><td class="step-num"><span>4</span></td><td class="step-text">Seleccione la <strong>Empresa</strong> a la cual pertenece su nómina en el campo <em>Empresa</em>.</td></tr></table>
+<table class="step-row"><tr><td class="step-num"><span>4</span></td><td class="step-text">
+    Verifique el campo <strong>Empresa</strong>.<br>
+    <span style="font-size:10px;color:#555;">Si su nómina pertenece a <strong>una sola empresa</strong>, el sistema la seleccionará automáticamente.
+    Si pertenece a más de una empresa, seleccione la que corresponda al recibo que desea consultar.</span>
+</td></tr></table>
 <table class="step-row"><tr><td class="step-num"><span>5</span></td><td class="step-text">
     Haga clic en el botón azul <span class="badge">&#128269; Filtrar períodos</span>.<br>
     <span style="font-size:10px;color:#555;">Este paso es <strong>obligatorio</strong>: carga la lista de períodos disponibles según la empresa seleccionada.
-    Si no hace clic en este botón, la lista de períodos permanecerá vacía y no podrá generar el recibo.</span>
+    Al completar, el sistema seleccionará automáticamente el período más reciente.</span>
 </td></tr></table>
 
 <div class="box-warn">
     <strong>Paso obligatorio — Filtrar períodos:</strong><br>
-    Después de seleccionar la Empresa, <strong>siempre</strong> debe hacer clic en el botón
-    <strong>"Filtrar períodos"</strong> antes de poder seleccionar un período.
+    Después de confirmar la Empresa, <strong>siempre</strong> debe hacer clic en el botón
+    <strong>"Filtrar períodos"</strong> para cargar los períodos disponibles.
     Si omite este paso, la lista de períodos aparecerá vacía y el sistema no podrá generar el recibo.
     <br><br>
     Opcionalmente puede indicar un rango de fechas (Desde / Hasta) antes de filtrar,
     para reducir la cantidad de períodos que se muestran en la lista.
 </div>
 
-<table class="step-row"><tr><td class="step-num"><span>6</span></td><td class="step-text">Seleccione el <strong>Período</strong> de nómina que desea consultar en la lista desplegable <em>Periodo</em>.</td></tr></table>
+<table class="step-row"><tr><td class="step-num"><span>6</span></td><td class="step-text">
+    Verifique o cambie el <strong>Período</strong> en la lista desplegable <em>Periodo</em>.<br>
+    <span style="font-size:10px;color:#555;">El sistema selecciona automáticamente el primer período de la lista. Si necesita consultar uno distinto, selecciónelo manualmente.</span>
+</td></tr></table>
 <table class="step-row"><tr><td class="step-num"><span>7</span></td><td class="step-text">Haga clic en el botón <span class="badge">Recibo</span> para visualizar y descargar su recibo de pago en formato PDF.</td></tr></table>
 
 <table class="field-table">
@@ -339,23 +346,23 @@
     <tr>
         <td>2</td>
         <td><strong>Empresa</strong></td>
-        <td>Empresa a la que pertenece su nómina. Selecciónela antes de filtrar períodos.</td>
+        <td>Empresa a la que pertenece su nómina. Si solo tiene una empresa registrada, el sistema la selecciona automáticamente.</td>
     </tr>
     <tr>
         <td>3</td>
         <td><strong>Filtrar períodos</strong> <span class="badge-orange">Botón obligatorio</span></td>
-        <td>Carga la lista de períodos. <strong>Debe hacer clic aquí después de seleccionar la Empresa.</strong> Sin este paso la lista de períodos estará vacía.</td>
+        <td>Carga la lista de períodos según la empresa. <strong>Debe hacer clic aquí antes de poder generar el recibo.</strong> Al completar, selecciona automáticamente el período más reciente.</td>
     </tr>
     <tr>
         <td>4</td>
         <td><strong>Período</strong></td>
-        <td>Seleccione el período de nómina (quincena o mes) que desea consultar. Este campo se llena solo después de hacer clic en "Filtrar períodos".</td>
+        <td>Período de nómina a consultar. Se selecciona automáticamente el primero de la lista; cámbielo si necesita uno distinto.</td>
     </tr>
 </table>
 
 <div class="box-info">
     <strong>Resumen del flujo correcto:</strong><br>
-    Cono Monetario &rarr; Empresa &rarr; <strong>Filtrar períodos</strong> &rarr; Período &rarr; <span class="badge">Recibo</span>
+    Cono Monetario &rarr; Empresa (auto-seleccionada si es única) &rarr; <strong>Filtrar períodos</strong> &rarr; Período (auto-seleccionado) &rarr; <span class="badge">Recibo</span>
 </div>
 
 
@@ -369,7 +376,7 @@
     también puede generar su Constancia de Trabajo:
 </p>
 
-<table class="step-row"><tr><td class="step-num"><span>1</span></td><td class="step-text">Seleccione los tres filtros (Cono Monetario, Empresa y Período) tal como se describe en la sección 4.</td></tr></table>
+<table class="step-row"><tr><td class="step-num"><span>1</span></td><td class="step-text">Complete los filtros (Cono Monetario, Empresa y Período) tal como se describe en la sección 4. Recuerde hacer clic en <strong>Filtrar períodos</strong> antes de seleccionar el período.</td></tr></table>
 <table class="step-row"><tr><td class="step-num"><span>2</span></td><td class="step-text">Haga clic en el botón <span class="badge">Constancia</span>.</td></tr></table>
 <table class="step-row"><tr><td class="step-num"><span>3</span></td><td class="step-text">El sistema generará su constancia de trabajo en formato PDF.</td></tr></table>
 
