@@ -204,9 +204,9 @@
         <div class="col-xs-12 col-sm-6 col-md-4">
             <div class="da-filter-title"><i class="fa fa-calendar-o"></i> Período</div>
             <div class="btn-group btn-group-sm" role="group" id="da-period-group">
-                <button type="button" class="btn btn-default da-period-btn" data-periodo="mes">Mes</button>
+                <button type="button" class="btn btn-default da-period-btn active" data-periodo="mes">Mes</button>
                 <button type="button" class="btn btn-default da-period-btn" data-periodo="3m">3M</button>
-                <button type="button" class="btn btn-default da-period-btn active" data-periodo="12m">12M</button>
+                <button type="button" class="btn btn-default da-period-btn" data-periodo="12m">12M</button>
                 <button type="button" class="btn btn-default da-period-btn" data-periodo="anio">Año</button>
                 <button type="button" class="btn btn-default da-period-btn" data-periodo="custom">
                     <i class="fa fa-calendar"></i> Rango

@@ -9,7 +9,7 @@ $(document).ready(function () {
        ESTADO GLOBAL DE FILTROS
     ──────────────────────────────────────────────────────────── */
     var state = {
-        periodo     : '12m',
+        periodo     : 'mes',
         fecha_desde : '',
         fecha_hasta : '',
         emp_ced     : '',
@@ -820,8 +820,8 @@ $(document).ready(function () {
 
     // Botón Limpiar
     $('#da-btn-limpiar').on('click', function() {
-        state = { periodo:'12m', fecha_desde:'', fecha_hasta:'', emp_ced:'', conceptos:'' };
-        $('.da-period-btn').removeClass('active').filter('[data-periodo="12m"]').addClass('active');
+        state = { periodo:'mes', fecha_desde:'', fecha_hasta:'', emp_ced:'', conceptos:'' };
+        $('.da-period-btn').removeClass('active').filter('[data-periodo="mes"]').addClass('active');
         $('#da-rango-custom').hide();
         $('#da-fecha-desde,#da-fecha-hasta').val('');
         $('#da-sel-trabajador').val('').selectpicker('refresh');
