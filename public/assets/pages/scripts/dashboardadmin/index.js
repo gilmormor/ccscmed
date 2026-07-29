@@ -826,7 +826,6 @@ $(document).ready(function () {
         $('#da-fecha-desde,#da-fecha-hasta').val('');
         $('#da-sel-trabajador').val('').selectpicker('refresh');
         $('#da-sel-conceptos').val([]).selectpicker('refresh');
-        cargarTodo();
     });
 
     /* ================================================================
@@ -834,6 +833,6 @@ $(document).ready(function () {
        ================================================================ */
     cargarFiltroTrabajadores();
     cargarFiltroConceptos();
-    cargarTodo();
+    // No se ejecutan consultas al cargar — el usuario debe presionar "Aplicar"
 
 });
