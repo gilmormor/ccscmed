@@ -32,6 +32,10 @@ return new class extends Migration
             'idx_honpacdet_emp_ced'    => 'emp_ced',
             'idx_honpacdet_fecha_fact' => 'fecha_fact',
             'idx_honpacdet_cls_ced'    => 'nm_controlnomcls_id, emp_ced',
+            'idx_honpacdet_tipo_doc'   => 'tipo_documento',
+        ],
+        'tipodocumento' => [
+            'idx_tipodocumento_tipodoc' => 'tipodoc',
         ],
         'nm_empleados' => [
             'idx_empleados_emp_ced'    => 'emp_ced',

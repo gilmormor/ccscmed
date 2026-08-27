@@ -1462,6 +1462,19 @@ Route::get('dashboardadmin/ranking-conceptos',        'DashboardAdminController@
 Route::get('dashboardadmin/filtro-trabajadores',      'DashboardAdminController@filtroTrabajadores')->name('dashboardadmin_filtro_trabajadores');
 Route::get('dashboardadmin/filtro-conceptos',         'DashboardAdminController@filtroConceptos')->name('dashboardadmin_filtro_conceptos');
 
+/*RUTAS DASHBOARD HONORARIOS PROFESIONALES*/
+Route::get('dashboardhon',                    'DashboardHonController@index')->name('dashboardhon');
+Route::get('dashboardhon/kpis',               'DashboardHonController@kpis')->name('dashboardhon_kpis');
+Route::get('dashboardhon/sparklines',         'DashboardHonController@sparklines')->name('dashboardhon_sparklines');
+Route::get('dashboardhon/evolucion',          'DashboardHonController@evolucion')->name('dashboardhon_evolucion');
+Route::get('dashboardhon/totales-nomina',     'DashboardHonController@totalesNomina')->name('dashboardhon_totales_nomina');
+Route::get('dashboardhon/distribucion-tipo',  'DashboardHonController@distribucionTipo')->name('dashboardhon_distribucion_tipo');
+Route::get('dashboardhon/top-medicos',        'DashboardHonController@topMedicos')->name('dashboardhon_top_medicos');
+Route::get('dashboardhon/ranking-conceptos',  'DashboardHonController@rankingConceptos')->name('dashboardhon_ranking_conceptos');
+Route::get('dashboardhon/pacientes',          'DashboardHonController@pacientes')->name('dashboardhon_pacientes');
+Route::get('dashboardhon/filtro-medicos',     'DashboardHonController@filtroMedicos')->name('dashboardhon_filtro_medicos');
+Route::get('dashboardhon/filtro-conceptos',   'DashboardHonController@filtroConceptos')->name('dashboardhon_filtro_conceptos');
+
 /*RUTAS REPORTE RECIBO HONORARIOS*/
 Route::get('reportrechon', 'ReportRecHonController@index')->name('reportrechon');
 Route::get('reportrechon/reportrechonpage', 'ReportRecHonController@reportrechonpage')->name('reportrechonpage');
