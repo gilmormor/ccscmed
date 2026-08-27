@@ -284,6 +284,30 @@
             </article>
         </section>
 
+        {{-- ── Médicos que más generaron ingresos ── --}}
+        <section class="dh-card dh-panel">
+            <header class="dh-panel-head">
+                <div>
+                    <h2 class="dh-panel-title">Médicos que más generaron ingresos</h2>
+                    <p class="dh-panel-sub">Ranking completo del período con participación sobre el total</p>
+                </div>
+                <div class="dh-panel-tools">
+                    <button type="button" class="dh-btn dh-btn-ghost" id="dh-btn-mi-pdf">
+                        <i class="fa fa-file-pdf-o"></i> PDF
+                    </button>
+                    <button type="button" class="dh-btn dh-btn-ghost" id="dh-btn-mi-excel">
+                        <i class="fa fa-file-excel-o"></i> Excel
+                    </button>
+                </div>
+            </header>
+            <div class="dh-panel-body dh-panel-body-flush">
+                <div class="dh-skeleton dh-skeleton-list" id="sk-medingresos"></div>
+                <div class="dh-table-wrap" id="wrap-medingresos" hidden>
+                    <table class="dh-table" id="tabla-medingresos" style="width:100%"></table>
+                </div>
+            </div>
+        </section>
+
         {{-- ── Conceptos ── --}}
         <section class="dh-card dh-panel">
             <header class="dh-panel-head">

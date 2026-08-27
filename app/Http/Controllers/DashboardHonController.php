@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,13 +14,86 @@ use Illuminate\Support\Facades\DB;
  *   Pacientes → nm_control → nm_controlnomcls → nm_honpacientedet + tipodocumento
  *
  * MÉDICO: se considera médico a quien aparece en nm_honpacientedet.
- * MONEDA: mme_montomone = Bs | mme_montodl = USD | mme_tasacambiorig = tasa BCV
+ *
+ * MAPEO DE MONTOS — debe coincidir con el recibo de honorarios
+ * (resources/views/reportrechon/listado.blade.php), que es la fuente de verdad:
+ *
+ *   mov_monto          Monto en Bs del movimiento ("Bs General" / "Deduc Bs").
+ *   mme_montomone      SOLO la porción pagada en otra moneda, expresada en Bs
+ *                      ("Otra Mon."). NO es el monto total: para las deducciones
+ *                      suele ser 0.
+ *   mov_monto − mme_montomone   "Bs. Netos" de la fila.
+ *   mme_montodl        Monto en divisa (ME). El concepto 307 (anticipos) usa
+ *                      mme_montodll en su lugar.
+ *   mme_tasacambiorig  Tasa DE PAGO del recibo.
+ *   cot_valordolar     Tasa BCV (nm_control). Es la que pide el requerimiento 3.
+ *
+ *   Neto a pagar = Σ (mov_monto − mme_montomone) × signo,  signo: D = −1, resto +1
+ *
+ * Verificado contra el recibo del médico 9.241.413, nómina #237 (04/06/2026 al
+ * 07/06/2026): 436.724,50 asignaciones · 11.265,78 otra moneda · 43.390,27
+ * deducciones · 382.068,45 neto.
  *
  * Los montos se devuelven SIEMPRE en positivo (requerimiento 9): el signo se
- * deriva de mov_tipocon (A = asignación, D = deducción).
+ * deriva de mov_tipocon.
  */
 class DashboardHonController extends Controller
 {
+    /** Conceptos que se comportan como asignación en el recibo. */
+    private const TIPOS_ASIGNACION = "'A','O','F'";
+
+    /** Concepto de anticipos: su monto en divisa vive en mme_montodll. */
+    private const CONCEPTO_ANTICIPO = 307;
+
+    /* ------------------------------------------------------------------
+     * Expresiones SQL de montos, centralizadas para que no se desincronicen
+     * del recibo. Se usan en todos los SELECT de este controlador.
+     * ------------------------------------------------------------------ */
+    private function expAsignacionBs(): string
+    {
+        return "SUM(CASE WHEN nm_movhist.mov_tipocon IN (" . self::TIPOS_ASIGNACION . ")
+                         THEN nm_movhist.mov_monto ELSE 0 END)";
+    }
+
+    private function expDeduccionBs(): string
+    {
+        return "SUM(CASE WHEN nm_movhist.mov_tipocon = 'D'
+                         THEN nm_movhist.mov_monto ELSE 0 END)";
+    }
+
+    /** Porción en otra moneda, expresada en Bs (columna "Otra Mon." del recibo). */
+    private function expOtraMonedaBs(): string
+    {
+        return "SUM(CASE WHEN nm_movhist.mov_tipocon IN (" . self::TIPOS_ASIGNACION . ")
+                         THEN COALESCE(nm_movhismonext.mme_montomone, 0) ELSE 0 END)";
+    }
+
+    /** Neto a pagar: Σ (mov_monto − mme_montomone) × signo. */
+    private function expNetoBs(): string
+    {
+        return "SUM((nm_movhist.mov_monto - COALESCE(nm_movhismonext.mme_montomone, 0))
+                    * CASE WHEN nm_movhist.mov_tipocon = 'D' THEN -1 ELSE 1 END)";
+    }
+
+    /** Monto en divisa (ME), con la excepción del concepto de anticipos. */
+    private function expUsd(): string
+    {
+        return "SUM(CASE WHEN nm_movhist.mov_codcon = " . self::CONCEPTO_ANTICIPO . "
+                         THEN COALESCE(nm_movhismonext.mme_montodll, 0)
+                         ELSE COALESCE(nm_movhismonext.mme_montodl, 0) END
+                    * CASE WHEN nm_movhist.mov_tipocon = 'D' THEN -1 ELSE 1 END)";
+    }
+
+    /** Solo la parte de asignaciones en divisa (sin restar deducciones). */
+    private function expUsdAsignacion(): string
+    {
+        return "SUM(CASE WHEN nm_movhist.mov_tipocon IN (" . self::TIPOS_ASIGNACION . ")
+                         THEN (CASE WHEN nm_movhist.mov_codcon = " . self::CONCEPTO_ANTICIPO . "
+                                    THEN COALESCE(nm_movhismonext.mme_montodll, 0)
+                                    ELSE COALESCE(nm_movhismonext.mme_montodl, 0) END)
+                         ELSE 0 END)";
+    }
+
     /* ==================================================================
      * FROM compartido — honorarios de médicos
      * ================================================================== */
@@ -146,15 +220,18 @@ class DashboardHonController extends Controller
     {
         $select = "
             SELECT
-                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN nm_movhismonext.mme_montomone ELSE 0 END) AS asig_bs,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='D' THEN nm_movhismonext.mme_montomone ELSE 0 END) AS ded_bs,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN nm_movhismonext.mme_montodl   ELSE 0 END) AS asig_usd,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='D' THEN nm_movhismonext.mme_montodl   ELSE 0 END) AS ded_usd,
+                " . $this->expAsignacionBs()  . " AS asig_bs,
+                " . $this->expDeduccionBs()   . " AS ded_bs,
+                " . $this->expOtraMonedaBs()  . " AS otramon_bs,
+                " . $this->expNetoBs()        . " AS neto_bs,
+                " . $this->expUsdAsignacion() . " AS asig_usd,
+                " . $this->expUsd()           . " AS neto_usd,
                 COUNT(DISTINCT nm_movhist.emp_ced)    AS total_med,
                 COUNT(*)                              AS total_mov,
                 COUNT(DISTINCT nm_movhist.mov_codcon) AS total_conceptos,
                 COUNT(DISTINCT nm_movhist.mov_nummon) AS total_nominas,
-                AVG(NULLIF(nm_movhismonext.mme_tasacambiorig, 0)) AS tasa_avg
+                AVG(NULLIF(nm_control.cot_valordolar, 0))         AS tasa_bcv,
+                AVG(NULLIF(nm_movhismonext.mme_tasacambiorig, 0)) AS tasa_pago
         ";
 
         $b = []; $w = $this->buildWhere($request, $b);
@@ -163,34 +240,29 @@ class DashboardHonController extends Controller
         $b2 = []; $w2 = $this->buildWhereAnterior($request, $b2);
         $ant = DB::selectOne($select . $this->baseFrom() . $w2, $b2);
 
-        $asigBs = round($act->asig_bs ?? 0, 2);
-        $dedBs  = round($act->ded_bs  ?? 0, 2);
-        $netoBs = round($asigBs - $dedBs, 2);
-        $med    = (int) ($act->total_med ?? 0);
-
-        $asigBsAnt = round($ant->asig_bs ?? 0, 2);
-        $netoBsAnt = round($asigBsAnt - ($ant->ded_bs ?? 0), 2);
+        $asigBs  = round($act->asig_bs  ?? 0, 2);
+        $netoBs  = round($act->neto_bs  ?? 0, 2);
+        $tasaBcv = round($act->tasa_bcv ?? 0, 2);
+        $med     = (int) ($act->total_med ?? 0);
 
         return response()->json([
             'asig_bs'         => $asigBs,
-            'asig_usd'        => round($act->asig_usd ?? 0, 2),
-            'ded_bs'          => $dedBs,
-            'ded_usd'         => round($act->ded_usd ?? 0, 2),
+            'asig_usd'        => round($act->asig_usd   ?? 0, 2),
+            'ded_bs'          => round($act->ded_bs     ?? 0, 2),
+            'otramon_bs'      => round($act->otramon_bs ?? 0, 2),
             'neto_bs'         => $netoBs,
-            'neto_usd'        => round(($act->asig_usd ?? 0) - ($act->ded_usd ?? 0), 2),
+            'neto_usd'        => round($act->neto_usd   ?? 0, 2),
             'total_med'       => $med,
             'total_mov'       => (int) ($act->total_mov ?? 0),
             'total_conceptos' => (int) ($act->total_conceptos ?? 0),
             'total_nominas'   => (int) ($act->total_nominas ?? 0),
-            'tasa_avg'        => round($act->tasa_avg ?? 0, 2),
+            'tasa_avg'        => $tasaBcv,
+            'tasa_pago'       => round($act->tasa_pago ?? 0, 2),
             'prom_por_med'    => $med > 0 ? round($netoBs / $med, 2) : 0,
-            'var_asig'        => $this->variacion($asigBs, $asigBsAnt),
-            'var_neto'        => $this->variacion($netoBs, $netoBsAnt),
+            'var_asig'        => $this->variacion($asigBs, round($ant->asig_bs  ?? 0, 2)),
+            'var_neto'        => $this->variacion($netoBs, round($ant->neto_bs  ?? 0, 2)),
             'var_med'         => $this->variacion($med, (float) ($ant->total_med ?? 0)),
-            'var_tasa'        => $this->variacion(
-                                    round($act->tasa_avg ?? 0, 2),
-                                    round($ant->tasa_avg ?? 0, 2)
-                                 ),
+            'var_tasa'        => $this->variacion($tasaBcv, round($ant->tasa_bcv ?? 0, 2)),
         ]);
     }
 
@@ -204,17 +276,17 @@ class DashboardHonController extends Controller
         $rows = DB::select("
             SELECT
                 DATE_FORMAT(nm_control.cot_fdesde,'%Y-%m') AS k,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN nm_movhismonext.mme_montomone ELSE 0 END) AS asig_bs,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='D' THEN nm_movhismonext.mme_montomone ELSE 0 END) AS ded_bs,
+                " . $this->expAsignacionBs() . " AS asig_bs,
+                " . $this->expNetoBs()       . " AS neto_bs,
                 COUNT(DISTINCT nm_movhist.emp_ced) AS med,
-                AVG(NULLIF(nm_movhismonext.mme_tasacambiorig,0)) AS tasa
+                AVG(NULLIF(nm_control.cot_valordolar,0)) AS tasa
             " . $this->baseFrom() . $w . "
             GROUP BY k ORDER BY k ASC
         ", $b);
 
         return response()->json([
             'asig' => array_map(fn($r) => round($r->asig_bs, 2), $rows),
-            'neto' => array_map(fn($r) => round($r->asig_bs - $r->ded_bs, 2), $rows),
+            'neto' => array_map(fn($r) => round($r->neto_bs, 2), $rows),
             'med'  => array_map(fn($r) => (int) $r->med, $rows),
             'tasa' => array_map(fn($r) => round($r->tasa ?? 0, 2), $rows),
         ]);
@@ -231,13 +303,14 @@ class DashboardHonController extends Controller
             SELECT
                 DATE_FORMAT(nm_control.cot_fdesde,'%Y-%m')  AS mes_key,
                 DATE_FORMAT(nm_control.cot_fdesde,'%b %Y')  AS mes_label,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN nm_movhismonext.mme_montomone ELSE 0 END) AS asig_bs,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='D' THEN nm_movhismonext.mme_montomone ELSE 0 END) AS ded_bs,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN nm_movhismonext.mme_montodl   ELSE 0 END) AS asig_usd,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='D' THEN nm_movhismonext.mme_montodl   ELSE 0 END) AS ded_usd,
+                " . $this->expAsignacionBs()  . " AS asig_bs,
+                " . $this->expDeduccionBs()   . " AS ded_bs,
+                " . $this->expNetoBs()        . " AS neto_bs,
+                " . $this->expUsdAsignacion() . " AS asig_usd,
+                " . $this->expUsd()           . " AS neto_usd,
                 COUNT(DISTINCT nm_movhist.emp_ced)          AS med,
                 COUNT(*)                                    AS mov,
-                AVG(NULLIF(nm_movhismonext.mme_tasacambiorig,0)) AS tasa_avg
+                AVG(NULLIF(nm_control.cot_valordolar,0))    AS tasa_avg
             " . $this->baseFrom() . $w . "
             GROUP BY mes_key, mes_label
             ORDER BY mes_key ASC
@@ -260,11 +333,11 @@ class DashboardHonController extends Controller
                 DATE_FORMAT(nm_control.cot_fhasta,'%d/%m/%Y')          AS fhasta,
                 DATE_FORMAT(nm_control.cot_fdesde,'%Y%m%d')            AS fecha_ord,
                 COUNT(DISTINCT nm_movhist.emp_ced)                     AS medicos,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN nm_movhismonext.mme_montomone ELSE 0 END) AS asig_bs,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='D' THEN nm_movhismonext.mme_montomone ELSE 0 END) AS ded_bs,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN nm_movhismonext.mme_montodl   ELSE 0 END) AS asig_usd,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='D' THEN nm_movhismonext.mme_montodl   ELSE 0 END) AS ded_usd,
-                AVG(NULLIF(nm_movhismonext.mme_tasacambiorig,0))       AS tasa_avg
+                " . $this->expAsignacionBs()  . " AS asig_bs,
+                " . $this->expDeduccionBs()   . " AS ded_bs,
+                " . $this->expNetoBs()        . " AS neto_bs,
+                " . $this->expUsdAsignacion() . " AS asig_usd,
+                AVG(NULLIF(nm_control.cot_valordolar,0))               AS tasa_avg
             " . $this->baseFrom() . $w . "
             GROUP BY nm_movhist.mov_nummon, fdesde, fhasta, fecha_ord
             ORDER BY fecha_ord DESC
@@ -368,9 +441,10 @@ class DashboardHonController extends Controller
                 nm_movhist.emp_ced,
                 TRIM(nm_empleados.emp_nom)  AS emp_nom,
                 TRIM(nm_empleados.emp_ape)  AS emp_ape,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN nm_movhismonext.mme_montomone ELSE 0 END) AS asig_bs,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='D' THEN nm_movhismonext.mme_montomone ELSE 0 END) AS ded_bs,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN nm_movhismonext.mme_montodl   ELSE 0 END) AS asig_usd
+                " . $this->expAsignacionBs()  . " AS asig_bs,
+                " . $this->expDeduccionBs()   . " AS ded_bs,
+                " . $this->expNetoBs()        . " AS neto_bs,
+                " . $this->expUsdAsignacion() . " AS asig_usd
             " . $this->baseFrom() . $w . "
             GROUP BY nm_movhist.emp_ced, emp_nom, emp_ape
             ORDER BY asig_bs DESC
@@ -395,11 +469,14 @@ class DashboardHonController extends Controller
                 COUNT(*)                                   AS frecuencia,
                 COUNT(DISTINCT nm_movhist.emp_ced)         AS medicos,
                 COUNT(DISTINCT nm_movhist.mov_nummon)      AS nominas,
-                SUM(nm_movhismonext.mme_montomone)         AS total_bs,
-                SUM(nm_movhismonext.mme_montodl)           AS total_usd,
-                AVG(nm_movhismonext.mme_montomone)         AS prom_bs,
-                MIN(nm_movhismonext.mme_montomone)         AS min_bs,
-                MAX(nm_movhismonext.mme_montomone)         AS max_bs
+                SUM(nm_movhist.mov_monto)                  AS total_bs,
+                SUM(CASE WHEN nm_movhist.mov_codcon = " . self::CONCEPTO_ANTICIPO . "
+                         THEN COALESCE(nm_movhismonext.mme_montodll, 0)
+                         ELSE COALESCE(nm_movhismonext.mme_montodl, 0) END) AS total_usd,
+                SUM(COALESCE(nm_movhismonext.mme_montomone, 0)) AS otramon_bs,
+                AVG(nm_movhist.mov_monto)                  AS prom_bs,
+                MIN(nm_movhist.mov_monto)                  AS min_bs,
+                MAX(nm_movhist.mov_monto)                  AS max_bs
             " . $this->baseFrom() . $w . "
             GROUP BY nm_movhist.mov_codcon, concepto, nm_movhist.mov_tipocon
             ORDER BY total_bs DESC
@@ -430,7 +507,7 @@ class DashboardHonController extends Controller
                 nm_honpacientedet.factura,
                 nm_honpacientedet.tipo_documento                      AS tipo_doc,
                 nm_honpacientedet.emp_ced,
-                TRIM(CONCAT(nm_empleados.emp_nom,' ',nm_empleados.emp_ape)) AS medico,
+                CONCAT(TRIM(nm_empleados.emp_nom),' ',TRIM(nm_empleados.emp_ape)) AS medico,
                 TRIM(nm_honpacientedet.nom_paciente)                  AS paciente,
                 TRIM(nm_honpacientedet.concepto)                      AS concepto,
                 nm_honpacientedet.honorario,
@@ -455,6 +532,170 @@ class DashboardHonController extends Controller
     }
 
     /* ==================================================================
+     * MÉDICOS QUE MÁS GENERARON INGRESOS
+     * Ranking completo (no solo el top 10) con participación porcentual.
+     * Alimenta la tabla en pantalla y los reportes PDF / Excel.
+     * ================================================================== */
+    private function consultaMedicosIngresos(Request $request): array
+    {
+        $b = []; $w = $this->buildWhere($request, $b);
+
+        $rows = DB::select("
+            SELECT
+                nm_movhist.emp_ced,
+                CONCAT(TRIM(nm_empleados.emp_ape),' ',TRIM(nm_empleados.emp_nom)) AS medico,
+                COUNT(DISTINCT nm_movhist.mov_nummon)      AS nominas,
+                " . $this->expAsignacionBs()  . " AS asig_bs,
+                " . $this->expOtraMonedaBs()  . " AS otramon_bs,
+                " . $this->expDeduccionBs()   . " AS ded_bs,
+                " . $this->expNetoBs()        . " AS neto_bs,
+                " . $this->expUsdAsignacion() . " AS asig_usd
+            " . $this->baseFrom() . $w . "
+            GROUP BY nm_movhist.emp_ced, medico
+            ORDER BY asig_bs DESC
+        ", $b);
+
+        $totalAsig = array_sum(array_map(fn($r) => (float) $r->asig_bs, $rows));
+
+        $pos = 0;
+        foreach ($rows as $r) {
+            $r->posicion      = ++$pos;
+            $r->participacion = $totalAsig > 0 ? round($r->asig_bs / $totalAsig * 100, 2) : 0;
+        }
+
+        return [
+            'data'    => $rows,
+            'totales' => [
+                'medicos'    => count($rows),
+                'asig_bs'    => round($totalAsig, 2),
+                'otramon_bs' => round(array_sum(array_map(fn($r) => (float) $r->otramon_bs, $rows)), 2),
+                'ded_bs'     => round(array_sum(array_map(fn($r) => (float) $r->ded_bs, $rows)), 2),
+                'neto_bs'    => round(array_sum(array_map(fn($r) => (float) $r->neto_bs, $rows)), 2),
+                'asig_usd'   => round(array_sum(array_map(fn($r) => (float) $r->asig_usd, $rows)), 2),
+            ],
+        ];
+    }
+
+    public function medicosIngresos(Request $request)
+    {
+        return response()->json($this->consultaMedicosIngresos($request));
+    }
+
+    /** Descripción legible del período y filtros, para el encabezado del reporte. */
+    private function descripcionFiltros(Request $request): array
+    {
+        $etiquetas = [
+            'hoy' => 'Hoy', 'semana' => 'Esta semana', 'mes' => 'Este mes',
+            'mesant' => 'Mes anterior', 'anio' => 'Este año',
+            '3m' => 'Últimos 3 meses', '6m' => 'Últimos 6 meses',
+            '12m' => 'Últimos 12 meses', '24m' => 'Últimos 24 meses',
+        ];
+
+        $periodo = $request->get('periodo', 'mes');
+        if ($periodo === 'custom') {
+            $desde = $request->fecha_desde ? date('d/m/Y', strtotime($request->fecha_desde)) : '?';
+            $hasta = $request->fecha_hasta ? date('d/m/Y', strtotime($request->fecha_hasta)) : '?';
+            $texto = "$desde al $hasta";
+        } else {
+            $texto = $etiquetas[$periodo] ?? $periodo;
+        }
+
+        $extras = [];
+        if ($request->filled('emp_ced')) {
+            $nombre = DB::table('nm_empleados')->where('emp_ced', $request->emp_ced)
+                ->selectRaw("TRIM(CONCAT(emp_ape,' ',emp_nom)) n")->value('n');
+            $extras[] = 'Médico: ' . ($nombre ?: $request->emp_ced);
+        }
+        if ($request->filled('conceptos')) {
+            $cods = array_filter(array_map('intval', explode(',', $request->conceptos)));
+            if ($cods) {
+                $descs = DB::table('nm_conceptos')->whereIn('con_cod', $cods)
+                    ->distinct()->pluck('con_desc')->map(fn($d) => trim($d))->toArray();
+                $extras[] = 'Conceptos: ' . implode(', ', $descs);
+            }
+        }
+
+        return ['periodo' => $texto, 'extras' => $extras];
+    }
+
+    public function medicosIngresosPdf(Request $request)
+    {
+        ini_set('memory_limit', '256M');
+
+        $r        = $this->consultaMedicosIngresos($request);
+        $filtros  = $this->descripcionFiltros($request);
+        $empresa  = DB::table('empresa')->first();
+
+        $b = []; $w = $this->buildWhere($request, $b);
+        $tasa = DB::selectOne("
+            SELECT AVG(NULLIF(nm_control.cot_valordolar,0)) AS bcv
+            " . $this->baseFrom() . $w, $b);
+
+        $pdf = PDF::loadView('dashboardhon.medicos_ingresos', [
+            'filas'    => $r['data'],
+            'totales'  => $r['totales'],
+            'filtros'  => $filtros,
+            'empresa'  => $empresa,
+            'tasa_bcv' => round($tasa->bcv ?? 0, 2),
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->stream('MedicosIngresos_' . date('Ymd') . '.pdf');
+    }
+
+    public function medicosIngresosExcel(Request $request)
+    {
+        $r       = $this->consultaMedicosIngresos($request);
+        $filtros = $this->descripcionFiltros($request);
+
+        $nombre = 'MedicosIngresos_' . date('Ymd_His') . '.csv';
+
+        return response()->streamDownload(function () use ($r, $filtros) {
+            $out = fopen('php://output', 'w');
+
+            // BOM UTF-8: sin él Excel no interpreta los acentos
+            fwrite($out, "\xEF\xBB\xBF");
+
+            $sep = ';';   // separador de lista en Excel con configuración regional en español
+            fputcsv($out, ['MEDICOS QUE MAS GENERARON INGRESOS'], $sep);
+            fputcsv($out, ['Periodo', $filtros['periodo']], $sep);
+            foreach ($filtros['extras'] as $e) {
+                fputcsv($out, [$e], $sep);
+            }
+            fputcsv($out, ['Generado', date('d/m/Y H:i')], $sep);
+            fputcsv($out, [], $sep);
+
+            fputcsv($out, [
+                '#', 'Cedula', 'Medico', 'Nominas', 'Honorarios Bs', 'Otra Moneda Bs',
+                'Deducciones Bs', 'Neto Bs', 'ME USD', 'Participacion %',
+            ], $sep);
+
+            // Coma decimal: es lo que espera Excel en configuración regional española
+            $num = fn($v) => number_format((float) $v, 2, ',', '');
+
+            foreach ($r['data'] as $f) {
+                fputcsv($out, [
+                    $f->posicion, $f->emp_ced, $f->medico, $f->nominas,
+                    $num($f->asig_bs), $num($f->otramon_bs), $num($f->ded_bs),
+                    $num($f->neto_bs), $num($f->asig_usd), $num($f->participacion),
+                ], $sep);
+            }
+
+            $t = $r['totales'];
+            fputcsv($out, [], $sep);
+            fputcsv($out, [
+                '', '', 'TOTAL (' . $t['medicos'] . ' medicos)', '',
+                $num($t['asig_bs']), $num($t['otramon_bs']), $num($t['ded_bs']),
+                $num($t['neto_bs']), $num($t['asig_usd']), $num(100),
+            ], $sep);
+
+            fclose($out);
+        }, $nombre, [
+            'Content-Type'  => 'text/csv; charset=UTF-8',
+            'Cache-Control' => 'no-store, no-cache',
+        ]);
+    }
+
+    /* ==================================================================
      * Filtros
      * ================================================================== */
     public function filtroMedicos()
@@ -462,7 +703,7 @@ class DashboardHonController extends Controller
         $rows = DB::select("
             SELECT DISTINCT
                 nm_honpacientedet.emp_ced,
-                TRIM(CONCAT(nm_empleados.emp_ape,' ',nm_empleados.emp_nom)) AS nombre
+                CONCAT(TRIM(nm_empleados.emp_ape),' ',TRIM(nm_empleados.emp_nom)) AS nombre
             FROM nm_honpacientedet
             INNER JOIN nm_empleados ON nm_empleados.emp_ced = nm_honpacientedet.emp_ced
             ORDER BY nombre ASC

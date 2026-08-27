@@ -1472,6 +1472,9 @@ Route::get('dashboardhon/distribucion-tipo',  'DashboardHonController@distribuci
 Route::get('dashboardhon/top-medicos',        'DashboardHonController@topMedicos')->name('dashboardhon_top_medicos');
 Route::get('dashboardhon/ranking-conceptos',  'DashboardHonController@rankingConceptos')->name('dashboardhon_ranking_conceptos');
 Route::get('dashboardhon/pacientes',          'DashboardHonController@pacientes')->name('dashboardhon_pacientes');
+Route::get('dashboardhon/medicos-ingresos',       'DashboardHonController@medicosIngresos')->name('dashboardhon_medicos_ingresos');
+Route::get('dashboardhon/medicos-ingresos/pdf',   'DashboardHonController@medicosIngresosPdf')->name('dashboardhon_medicos_ingresos_pdf');
+Route::get('dashboardhon/medicos-ingresos/excel', 'DashboardHonController@medicosIngresosExcel')->name('dashboardhon_medicos_ingresos_excel');
 Route::get('dashboardhon/filtro-medicos',     'DashboardHonController@filtroMedicos')->name('dashboardhon_filtro_medicos');
 Route::get('dashboardhon/filtro-conceptos',   'DashboardHonController@filtroConceptos')->name('dashboardhon_filtro_conceptos');
 

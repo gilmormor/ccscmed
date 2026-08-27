@@ -21,7 +21,7 @@ $(document).ready(function () {
 
     var metricaEvo = 'bs';
     var charts     = {};
-    var tablas     = { nomina: null, conceptos: null, pacientes: null };
+    var tablas     = { nomina: null, medingresos: null, conceptos: null, pacientes: null };
     var cacheEvo   = [];
     var yaAplico   = false;
 
@@ -212,17 +212,19 @@ $(document).ready(function () {
 
         return $.get('/dashboardhon/kpis' + qs(), function (r) {
             $('#kpi-asig-bs').text(fmtBs(r.asig_bs));
-            $('#kpi-asig-usd').text(fmtUsd(r.asig_usd) + ' · ' + fmtInt(r.total_mov) + ' movimientos');
+            $('#kpi-asig-usd').text('Otra moneda ' + fmtBs(r.otramon_bs) +
+                                    ' · ' + fmtInt(r.total_mov) + ' movimientos');
 
             $('#kpi-neto-bs').text(fmtBs(r.neto_bs));
-            $('#kpi-neto-usd').text(fmtUsd(r.neto_usd) + ' · deducciones ' + fmtBs(r.ded_bs));
+            $('#kpi-neto-usd').text('Deducciones ' + fmtBs(r.ded_bs) +
+                                    ' · ME ' + fmtUsd(r.neto_usd));
 
             $('#kpi-med').text(fmtInt(r.total_med));
             $('#kpi-prom-med').text('Promedio ' + fmtBs(r.prom_por_med) + ' c/u');
 
             $('#kpi-tasa').text(fmtBs(r.tasa_avg));
-            $('#kpi-nominas').text(fmtInt(r.total_nominas) + ' nóminas · ' +
-                                   fmtInt(r.total_conceptos) + ' conceptos');
+            $('#kpi-nominas').text('Tasa de pago ' + fmtBs(r.tasa_pago) + ' · ' +
+                                   fmtInt(r.total_nominas) + ' nóminas');
 
             pintarDelta($('#kpi-asig-delta'), r.var_asig);
             pintarDelta($('#kpi-neto-delta'), r.var_neto);
@@ -299,11 +301,12 @@ $(document).ready(function () {
         var sets;
 
         if (metricaEvo === 'bs' || metricaEvo === 'usd') {
-            var kA = metricaEvo === 'bs' ? 'asig_bs' : 'asig_usd';
-            var kD = metricaEvo === 'bs' ? 'ded_bs'  : 'ded_usd';
-            var asig = rows.map(function (x) { return parseFloat(x[kA]) || 0; });
-            var ded  = rows.map(function (x) { return parseFloat(x[kD]) || 0; });
-            var neto = rows.map(function (_, i) { return asig[i] - ded[i]; });
+            // El neto lo calcula el servidor con la fórmula del recibo
+            // (mov_monto − mme_montomone por signo); no es asignaciones − deducciones.
+            var esBs = metricaEvo === 'bs';
+            var asig = rows.map(function (x) { return parseFloat(esBs ? x.asig_bs : x.asig_usd) || 0; });
+            var ded  = rows.map(function (x) { return esBs ? (parseFloat(x.ded_bs) || 0) : 0; });
+            var neto = rows.map(function (x) { return parseFloat(esBs ? x.neto_bs : x.neto_usd) || 0; });
 
             sets = [
                 { label: 'Honorarios Profesionales', data: asig,
@@ -545,9 +548,9 @@ $(document).ready(function () {
                       render: function (d, t) { return t === 'display' ? nf(d) : (parseFloat(d) || 0); } },
                     { data: 'ded_bs', title: 'Deducciones Bs', className: 'dh-num',
                       render: function (d, t) { return t === 'display' ? nf(d) : (parseFloat(d) || 0); } },
-                    { data: null, title: 'Neto Bs', className: 'dh-num',
-                      render: function (row, t) {
-                          var v = (parseFloat(row.asig_bs) || 0) - (parseFloat(row.ded_bs) || 0);
+                    { data: 'neto_bs', title: 'Neto Bs', className: 'dh-num',
+                      render: function (d, t) {
+                          var v = parseFloat(d) || 0;
                           return t === 'display' ? '<strong>' + nf(v) + '</strong>' : v;
                       } },
                     { data: 'asig_usd', title: 'Honorarios USD', className: 'dh-num',
@@ -561,6 +564,69 @@ $(document).ready(function () {
             toast('No se pudieron cargar los totales por nómina', 'error');
         });
     }
+
+    /* ── 6.1b Médicos que más generaron ingresos (con reportes PDF / Excel) ── */
+    function cargarMedicosIngresos() {
+        cargando('#sk-medingresos', '#wrap-medingresos');
+        if (tablas.medingresos) {
+            tablas.medingresos.destroy(); tablas.medingresos = null;
+            $('#tabla-medingresos').empty();
+        }
+
+        return $.get('/dashboardhon/medicos-ingresos' + qs(), function (r) {
+            $('#sk-medingresos').hide();
+            $('#wrap-medingresos').prop('hidden', false);
+
+            tablas.medingresos = $('#tabla-medingresos').DataTable({
+                data: r.data || [],
+                pageLength: 10, lengthChange: false,
+                language: dtES, dom: DOM_TABLA, order: [[0, 'asc']],
+                buttons: botonesExport('medicos_ingresos', 'Médicos que más generaron ingresos'),
+                columns: [
+                    { data: 'posicion', title: '#', className: 'dh-ctr',
+                      render: function (d, t) {
+                          if (t !== 'display') return d;
+                          var top = d <= 3 ? ' dh-badge-a' : ' dh-badge-n';
+                          return '<span class="dh-badge' + top + '">' + d + '</span>';
+                      } },
+                    { data: 'emp_ced', title: 'C.I.', className: 'dh-num',
+                      render: function (d, t) { return t === 'display' ? fmtInt(d) : d; } },
+                    { data: 'medico', title: 'Médico' },
+                    { data: 'nominas', title: 'Nóm.', className: 'dh-ctr' },
+                    { data: 'asig_bs', title: 'Honorarios Bs', className: 'dh-num',
+                      render: function (d, t) { return t === 'display' ? nf(d) : (parseFloat(d) || 0); } },
+                    { data: 'otramon_bs', title: 'Otra Mon. Bs', className: 'dh-num',
+                      render: function (d, t) { return t === 'display' ? nf(d) : (parseFloat(d) || 0); } },
+                    { data: 'ded_bs', title: 'Deducciones Bs', className: 'dh-num',
+                      render: function (d, t) { return t === 'display' ? nf(d) : (parseFloat(d) || 0); } },
+                    { data: 'neto_bs', title: 'Neto Bs', className: 'dh-num',
+                      render: function (d, t) {
+                          return t === 'display' ? '<strong>' + nf(d) + '</strong>' : (parseFloat(d) || 0);
+                      } },
+                    { data: 'asig_usd', title: 'ME $', className: 'dh-num',
+                      render: function (d, t) { return t === 'display' ? nf(d) : (parseFloat(d) || 0); } },
+                    { data: 'participacion', title: '%', className: 'dh-num',
+                      render: function (d, t) { return t === 'display' ? nf(d) + ' %' : (parseFloat(d) || 0); } }
+                ]
+            });
+        }).fail(function () {
+            $('#sk-medingresos').hide();
+            toast('No se pudo cargar el ranking de médicos', 'error');
+        });
+    }
+
+    /** Abre un reporte del ranking. Exige haber aplicado filtros primero. */
+    function abrirReporteMedicos(formato) {
+        if (!yaAplico) {
+            toast('Primero seleccione un período y presione Aplicar', 'warn');
+            return;
+        }
+        toast(formato === 'pdf' ? 'Generando PDF…' : 'Generando Excel…');
+        window.open('/dashboardhon/medicos-ingresos/' + formato + qs(), '_blank');
+    }
+
+    $('#dh-btn-mi-pdf').on('click',   function () { abrirReporteMedicos('pdf'); });
+    $('#dh-btn-mi-excel').on('click', function () { abrirReporteMedicos('excel'); });
 
     /* ── 6.2 Conceptos (con ficha en modal) ── */
     var datosConceptos = [];
@@ -788,6 +854,7 @@ $(document).ready(function () {
             cargarDistribucionTipo(),
             cargarTopMedicos(),
             cargarTotalesNomina(),
+            cargarMedicosIngresos(),
             cargarConceptos(),
             cargarPacientes()
         ).always(function () {
