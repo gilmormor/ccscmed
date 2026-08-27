@@ -329,7 +329,7 @@ $(document).ready(function () {
         }
 
         var el = document.getElementById('chart-evolucion');
-        $(el).prop('hidden', false);
+        $('#box-evolucion').prop('hidden', false);
 
         charts.evolucion = new Chart(el.getContext('2d'), {
             type: metricaEvo === 'tasa' ? 'line' : 'bar',
@@ -370,7 +370,7 @@ $(document).ready(function () {
     }
 
     function cargarEvolucion() {
-        cargando('#sk-evolucion', '#chart-evolucion,#empty-evolucion');
+        cargando('#sk-evolucion', '#box-evolucion,#empty-evolucion');
         destruir('evolucion');
 
         return $.get('/dashboardhon/evolucion' + qs(), function (r) {
@@ -393,7 +393,7 @@ $(document).ready(function () {
        4. Distribución por tipo de atención
        ================================================================== */
     function cargarDistribucionTipo() {
-        cargando('#sk-tipo', '#chart-tipo,#legend-tipo,#empty-tipo');
+        cargando('#sk-tipo', '#box-tipo,#legend-tipo,#empty-tipo');
         destruir('tipo');
 
         return $.get('/dashboardhon/distribucion-tipo' + qs(), function (r) {
@@ -402,11 +402,13 @@ $(document).ready(function () {
             if (!rows.length) { $('#empty-tipo').prop('hidden', false); return; }
 
             var c = paleta();
-            var colores = [c.accent, c.primary, c.orange, c.blue, c.red];
+            // Hues bien separados: en modo oscuro primary y blue son casi el
+            // mismo azul, así que primary no entra en esta paleta categórica.
+            var colores = [c.accent, c.blue, c.orange, c.red, c.primary];
             var total = rows.reduce(function (s, x) { return s + (parseFloat(x.total_bs) || 0); }, 0);
 
             var el = document.getElementById('chart-tipo');
-            $(el).prop('hidden', false);
+            $('#box-tipo').prop('hidden', false);
 
             charts.tipo = new Chart(el.getContext('2d'), {
                 type: 'doughnut',
@@ -605,8 +607,10 @@ $(document).ready(function () {
         });
     }
 
-    /* Ficha de concepto (req. 8) */
-    $('#tabla-conceptos tbody').on('click', 'tr', function () {
+    /* Ficha de concepto (req. 8).
+       Se delega desde document: DataTables reemplaza el tbody, así que enlazar
+       sobre él en el ready dejaría el handler colgando de un nodo descartado. */
+    $(document).on('click', '#tabla-conceptos tbody tr', function () {
         if (!tablas.conceptos) return;
         var d = tablas.conceptos.row(this).data();
         if (!d) return;
@@ -722,7 +726,8 @@ $(document).ready(function () {
 
         if (tipo === 'grafico') {
             var canvas = document.getElementById($(this).data('canvas'));
-            if (!canvas || canvas.hidden) { toast('El gráfico aún no ha cargado', 'warn'); return; }
+            var visible = canvas && canvas.offsetParent !== null;
+            if (!visible) { toast('El gráfico aún no ha cargado', 'warn'); return; }
             imprimirHtml('<!DOCTYPE html><html><head><meta charset="utf-8"><title>' + titulo + '</title>' +
                 '<style>' + CSS_PRINT + '</style></head><body><h3>' + titulo + '</h3>' +
                 '<img src="' + canvas.toDataURL('image/png', 1) + '"></body></html>');

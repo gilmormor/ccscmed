@@ -7,14 +7,16 @@ use Illuminate\Support\Facades\DB;
  * Registra el permiso y la entrada de menú del Dashboard de Honorarios
  * Profesionales (/dashboardhon).
  *
- * El rol Administrador tiene acceso a todo automáticamente; aquí se asigna
- * explícitamente al rol Nómina, que es quien opera el módulo.
+ * El permiso se asigna explícitamente a Administrador (1) y Nómina (3),
+ * siguiendo la convención de listar-dashboard-admin: el atajo de can() compara
+ * contra 'administrador' en minúscula, pero rol.nombre es 'Administrador', así
+ * que ese bypass no se dispara y el rol necesita el permiso asignado.
  */
 return new class extends Migration
 {
-    private const SLUG      = 'listar-dashboard-honorarios';
-    private const MENU_URL  = 'dashboardhon';
-    private const ROL_NOMINA = 3;
+    private const SLUG     = 'listar-dashboard-honorarios';
+    private const MENU_URL = 'dashboardhon';
+    private const ROLES    = [1, 3];   // Administrador, Nómina
 
     public function up(): void
     {
@@ -48,30 +50,36 @@ return new class extends Migration
             ]);
         }
 
-        // ── Asignar al rol Nómina
-        if (DB::table('rol')->where('id', self::ROL_NOMINA)->exists()) {
-            $yaTienePermiso = DB::table('permiso_rol')
-                ->where('rol_id', self::ROL_NOMINA)->where('permiso_id', $permisoId)->exists();
-            if (!$yaTienePermiso) {
+        // ── Asignar permiso y menú a cada rol
+        foreach (self::ROLES as $rolId) {
+            if (!DB::table('rol')->where('id', $rolId)->exists()) {
+                continue;
+            }
+
+            $tienePermiso = DB::table('permiso_rol')
+                ->where('rol_id', $rolId)->where('permiso_id', $permisoId)->exists();
+            if (!$tienePermiso) {
                 DB::table('permiso_rol')->insert([
-                    'rol_id'     => self::ROL_NOMINA,
+                    'rol_id'     => $rolId,
                     'permiso_id' => $permisoId,
                     'created_at' => $ahora,
                     'updated_at' => $ahora,
                 ]);
             }
 
-            if ($menuId) {
-                $yaTieneMenu = DB::table('menu_rol')
-                    ->where('rol_id', self::ROL_NOMINA)->where('menu_id', $menuId)->exists();
-                if (!$yaTieneMenu) {
-                    DB::table('menu_rol')->insert([
-                        'rol_id'     => self::ROL_NOMINA,
-                        'menu_id'    => $menuId,
-                        'created_at' => $ahora,
-                        'updated_at' => $ahora,
-                    ]);
-                }
+            if (!$menuId) {
+                continue;
+            }
+
+            $tieneMenu = DB::table('menu_rol')
+                ->where('rol_id', $rolId)->where('menu_id', $menuId)->exists();
+            if (!$tieneMenu) {
+                DB::table('menu_rol')->insert([
+                    'rol_id'     => $rolId,
+                    'menu_id'    => $menuId,
+                    'created_at' => $ahora,
+                    'updated_at' => $ahora,
+                ]);
             }
         }
     }

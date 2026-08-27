@@ -357,6 +357,13 @@ html[data-dh-theme="dark"] .dh-root {
 .dh-panel-body  { flex: 1; padding: 18px; min-height: 0; }
 .dh-panel-body-flush { padding: 0; }
 
+/* Contenedor de gráfico con altura fija.
+   Chart.js con responsive + maintainAspectRatio:false crece sin límite si el
+   contenedor no acota la altura: el canvas se redimensiona, el padre crece y
+   se vuelve a disparar el resize. La altura fija corta ese bucle. */
+.dh-chart-box { position: relative; width: 100%; height: 300px; }
+.dh-chart-box-sm { height: 230px; }
+
 /* ══════════════════════════════════════════════
    SKELETON / EMPTY
 ══════════════════════════════════════════════ */
@@ -484,26 +491,47 @@ html[data-dh-theme="dark"] .dh-root {
     outline: none; border-color: var(--dh-accent);
     box-shadow: 0 0 0 3px var(--dh-accent-soft);
 }
+/* Paginación.
+   Bootstrap 3 flota el <a> dentro del <li>, así que el <li> queda sin contenido
+   en flujo: si se le pone borde, se dibuja una caja vacía junto al botón real.
+   Por eso todo el estilo va sobre el <a>. */
 .dh-root .dataTables_paginate { padding-top: 8px; }
-.dh-root .dataTables_paginate .paginate_button {
-    padding: 4px 10px !important; margin: 0 2px !important;
-    font-size: 12px !important;
-    color: var(--dh-text-2) !important;
-    background: transparent !important;
-    border: 1px solid var(--dh-border) !important;
-    border-radius: var(--dh-r-sm) !important;
+.dh-root .dataTables_paginate ul.pagination {
+    display: inline-flex; gap: 4px; margin: 0; padding: 0;
 }
-.dh-root .dataTables_paginate .paginate_button:hover {
-    background: var(--dh-surface-2) !important;
-    color: var(--dh-text) !important;
-    border-color: var(--dh-text-3) !important;
+.dh-root .dataTables_paginate ul.pagination > li {
+    display: block; margin: 0; padding: 0;
+    background: none; border: none; border-radius: 0;
 }
-.dh-root .dataTables_paginate .paginate_button.current {
-    background: var(--dh-accent) !important;
-    border-color: var(--dh-accent) !important;
-    color: #fff !important;
+.dh-root .dataTables_paginate ul.pagination > li > a,
+.dh-root .dataTables_paginate ul.pagination > li > span {
+    display: block; float: none; position: static;
+    min-width: 30px; padding: 4px 10px; margin: 0;
+    font-size: 12px; text-align: center;
+    color: var(--dh-text-2);
+    background: var(--dh-surface);
+    border: 1px solid var(--dh-border);
+    border-radius: var(--dh-r-sm);
+    transition: background .16s var(--dh-ease), color .16s var(--dh-ease),
+                border-color .16s var(--dh-ease);
 }
-.dh-root .dataTables_paginate .paginate_button.disabled { opacity: .4; }
+.dh-root .dataTables_paginate ul.pagination > li > a:hover {
+    background: var(--dh-surface-2);
+    color: var(--dh-text);
+    border-color: var(--dh-text-3);
+}
+.dh-root .dataTables_paginate ul.pagination > li.active > a,
+.dh-root .dataTables_paginate ul.pagination > li.active > a:hover {
+    background: var(--dh-accent);
+    border-color: var(--dh-accent);
+    color: #fff;
+}
+.dh-root .dataTables_paginate ul.pagination > li.disabled > a {
+    opacity: .4; cursor: default;
+}
+.dh-root .dataTables_paginate ul.pagination > li.disabled > a:hover {
+    background: var(--dh-surface); color: var(--dh-text-2); border-color: var(--dh-border);
+}
 .dh-root .dt-buttons { float: none; margin-bottom: 10px; }
 .dh-root .dt-button {
     height: 30px !important; padding: 0 12px !important; margin-right: 6px !important;

@@ -211,7 +211,9 @@
                 </header>
                 <div class="dh-panel-body">
                     <div class="dh-skeleton dh-skeleton-chart" id="sk-evolucion"></div>
-                    <canvas id="chart-evolucion" height="110" hidden></canvas>
+                    <div class="dh-chart-box" id="box-evolucion" hidden>
+                        <canvas id="chart-evolucion"></canvas>
+                    </div>
                     <div class="dh-empty" id="empty-evolucion" hidden>
                         <i class="fa fa-line-chart"></i>
                         <p>Sin datos para el período seleccionado</p>
@@ -231,7 +233,9 @@
                 </header>
                 <div class="dh-panel-body">
                     <div class="dh-skeleton dh-skeleton-chart" id="sk-tipo"></div>
-                    <canvas id="chart-tipo" height="150" hidden></canvas>
+                    <div class="dh-chart-box dh-chart-box-sm" id="box-tipo" hidden>
+                        <canvas id="chart-tipo"></canvas>
+                    </div>
                     <div class="dh-legend" id="legend-tipo" hidden></div>
                     <div class="dh-empty" id="empty-tipo" hidden>
                         <i class="fa fa-pie-chart"></i>
