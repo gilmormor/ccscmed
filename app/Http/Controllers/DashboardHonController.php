@@ -479,7 +479,7 @@ class DashboardHonController extends Controller
                 MAX(nm_movhist.mov_monto)                  AS max_bs
             " . $this->baseFrom() . $w . "
             GROUP BY nm_movhist.mov_codcon, concepto, nm_movhist.mov_tipocon
-            ORDER BY total_bs DESC
+            ORDER BY nm_movhist.mov_codcon ASC
         ", $b);
 
         return response()->json(['data' => $rows]);

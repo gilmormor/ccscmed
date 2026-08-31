@@ -34,10 +34,10 @@
                 <button type="button" class="dh-theme-opt" data-theme="light" data-tip="Claro" aria-label="Tema claro">
                     <i class="fa fa-sun-o"></i>
                 </button>
-                <button type="button" class="dh-theme-opt" data-theme="dark" data-tip="Oscuro" aria-label="Tema oscuro">
+                <button type="button" class="dh-theme-opt is-active" data-theme="dark" data-tip="Oscuro" aria-label="Tema oscuro">
                     <i class="fa fa-moon-o"></i>
                 </button>
-                <button type="button" class="dh-theme-opt is-active" data-theme="system" data-tip="Sistema" aria-label="Tema del sistema">
+                <button type="button" class="dh-theme-opt" data-theme="system" data-tip="Sistema" aria-label="Tema del sistema">
                     <i class="fa fa-desktop"></i>
                 </button>
             </div>
@@ -332,7 +332,7 @@
             <header class="dh-panel-head">
                 <div>
                     <h2 class="dh-panel-title">Relación de Pacientes</h2>
-                    <p class="dh-panel-sub">Últimas 500 atenciones facturadas del período · ordenables por médico</p>
+                    <p class="dh-panel-sub">Últimas 500 atenciones facturadas del período · ordenadas por factura</p>
                 </div>
                 <button type="button" class="dh-icon-btn dh-print" data-print="tabla"
                         data-tabla="pacientes" data-titulo="Relación de Pacientes"

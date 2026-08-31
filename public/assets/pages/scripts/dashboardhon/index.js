@@ -114,8 +114,9 @@ $(document).ready(function () {
     }
 
     (function initTema() {
-        var guardado = 'system';
-        try { guardado = localStorage.getItem(LS_TEMA) || 'system'; } catch (e) {}
+        // Oscuro por defecto; si el usuario ya eligió otro, se respeta su elección.
+        var guardado = 'dark';
+        try { guardado = localStorage.getItem(LS_TEMA) || 'dark'; } catch (e) {}
         aplicarTema(guardado);
     })();
 
@@ -644,10 +645,11 @@ $(document).ready(function () {
                 data: datosConceptos,
                 pageLength: 10, lengthChange: false,
                 language: dtES, dom: DOM_TABLA,
-                order: [[1, 'asc']],   // alfabético por defecto (req. 2)
+                order: [[0, 'asc']],   // por código de concepto
                 buttons: botonesExport('conceptos', 'Conceptos de Honorarios'),
                 createdRow: function (fila) { $(fila).addClass('dh-clickable'); },
                 columns: [
+                    { data: 'cod', title: 'Código', className: 'dh-ctr' },
                     { data: 'tipo', title: 'Tipo', className: 'dh-ctr',
                       render: function (d) {
                           return d === 'A'
@@ -726,7 +728,7 @@ $(document).ready(function () {
                 data: r.data || [],
                 pageLength: 10, lengthChange: false,
                 language: dtES, dom: DOM_TABLA,
-                order: [[2, 'asc']],   // alfabético por médico (req. 2)
+                order: [[1, 'asc']],   // por número de factura
                 buttons: botonesExport('pacientes', 'Relación de Pacientes'),
                 columns: [
                     { data: 'fecha_ord', title: 'Fecha',
