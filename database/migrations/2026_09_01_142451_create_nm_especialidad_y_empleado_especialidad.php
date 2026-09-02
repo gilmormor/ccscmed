@@ -44,7 +44,10 @@ return new class extends Migration
         // ── Catálogo de especialidades
         if (!Schema::hasTable('nm_especialidad')) {
             Schema::create('nm_especialidad', function (Blueprint $t) {
-                $t->increments('id');
+                // Sin autoincremento: el id lo trae VFP8, igual que el nombre.
+                // Dejarlo autoincremental arriesgaría que un alta hecha desde
+                // Laravel tomara un id que luego reclame el sistema local.
+                $t->unsignedInteger('id')->primary();
                 $t->string('nombre', 120)->unique();
                 $t->timestamps();
                 $t->softDeletes();
@@ -54,7 +57,7 @@ return new class extends Migration
         // ── Relación médico ↔ especialidad
         if (!Schema::hasTable('nm_empleadoespecialidad')) {
             Schema::create('nm_empleadoespecialidad', function (Blueprint $t) {
-                $t->increments('id');
+                $t->unsignedInteger('id')->primary();   // también viene de VFP8
                 $t->unsignedInteger('emp_id')->comment('nm_empleados.id');
                 $t->unsignedInteger('esp_id')->comment('nm_especialidad.id');
                 $t->timestamps();
