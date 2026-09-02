@@ -34,6 +34,25 @@ class NmEmpleado extends Model
         'emp_salint'
     ];
 
+    /**
+     * El id no es autoincremental: lo trae VFP8 desde nm_empleado.emp_id del
+     * sistema local. Sin esto Eloquent intentaría dejar que MySQL lo genere.
+     */
+    public $incrementing = false;
+
+    /** Especialidades médicas asignadas (para la constancia de honorarios). */
+    public function especialidades()
+    {
+        return $this->belongsToMany(
+            NmEspecialidad::class,
+            'nm_empleadoespecialidad',
+            'emp_id',
+            'esp_id',
+            'id',
+            'id'
+        )->withTimestamps();
+    }
+
     public static function consultaempleado($vendedor_id = '0',$sucursal_id = false){
         $users = Usuario::findOrFail(auth()->id());
         if($sucursal_id){
