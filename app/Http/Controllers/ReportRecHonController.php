@@ -30,6 +30,133 @@ class ReportRecHonController extends Controller
         return view('reportrechon.index', compact('nominaPeriodos','aux_mesanno'));
     }
 
+    /**
+     * Constancia de ingresos por honorarios profesionales (requerimiento 11).
+     *
+     * La sirven dos rutas: reportrechongen, donde el personal administrativo la
+     * emite para cualquier médico, y reportrechon, donde cada médico emite la
+     * suya. La diferencia está sólo en de dónde sale la cédula.
+     *
+     * MONTO — verificado contra el modelo aprobado por la clínica
+     *   Se promedian las asignaciones (mov_tipocon A, O o F) de nm_movhist en el
+     *   rango de fechas, entre la cantidad de meses calendario que abarca. Es la
+     *   misma cifra que el dashboard muestra como "Honorarios Profesionales".
+     *   El resultado se trunca a bolívares enteros, no se redondea: el documento
+     *   aprobado dice "CON CERO CÉNTIMOS", y es el criterio que ya sigue el
+     *   recibo de honorarios por venir así de Visual FoxPro.
+     *
+     *   Contraste con la constancia aprobada de la Dra. Albarracín (13.490.646),
+     *   01/04/2026 al 30/06/2026: Bs 3.186.485,47 / 3 = 1.062.161,82 → 1.062.161.
+     */
+    public function constanciaHonorarios(Request $request)
+    {
+        ini_set('memory_limit', '256M');
+
+        $aux_cedula = $request->filled('emp_ced')
+            ? $request->emp_ced
+            : Usuario::findOrFail(auth()->id())->usuario;
+
+        $desde = $request->fecha_desde;
+        $hasta = $request->fecha_hasta;
+
+        if (!$desde || !$hasta) {
+            return response('Debe indicar el rango de fechas de la constancia.', 422);
+        }
+        if ($desde > $hasta) {
+            return response('La fecha Desde no puede ser posterior a la fecha Hasta.', 422);
+        }
+
+        $medico = DB::table('nm_empleados')
+            ->select('id', 'emp_nac', 'emp_ced', 'emp_sexo', 'emp_ape', 'emp_nom', 'emp_fecing')
+            ->where('emp_ced', $aux_cedula)
+            ->first();
+
+        if (!$medico) {
+            return response('No se encontró el médico con cédula ' . e($aux_cedula) . '.', 404);
+        }
+
+        // Asignaciones del rango. Mismo criterio que el recibo y el dashboard.
+        $total = (float) DB::selectOne("
+            SELECT SUM(CASE WHEN nm_movhist.mov_tipocon IN ('A','O','F')
+                            THEN nm_movhist.mov_monto ELSE 0 END) AS asig_bs
+            FROM nm_movhist
+            INNER JOIN nm_control ON nm_control.cot_numnom = nm_movhist.mov_nummon
+            WHERE nm_movhist.emp_ced   = ?
+              AND nm_control.cot_fdesde >= ?
+              AND nm_control.cot_fhasta <= ?
+        ", [$aux_cedula, $desde, $hasta])->asig_bs;
+
+        if ($total <= 0) {
+            return response('El médico no tiene honorarios registrados en el rango indicado.', 404);
+        }
+
+        $meses    = $this->mesesDelRango($desde, $hasta);
+        $promedio = intval($total / $meses);   // truncado, ver nota de cabecera
+
+        $especialidades = DB::table('nm_empleadoespecialidad as ee')
+            ->join('nm_especialidad as e', 'e.id', '=', 'ee.esp_id')
+            ->whereNull('ee.deleted_at')
+            ->whereNull('e.deleted_at')
+            ->where('ee.emp_id', $medico->id)
+            ->orderBy('e.nombre')
+            ->pluck('e.nombre')
+            ->toArray();
+
+        $empresa    = DB::table('empresa')->first();
+        $nm_empresa = DB::table('nm_empresa')->where('emp_codh', $request->emp_codh ?: 1)->first()
+                   ?: DB::table('nm_empresa')->first();
+
+        $pdf = PDF::loadView('reportrechon.constanciahonorarios', [
+            'medico'         => $medico,
+            'especialidades' => $especialidades,
+            'empresa'        => $empresa,
+            'nm_empresa'     => $nm_empresa,
+            'total'          => $total,
+            'meses'          => $meses,
+            'promedio'       => $promedio,
+            'periodo_texto'  => $this->rangoEnMeses($desde, $hasta),
+            'fecha_desde'    => $desde,
+            'fecha_hasta'    => $hasta,
+        ]);
+
+        $apellido = ucwords(strtolower(explode(' ', strtoupper(trim($medico->emp_ape)))[0]));
+        $nombre   = ucwords(strtolower(explode(' ', strtoupper(trim($medico->emp_nom)))[0]));
+        $cedula   = str_pad($medico->emp_ced, 8, '0', STR_PAD_LEFT);
+
+        return $pdf->stream("ConstanciaHon_{$cedula}_{$apellido}{$nombre}.pdf");
+    }
+
+    /** Meses calendario que abarca el rango, ambos extremos incluidos. */
+    private function mesesDelRango(string $desde, string $hasta): int
+    {
+        $d = new \DateTime(date('Y-m-01', strtotime($desde)));
+        $h = new \DateTime(date('Y-m-01', strtotime($hasta)));
+        $dif = $d->diff($h);
+
+        return ((int) $dif->format('%y') * 12) + (int) $dif->format('%m') + 1;
+    }
+
+    /** Texto del período tal como lo pide el modelo: "Abril a Junio". */
+    private function rangoEnMeses(string $desde, string $hasta): string
+    {
+        $meses = [1 => 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+        $mDesde = $meses[(int) date('n', strtotime($desde))];
+        $mHasta = $meses[(int) date('n', strtotime($hasta))];
+        $aDesde = date('Y', strtotime($desde));
+        $aHasta = date('Y', strtotime($hasta));
+
+        if ($mDesde === $mHasta && $aDesde === $aHasta) {
+            return "$mDesde de $aDesde";
+        }
+        if ($aDesde === $aHasta) {
+            return "$mDesde a $mHasta de $aDesde";
+        }
+
+        return "$mDesde de $aDesde a $mHasta de $aHasta";
+    }
+
     public function reportdtefacpage(Request $request){
         //can('reporte-guia_despacho');
         //dd('entro');

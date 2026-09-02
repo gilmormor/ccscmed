@@ -59,8 +59,43 @@ $("#btnpdf2").click(function()
 
 $("#btnpdf3").click(function()
 {
-    aux_titulo = 'Pendientes Solicitud Despacho';
+    aux_titulo = 'Relación de Honorarios';
     data = datosRecHon();
     $('#contpdf').attr('src', '/reportrechon/relHonPdf/' + data.data2);
-    $("#myModalpdf").modal('show'); 
+    $("#myModalpdf").modal('show');
+});
+
+/* Constancia de honorarios: usa el rango de fechas, no el período de nómina,
+   porque el documento certifica un promedio mensual de varios meses. */
+$("#constancia").click(function()
+{
+    var desde = $('#fecha_desde').val();
+    var hasta = $('#fecha_hasta').val();
+
+    if (!desde || !hasta) {
+        swal({
+            title: 'Indique el rango de la constancia',
+            text: 'Complete las fechas Desde y Hasta para calcular el promedio mensual facturado.',
+            icon: 'warning',
+            buttons: { confirm: 'Aceptar' }
+        });
+        return;
+    }
+    if (desde > hasta) {
+        swal({
+            title: 'Rango inválido',
+            text: 'La fecha Desde no puede ser posterior a la fecha Hasta.',
+            icon: 'warning',
+            buttons: { confirm: 'Aceptar' }
+        });
+        return;
+    }
+
+    aux_titulo = 'Constancia de Honorarios';
+    var qs = '?fecha_desde=' + desde +
+             '&fecha_hasta=' + hasta +
+             '&_token=' + $('input[name=_token]').val();
+
+    $('#contpdf').attr('src', '/reportrechon/constanciaHonorarios/' + qs);
+    $("#myModalpdf").modal('show');
 });

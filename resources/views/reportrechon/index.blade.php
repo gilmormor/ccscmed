@@ -56,6 +56,28 @@ Recibo Honorarios
                                     </div>
                                 </div>
                             </div>
+
+                            {{-- Rango para la constancia: el promedio mensual se
+                                 calcula sobre varios meses, no sobre un solo período --}}
+                            <div class="col-xs-12 col-md-12 col-sm-12">
+                                <div class="col-xs-12 col-sm-12">
+                                    <div class="col-xs-12 col-md-4 col-sm-4 text-left">
+                                        <label data-toggle='tooltip' title="Rango de fechas para la constancia">Constancia:</label>
+                                    </div>
+                                    <div class="col-xs-12 col-md-8 col-sm-8">
+                                        <div class="row">
+                                            <div class="col-xs-6 col-sm-6">
+                                                <input type="date" id="fecha_desde" name="fecha_desde" class="form-control"
+                                                       data-toggle='tooltip' title="Desde">
+                                            </div>
+                                            <div class="col-xs-6 col-sm-6">
+                                                <input type="date" id="fecha_hasta" name="fecha_hasta" class="form-control"
+                                                       data-toggle='tooltip' title="Hasta">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="col-xs-12 col-md-1 col-sm-12 text-center">
                             <button type='button' id='btnpdf2' name='btnpdf2' class='btn btn-success tooltipsC' title="PDF Recibo Honorarios">
@@ -65,6 +87,11 @@ Recibo Honorarios
                         <div class="col-xs-12 col-md-1 col-sm-12 text-center">
                             <button type='button' id='btnpdf3' name='btnpdf3' class='btn btn-success tooltipsC' title="Relación Honorarios PDF">
                                 <i class='glyphicon glyphicon-print'></i> Rel Hon
+                            </button>
+                        </div>
+                        <div class="col-xs-12 col-md-1 col-sm-12 text-center">
+                            <button type='button' id='constancia' name='constancia' class='btn btn-success tooltipsC' title="PDF Constancia de Honorarios">
+                                <i class='glyphicon glyphicon-print'></i> Constancia
                             </button>
                         </div>
                     </form>

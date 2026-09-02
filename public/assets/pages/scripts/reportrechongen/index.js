@@ -161,3 +161,47 @@ $("#btnpdf3").click(function()
     }
 
 });
+/* Constancia de honorarios: usa el rango de fechas, no el período de nómina,
+   porque el documento certifica un promedio mensual de varios meses. */
+$("#constancia").click(function()
+{
+    var cedula = $('#cedula').val();
+    var desde  = $('#fecha_desde').val();
+    var hasta  = $('#fecha_hasta').val();
+
+    if (!cedula) {
+        swal({
+            title: 'Indique la cédula del médico',
+            text: '',
+            icon: 'warning',
+            buttons: { confirm: 'Aceptar' }
+        });
+        return;
+    }
+    if (!desde || !hasta) {
+        swal({
+            title: 'Indique el rango de la constancia',
+            text: 'Complete las fechas Desde y Hasta para calcular el promedio mensual facturado.',
+            icon: 'warning',
+            buttons: { confirm: 'Aceptar' }
+        });
+        return;
+    }
+    if (desde > hasta) {
+        swal({
+            title: 'Rango inválido',
+            text: 'La fecha Desde no puede ser posterior a la fecha Hasta.',
+            icon: 'warning',
+            buttons: { confirm: 'Aceptar' }
+        });
+        return;
+    }
+
+    var qs = '?emp_ced=' + cedula +
+             '&fecha_desde=' + desde +
+             '&fecha_hasta=' + hasta +
+             '&_token=' + $('input[name=_token]').val();
+
+    $('#contpdf').attr('src', '/reportrechon/constanciaHonorarios/' + qs);
+    $("#myModalpdf").modal('show');
+});

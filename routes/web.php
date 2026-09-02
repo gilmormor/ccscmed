@@ -1479,6 +1479,7 @@ Route::get('dashboardhon/filtro-medicos',     'DashboardHonController@filtroMedi
 Route::get('dashboardhon/filtro-conceptos',   'DashboardHonController@filtroConceptos')->name('dashboardhon_filtro_conceptos');
 
 /*RUTAS REPORTE RECIBO HONORARIOS*/
+Route::get('reportrechon/constanciaHonorarios', 'ReportRecHonController@constanciaHonorarios')->name('constanciaHonorarios');
 Route::get('reportrechon', 'ReportRecHonController@index')->name('reportrechon');
 Route::get('reportrechon/reportrechonpage', 'ReportRecHonController@reportrechonpage')->name('reportrechonpage');
 Route::get('reportrechon/reporte', 'ReportRecHonController@reporte')->name('reportrechon_reporte');
