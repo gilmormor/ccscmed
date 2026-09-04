@@ -1,8 +1,28 @@
 $(document).ready(function () {
     Biblioteca.validacionGeneral('form-general');
     $("#cedula").numeric();
-    
+
+    /* Selector de mes de la constancia. Se usa bootstrap-datepicker y no
+       input type=month porque Firefox y Safari no lo soportan: degradan a una
+       caja de texto donde habria que escribir el valor a mano. */
+    $('.date-picker-mes').datepicker({
+        language: "es",
+        format: "MM yyyy",
+        viewMode: "months",
+        minViewMode: "months",
+        autoclose: true
+    });
 });
+
+/* El campo muestra "Abril 2026" pero el servidor espera "2026-04".
+   La comparacion tambien va sobre el valor ISO: sobre el texto visible,
+   "Abril" seria mayor que "Enero" por orden alfabetico. */
+function mesISO(selector)
+{
+    var d = $(selector).datepicker('getDate');
+    if (!d) return '';
+    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2);
+}
 
 
 $("#cedula").focus(function(){
@@ -166,8 +186,8 @@ $("#btnpdf3").click(function()
 $("#constancia").click(function()
 {
     var cedula = $('#cedula').val();
-    var desde  = $('#fecha_desde').val();
-    var hasta  = $('#fecha_hasta').val();
+    var desde  = mesISO('#fecha_desde');
+    var hasta  = mesISO('#fecha_hasta');
 
     if (!cedula) {
         swal({

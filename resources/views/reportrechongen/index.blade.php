@@ -73,13 +73,15 @@ Recibos
                                         <div class="row">
                                             <div class="col-xs-6 col-sm-4 col-md-3">
                                                 <label for="fecha_desde">Desde</label>
-                                                <input type="month" id="fecha_desde" name="fecha_desde" class="form-control"
-                                                       placeholder="aaaa-mm">
+                                                <input type="text" id="fecha_desde" name="fecha_desde"
+                                                       class="form-control date-picker-mes" readonly
+                                                       placeholder="Mes y año">
                                             </div>
                                             <div class="col-xs-6 col-sm-4 col-md-3">
                                                 <label for="fecha_hasta">Hasta</label>
-                                                <input type="month" id="fecha_hasta" name="fecha_hasta" class="form-control"
-                                                       placeholder="aaaa-mm">
+                                                <input type="text" id="fecha_hasta" name="fecha_hasta"
+                                                       class="form-control date-picker-mes" readonly
+                                                       placeholder="Mes y año">
                                             </div>
                                         </div>
                                     </fieldset>

@@ -12,11 +12,22 @@ $(document).ready(function () {
     $('.date-picker').datepicker({
         language: "es",
         format: "MM yyyy",
-        viewMode: "years", 
+        viewMode: "years",
         minViewMode: "months",
         autoclose: true,
 		todayHighlight: true
     }).datepicker("setDate");
+
+    /* Selector de mes de la constancia. Se usa bootstrap-datepicker y no
+       input type=month porque Firefox y Safari no lo soportan: degradan a una
+       caja de texto donde habria que escribir el valor a mano. */
+    $('.date-picker-mes').datepicker({
+        language: "es",
+        format: "MM yyyy",
+        viewMode: "months",
+        minViewMode: "months",
+        autoclose: true
+    });
 
    $('#annomes').on('change', function () {
        /*  data = datos();
@@ -67,10 +78,20 @@ $("#btnpdf3").click(function()
 
 /* Constancia de honorarios: usa el rango de fechas, no el período de nómina,
    porque el documento certifica un promedio mensual de varios meses. */
+/* El campo muestra "Abril 2026" pero el servidor espera "2026-04".
+   La comparacion tambien va sobre el valor ISO: sobre el texto visible,
+   "Abril" seria mayor que "Enero" por orden alfabetico. */
+function mesISO(selector)
+{
+    var d = $(selector).datepicker('getDate');
+    if (!d) return '';
+    return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2);
+}
+
 $("#constancia").click(function()
 {
-    var desde = $('#fecha_desde').val();
-    var hasta = $('#fecha_hasta').val();
+    var desde = mesISO('#fecha_desde');
+    var hasta = mesISO('#fecha_hasta');
 
     if (!desde || !hasta) {
         swal({

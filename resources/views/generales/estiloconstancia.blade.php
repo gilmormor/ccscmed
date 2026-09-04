@@ -30,6 +30,13 @@
     margin-bottom: 4px;
 }
 
+/* Los campos son readonly para que solo se llenen desde el calendario, pero
+   sí son interactivos: Bootstrap los pintaría en gris como deshabilitados. */
+.caja-constancia input.date-picker-mes[readonly] {
+    background-color: #fff;
+    cursor: pointer;
+}
+
 @media (max-width: 767px) {
     .caja-constancia .row > div + div { margin-top: 8px; }
 }
