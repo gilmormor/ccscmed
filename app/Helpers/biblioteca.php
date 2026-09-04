@@ -564,7 +564,7 @@ function num2letras($num, $fem = false, $dec = true) {
             $t .= ' mil'; 
          } 
       }elseif ($num == 1) { 
-         $t .= ' ' . $matsub[$sub] . '?n'; 
+         $t .= ' ' . $matsub[$sub] . 'ón';
       }elseif ($num > 1){ 
          $t .= ' ' . $matsub[$sub] . 'ones'; 
       }   
