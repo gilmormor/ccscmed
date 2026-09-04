@@ -37,16 +37,18 @@
             line-height: 1.55;
             color: #000;
         }
-        .cab { width: 100%; margin-bottom: 6px; }
-        .cab td { vertical-align: top; }
-        .cab-logo { width: 46%; }
-        .cab-logo img { width: 210px; }
+        /* Membrete: logo ancho arriba y el domicilio fiscal centrado debajo,
+           como el modelo aprobado por la clínica. */
+        .cab { text-align: center; margin-bottom: 14px; }
+        .cab-logo { width: 400px; }
         .cab-datos {
-            width: 54%;
-            font-size: 7.5px;
-            line-height: 1.35;
-            padding-top: 42px;
+            font-size: 8px;
+            line-height: 1.4;
+            margin-top: 4px;
         }
+        .cab-datos div { margin: 0; }
+        .cab-datos .etiqueta { font-weight: bold; text-decoration: underline; }
+        .cab-datos .rif { font-weight: bold; }
         .titulo {
             text-align: center;
             font-size: 15px;
@@ -64,27 +66,32 @@
 </head>
 <body>
 
-<table class="cab">
-    <tr>
-        <td class="cab-logo">
-            @if($logo)
-                <img src="{{ $logo }}" alt="Logo">
-            @endif
-        </td>
-        <td class="cab-datos">
-            <div><span class="b">DOMICILIO FISCAL:</span> {{ $empresa->razonsocial ?? '' }}</div>
-            @if(!empty($empresa->ciudad) || !empty($empresa->estado))
-                <div>{{ trim(($empresa->ciudad ?? '') . ' - ' . ($empresa->estado ?? ''), ' -') }}</div>
-            @endif
-            @if(!empty($empresa->telefono))
-                <div>Telfs. {{ $empresa->telefono }}@if(!empty($empresa->website)) - {{ $empresa->website }}@endif</div>
-            @endif
-            @if(!empty($empresa->rut))
-                <div class="b">RIF.: {{ $empresa->rut }}</div>
-            @endif
-        </td>
-    </tr>
-</table>
+<div class="cab">
+    @if($logo)
+        <img src="{{ $logo }}" class="cab-logo" alt="Logo">
+    @endif
+
+    <div class="cab-datos">
+        @php
+            $ubicacion = trim(($empresa->ciudad ?? '') . ' - ESTADO ' . ($empresa->estado ?? ''), ' -');
+        @endphp
+        @if(!empty($empresa->direccion))
+            <div>
+                <span class="etiqueta">DOMICILIO FISCAL:</span>
+                {{ mb_strtoupper(trim($empresa->direccion), 'UTF-8') }}@if($ubicacion),@endif
+            </div>
+        @endif
+        @if($ubicacion)
+            <div>{{ mb_strtoupper($ubicacion, 'UTF-8') }}.</div>
+        @endif
+        @if(!empty($empresa->telefono))
+            <div>Telfs. {{ trim($empresa->telefono) }}@if(!empty($empresa->website)) - {{ trim($empresa->website) }}@endif</div>
+        @endif
+        @if(!empty($empresa->rut))
+            <div class="rif">RIF.: {{ trim($empresa->rut) }}</div>
+        @endif
+    </div>
+</div>
 
 <div class="titulo">CONSTANCIA</div>
 
