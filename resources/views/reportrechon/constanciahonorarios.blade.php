@@ -13,6 +13,18 @@
         $logo = (!empty($empresa->logo) && file_exists(public_path('storage/imagenes/logos/' . $empresa->logo)))
                 ? public_path('storage/imagenes/logos/' . $empresa->logo) : null;
 
+        /* El tamaño se calcula aquí y no en CSS porque el logo configurado puede
+           ser ancho (membrete, ~3.4:1) o cuadrado (solo el símbolo, ~1:1). Fijar
+           únicamente el ancho hacía que el cuadrado saliera de 400x378 px y
+           empujara el texto a una segunda página. Se limitan ambos lados y se
+           conserva la proporción. */
+        $logoW = $logoH = null;
+        if ($logo && ($dim = @getimagesize($logo))) {
+            $escala = min(400 / $dim[0], 95 / $dim[1], 1);
+            $logoW  = (int) round($dim[0] * $escala);
+            $logoH  = (int) round($dim[1] * $escala);
+        }
+
         $tratamiento = ((int) $medico->emp_sexo === 2) ? 'DRA.' : 'DR.';
         $nombreMedico = trim($medico->emp_ape) . ' ' . trim($medico->emp_nom);
         $cedulaFmt = trim($medico->emp_nac) . '- ' . number_format((int) $medico->emp_ced, 0, '', '.');
@@ -40,7 +52,6 @@
         /* Membrete: logo ancho arriba y el domicilio fiscal centrado debajo,
            como el modelo aprobado por la clínica. */
         .cab { text-align: center; margin-bottom: 14px; }
-        .cab-logo { width: 400px; }
         .cab-datos {
             font-size: 8px;
             line-height: 1.4;
@@ -68,7 +79,7 @@
 
 <div class="cab">
     @if($logo)
-        <img src="{{ $logo }}" class="cab-logo" alt="Logo">
+        <img src="{{ $logo }}" width="{{ $logoW }}" height="{{ $logoH }}" alt="Logo">
     @endif
 
     <div class="cab-datos">
