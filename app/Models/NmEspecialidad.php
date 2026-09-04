@@ -17,7 +17,7 @@ class NmEspecialidad extends Model
 
     protected $table = 'nm_especialidad';
 
-    protected $fillable = ['id', 'nombre'];
+    protected $fillable = ['id', 'nombre', 'emp_codh', 'gru_cod'];
 
     /** El id lo trae VFP8 junto con el nombre; no lo genera MySQL. */
     public $incrementing = false;

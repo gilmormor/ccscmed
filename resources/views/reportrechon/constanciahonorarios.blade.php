@@ -123,7 +123,7 @@
 
 <div class="firma">
     <div class="nombre">
-        {{ trim($nm_empresa->emp_nombrefirma ?? '') }}
+        {{ trim(trim($nm_empresa->emp_titulofirma ?? '') . ' ' . trim($nm_empresa->emp_nombrefirma ?? '')) }}
     </div>
     <div class="cargo">{{ strtoupper(trim($nm_empresa->emp_cargofirma ?? '')) }}</div>
     <div class="cargo">{{ strtoupper(trim($nm_empresa->emp_grupofirma ?? '')) }}</div>

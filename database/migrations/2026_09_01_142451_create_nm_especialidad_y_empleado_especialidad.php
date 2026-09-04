@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\Schema;
  *   nm_empleados.id          identificador que viene de nm_empleado.emp_id
  *                            del sistema local; es la llave que usa la relación
  *
+ *   Ambas tablas llevan emp_codh y gru_cod, como el resto de las nm_*, para
+ *   quedar alineadas con el esquema multiempresa.
+ *
  * SIN CLAVES FORÁNEAS SOBRE nm_empleados A PROPÓSITO
  *   nm_empleados se recarga desde VFP8. Si la carga borra e inserta filas, una
  *   FK con ON DELETE CASCADE borraría en silencio las especialidades asignadas
@@ -48,10 +51,19 @@ return new class extends Migration
                 // Dejarlo autoincremental arriesgaría que un alta hecha desde
                 // Laravel tomara un id que luego reclame el sistema local.
                 $t->unsignedInteger('id')->primary();
-                $t->string('nombre', 120)->unique();
+                $t->string('nombre', 120);
+                $t->integer('emp_codh')->nullable();
+                $t->integer('gru_cod')->nullable();
                 $t->timestamps();
                 $t->softDeletes();
+
+                // El nombre es único DENTRO de cada empresa y grupo, no en toda
+                // la tabla: dos empresas pueden tener su propio "ANESTESIOLOGO".
+                $t->unique(['emp_codh', 'gru_cod', 'nombre'], 'uq_especialidad_nombre');
+                $t->index(['emp_codh', 'gru_cod'], 'idx_especialidad_empgru');
             });
+
+            $this->anchoInt3('nm_especialidad');
         }
 
         // ── Relación médico ↔ especialidad
@@ -60,12 +72,17 @@ return new class extends Migration
                 $t->unsignedInteger('id')->primary();   // también viene de VFP8
                 $t->unsignedInteger('emp_id')->comment('nm_empleados.id');
                 $t->unsignedInteger('esp_id')->comment('nm_especialidad.id');
+                $t->integer('emp_codh')->nullable();
+                $t->integer('gru_cod')->nullable();
                 $t->timestamps();
                 $t->softDeletes();
 
+                // emp_id y esp_id ya son identificadores globales del sistema
+                // local, así que la pareja basta para evitar duplicados.
                 $t->unique(['emp_id', 'esp_id'], 'uq_empleadoespecialidad');
                 $t->index('emp_id', 'idx_empesp_emp');
                 $t->index('esp_id', 'idx_empesp_esp');
+                $t->index(['emp_codh', 'gru_cod'], 'idx_empesp_empgru');
 
                 // Solo sobre el catálogo, que gestiona Laravel. Ver la nota de
                 // cabecera sobre por qué no se pone FK contra nm_empleados.
@@ -73,6 +90,19 @@ return new class extends Migration
                   ->references('id')->on('nm_especialidad')
                   ->onUpdate('cascade')->onDelete('restrict');
             });
+
+            $this->anchoInt3('nm_empleadoespecialidad');
+        }
+    }
+
+    /**
+     * Ajusta emp_codh y gru_cod a INT(3), el ancho que usan el resto de las
+     * tablas nm_*. Laravel no expone el display width, así que se hace aparte.
+     */
+    private function anchoInt3(string $tabla): void
+    {
+        foreach (['emp_codh', 'gru_cod'] as $col) {
+            DB::statement("ALTER TABLE `$tabla` MODIFY `$col` INT(3) NULL");
         }
     }
 
