@@ -10,8 +10,11 @@
             return trim(preg_replace('/\s*Bol[ií]vares.*$/iu', '', num2letras(number_format($n, 2, '.', ''), false, false)));
         };
 
-        $logo = (!empty($empresa->logo) && file_exists(public_path('storage/imagenes/logos/' . $empresa->logo)))
-                ? public_path('storage/imagenes/logos/' . $empresa->logo) : null;
+        /* Logo propio del membrete: el de empresa.logo lo comparten el manual y
+           el reporte de médicos con anchos pensados para el símbolo cuadrado. */
+        $archivoLogo = $empresa->logo_membrete ?: $empresa->logo;
+        $logo = (!empty($archivoLogo) && file_exists(public_path('storage/imagenes/logos/' . $archivoLogo)))
+                ? public_path('storage/imagenes/logos/' . $archivoLogo) : null;
 
         /* El tamaño se calcula aquí y no en CSS porque el logo configurado puede
            ser ancho (membrete, ~3.4:1) o cuadrado (solo el símbolo, ~1:1). Fijar
@@ -98,9 +101,11 @@
         @if(!empty($empresa->telefono))
             <div>Telfs. {{ trim($empresa->telefono) }}@if(!empty($empresa->website)) - {{ trim($empresa->website) }}@endif</div>
         @endif
-        @if(!empty($empresa->rut))
-            <div class="rif">RIF.: {{ trim($empresa->rut) }}</div>
-        @endif
+
+        {{-- El RIF no se imprime aquí: el logo del membrete (ccsc.jpg) ya lo
+             lleva impreso y saldría duplicado. Si se cambia por un logo que no
+             lo traiga, hay que reponer esta línea:
+             <div class="rif">RIF.: {{ trim($empresa->rut ?? '') }}</div> --}}
     </div>
 </div>
 
