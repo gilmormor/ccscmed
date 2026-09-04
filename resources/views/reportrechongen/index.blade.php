@@ -35,7 +35,7 @@ Recibos
                     <form action="{{route('exportPdf_notaventaconsulta')}}" class="d-inline form-eliminar" method="get" target="_blank">
                         @csrf
                         @csrf @method("put")
-                        <div class="col-xs-12 col-md-9 col-sm-12">
+                        <div class="col-xs-12 col-md-8 col-sm-12">
                             <div class="col-xs-12 col-md-12 col-sm-12">
                                 <div class="col-xs-12 col-sm-6">
                                     <div class="col-xs-12 col-md-4 col-sm-4 text-left">
