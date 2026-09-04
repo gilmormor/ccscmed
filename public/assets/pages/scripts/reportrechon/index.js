@@ -74,8 +74,8 @@ $("#constancia").click(function()
 
     if (!desde || !hasta) {
         swal({
-            title: 'Indique el rango de la constancia',
-            text: 'Complete las fechas Desde y Hasta para calcular el promedio mensual facturado.',
+            title: 'Indique el período de la constancia',
+            text: 'Seleccione el mes y año Desde y Hasta para calcular el promedio mensual facturado.',
             icon: 'warning',
             buttons: { confirm: 'Aceptar' }
         });
@@ -83,8 +83,8 @@ $("#constancia").click(function()
     }
     if (desde > hasta) {
         swal({
-            title: 'Rango inválido',
-            text: 'La fecha Desde no puede ser posterior a la fecha Hasta.',
+            title: 'Período inválido',
+            text: 'El mes Desde no puede ser posterior al mes Hasta.',
             icon: 'warning',
             buttons: { confirm: 'Aceptar' }
         });

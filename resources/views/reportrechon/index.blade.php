@@ -73,11 +73,13 @@ Recibo Honorarios
                                         <div class="row">
                                             <div class="col-xs-6 col-sm-5">
                                                 <label for="fecha_desde">Desde</label>
-                                                <input type="date" id="fecha_desde" name="fecha_desde" class="form-control">
+                                                <input type="month" id="fecha_desde" name="fecha_desde" class="form-control"
+                                                       placeholder="aaaa-mm">
                                             </div>
                                             <div class="col-xs-6 col-sm-5">
                                                 <label for="fecha_hasta">Hasta</label>
-                                                <input type="date" id="fecha_hasta" name="fecha_hasta" class="form-control">
+                                                <input type="month" id="fecha_hasta" name="fecha_hasta" class="form-control"
+                                                       placeholder="aaaa-mm">
                                             </div>
                                         </div>
                                     </fieldset>

@@ -56,14 +56,17 @@ class ReportRecHonController extends Controller
             ? $request->emp_ced
             : Usuario::findOrFail(auth()->id())->usuario;
 
-        $desde = $request->fecha_desde;
-        $hasta = $request->fecha_hasta;
+        // La pantalla envía mes y año ("2026-01"). Se normaliza igual en el
+        // servidor por si llegara un valor con día: la constancia certifica un
+        // promedio de meses completos y no debe calcularse sobre un mes partido.
+        $desde = $this->primerDiaDelMes($request->fecha_desde);
+        $hasta = $this->ultimoDiaDelMes($request->fecha_hasta);
 
         if (!$desde || !$hasta) {
-            return response('Debe indicar el rango de fechas de la constancia.', 422);
+            return response('Debe indicar el período de la constancia (mes y año).', 422);
         }
         if ($desde > $hasta) {
-            return response('La fecha Desde no puede ser posterior a la fecha Hasta.', 422);
+            return response('El mes Desde no puede ser posterior al mes Hasta.', 422);
         }
 
         $medico = DB::table('nm_empleados')
@@ -124,6 +127,30 @@ class ReportRecHonController extends Controller
         $cedula   = str_pad($medico->emp_ced, 8, '0', STR_PAD_LEFT);
 
         return $pdf->stream("ConstanciaHon_{$cedula}_{$apellido}{$nombre}.pdf");
+    }
+
+    /**
+     * Primer día del mes indicado. Acepta "2026-01" (input type=month) y
+     * también "2026-01-15", que se lleva igual al día 1.
+     */
+    private function primerDiaDelMes(?string $valor): ?string
+    {
+        if (!preg_match('/^(\d{4})-(\d{2})/', trim((string) $valor), $m)) {
+            return null;
+        }
+        if ($m[2] < '01' || $m[2] > '12') {
+            return null;
+        }
+
+        return "$m[1]-$m[2]-01";
+    }
+
+    /** Último día del mes indicado: 28, 29, 30 o 31 según corresponda. */
+    private function ultimoDiaDelMes(?string $valor): ?string
+    {
+        $primero = $this->primerDiaDelMes($valor);
+
+        return $primero ? date('Y-m-t', strtotime($primero)) : null;
     }
 
     /** Meses calendario que abarca el rango, ambos extremos incluidos. */
