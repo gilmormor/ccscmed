@@ -31,7 +31,8 @@ class NmEmpleado extends Model
         'emp_fecegre',
         'emp_carcod',
         'emp_sueldo',
-        'emp_salint'
+        'emp_salint',
+        'categoria_id'
     ];
 
     /**
@@ -51,6 +52,12 @@ class NmEmpleado extends Model
             'id',
             'id'
         )->withTimestamps();
+    }
+
+    /** Categoría a la que pertenece el empleado. */
+    public function categoria()
+    {
+        return $this->belongsTo(NmCategoria::class, 'categoria_id', 'id');
     }
 
     public static function consultaempleado($vendedor_id = '0',$sucursal_id = false){
