@@ -103,7 +103,9 @@ function consulta($request){
     if(isset($request->emp_ced) and $request->emp_ced != null and $request->emp_ced != ""){
         $cond_cedula = " nm_empleados.emp_ced = $request->emp_ced";
     }
-    $sql = "SELECT emp_ced,concat(TRIM(emp_nom),' ',TRIM(emp_ape)) as emp_nomape,emp_email
+    // categoria_id se agrega para que reportrechongen sepa si el empleado
+    // consultado es Socio (id=1) y así mostrar u ocultar la Constancia.
+    $sql = "SELECT emp_ced,concat(TRIM(emp_nom),' ',TRIM(emp_ape)) as emp_nomape,emp_email,categoria_id
     FROM nm_empleados
     where $cond_cedula
     GROUP BY emp_ced;";

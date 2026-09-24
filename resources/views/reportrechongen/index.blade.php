@@ -61,7 +61,10 @@ Recibos
                                 </div>
                             </div>
 
-                            <div class="col-xs-12 col-md-12 col-sm-12">
+                            {{-- Solo visible cuando el empleado consultado tiene
+                                 nm_empleados.categoria_id = 1 (Socio). Se oculta por
+                                 defecto y se muestra desde JS al buscar la cédula. --}}
+                            <div class="col-xs-12 col-md-12 col-sm-12" id="wrap-constancia-fecha" style="display:none;">
                                 <div class="col-xs-12 col-sm-12">
                                     <fieldset class="caja-constancia">
                                         <legend class="caja-constancia-titulo">
@@ -95,7 +98,7 @@ Recibos
                                 <i class='glyphicon glyphicon-print'></i> Rel Hon
                             </button>
                         </div>
-                        <div class="col-xs-12 col-md-1 col-sm-12 text-center">
+                        <div class="col-xs-12 col-md-1 col-sm-12 text-center" id="wrap-constancia-btn" style="display:none;">
                             <button type='button' id='constancia' name='constancia' class='btn btn-success tooltipsC' title="PDF Constancia de Honorarios">
                                 <i class='glyphicon glyphicon-print'></i> Constancia
                             </button>

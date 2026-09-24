@@ -61,6 +61,9 @@ Recibo Honorarios
                                 </div>
                             </div>
 
+                            {{-- Solo visible cuando el usuario autenticado tiene
+                                 nm_empleados.categoria_id = 1 (Socio). --}}
+                            @if($esSocio)
                             <div class="col-xs-12 col-md-12 col-sm-12">
                                 <div class="col-xs-12 col-sm-12">
                                     <fieldset class="caja-constancia">
@@ -84,6 +87,7 @@ Recibo Honorarios
                                     </fieldset>
                                 </div>
                             </div>
+                            @endif
                         </div>
                         <div class="col-xs-12 col-md-1 col-sm-12 text-center">
                             <button type='button' id='btnpdf2' name='btnpdf2' class='btn btn-success tooltipsC' title="PDF Recibo Honorarios">
@@ -95,11 +99,13 @@ Recibo Honorarios
                                 <i class='glyphicon glyphicon-print'></i> Rel Hon
                             </button>
                         </div>
+                        @if($esSocio)
                         <div class="col-xs-12 col-md-1 col-sm-12 text-center">
                             <button type='button' id='constancia' name='constancia' class='btn btn-success tooltipsC' title="PDF Constancia de Honorarios">
                                 <i class='glyphicon glyphicon-print'></i> Constancia
                             </button>
                         </div>
+                        @endif
                        
                     </form>
                 </div>

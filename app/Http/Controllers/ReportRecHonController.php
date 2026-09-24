@@ -27,7 +27,15 @@ class ReportRecHonController extends Controller
         $aux_mesanno = mesanno(date("Y") . date("m"));
         //dd($nominaPeriodos);
 
-        return view('reportrechon.index', compact('nominaPeriodos','aux_mesanno'));
+        // La Constancia solo aplica a empleados con categoria_id = 1 (Socio).
+        // Esta vista es siempre la del propio usuario autenticado.
+        $usuario = Usuario::findOrFail(auth()->id());
+        $esSocio = DB::table('nm_empleados')
+            ->where('emp_ced', $usuario->usuario)
+            ->where('categoria_id', 1)
+            ->exists();
+
+        return view('reportrechon.index', compact('nominaPeriodos','aux_mesanno','esSocio'));
     }
 
     /**
@@ -70,12 +78,18 @@ class ReportRecHonController extends Controller
         }
 
         $medico = DB::table('nm_empleados')
-            ->select('id', 'emp_nac', 'emp_ced', 'emp_sexo', 'emp_ape', 'emp_nom', 'emp_fecing')
+            ->select('id', 'emp_nac', 'emp_ced', 'emp_sexo', 'emp_ape', 'emp_nom', 'emp_fecing', 'categoria_id')
             ->where('emp_ced', $aux_cedula)
             ->first();
 
         if (!$medico) {
             return response('No se encontró el médico con cédula ' . e($aux_cedula) . '.', 404);
+        }
+
+        // La constancia afirma que el médico "es socio accionista": no se
+        // genera si no tiene esa categoría, aunque llegue una URL directa.
+        if ((int) $medico->categoria_id !== 1) {
+            return response('La constancia solo aplica a médicos con categoría Socio.', 403);
         }
 
         // Asignaciones del rango. Mismo criterio que el recibo y el dashboard.

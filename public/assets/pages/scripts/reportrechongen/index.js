@@ -25,9 +25,21 @@ function mesISO(selector)
 }
 
 
+/* La Constancia solo aplica a empleados con nm_empleados.categoria_id = 1
+   (Socio). Se oculta apenas se cambia de cédula, hasta que la búsqueda
+   confirme si el nuevo empleado la tiene. */
+function mostrarConstancia(mostrar)
+{
+    $('#wrap-constancia-fecha, #wrap-constancia-btn').toggle(!!mostrar);
+    if (!mostrar) {
+        $('#fecha_desde, #fecha_hasta').datepicker('clearDates');
+    }
+}
+
 $("#cedula").focus(function(){
     $("#mov_nummon").empty();
     $(".selectpicker").selectpicker('refresh');
+    mostrarConstancia(false);
 });
 
 $("#cedula").blur(function(){
@@ -49,6 +61,7 @@ function cargardatoscedula(){
             data: data,
             success: function (respuesta) {
                 if(respuesta.length>0){
+                    mostrarConstancia(respuesta[0].categoria_id == 1);
                     $.ajax({
                         url: '/reportrechongen/periodos',
                         type: 'POST',
@@ -81,6 +94,7 @@ function cargardatoscedula(){
         
 
                 }else{
+                    mostrarConstancia(false);
                     //formato_cedula($("#cedula"));
                     swal({
                         title: 'Cedula no existe.',
