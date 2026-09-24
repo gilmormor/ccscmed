@@ -61,12 +61,6 @@ Recibo Honorarios
                                 </div>
                             </div>
 
-                            {{-- OCULTO TEMPORALMENTE junto con el botón Constancia.
-                                 El documento afirma que el médico "es socio accionista
-                                 de la sociedad mercantil", y ese dato todavía no está
-                                 validado: no todos los médicos lo son. Reactivar cuando
-                                 se confirme de dónde sale esa condición en nm_empleados.
-
                             <div class="col-xs-12 col-md-12 col-sm-12">
                                 <div class="col-xs-12 col-sm-12">
                                     <fieldset class="caja-constancia">
@@ -90,7 +84,6 @@ Recibo Honorarios
                                     </fieldset>
                                 </div>
                             </div>
-                            --}}
                         </div>
                         <div class="col-xs-12 col-md-1 col-sm-12 text-center">
                             <button type='button' id='btnpdf2' name='btnpdf2' class='btn btn-success tooltipsC' title="PDF Recibo Honorarios">
@@ -102,13 +95,12 @@ Recibo Honorarios
                                 <i class='glyphicon glyphicon-print'></i> Rel Hon
                             </button>
                         </div>
-                        {{-- OCULTO TEMPORALMENTE: ver la nota del recuadro de fechas.
                         <div class="col-xs-12 col-md-1 col-sm-12 text-center">
                             <button type='button' id='constancia' name='constancia' class='btn btn-success tooltipsC' title="PDF Constancia de Honorarios">
                                 <i class='glyphicon glyphicon-print'></i> Constancia
                             </button>
                         </div>
-                        --}}
+                       
                     </form>
                 </div>
             </div>
