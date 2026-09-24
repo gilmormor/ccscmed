@@ -124,7 +124,7 @@
         <span class="b i">RIF {{ trim($nm_empresa->emp_sociedadrif ?? '') }}</span>
         desde el <span class="b">{{ fechaEnLetras($medico->emp_fecing) }}</span>,
         y este a su vez presta en su nombre y por cuenta propia Servicios Profesionales como
-        Médico <span class="b">{{ $especialidadTexto ?? '________________' }}</span>,
+        <span class="b">{{ $especialidadTexto ?? '________________' }}</span>,
         para lo cual, por aplicación de lo dispuesto en el artículo 32 de la Providencia
         Administrativa Nro. SNAT/2011/00071 sobre las Normas Generales de Emisión de Facturas
         y otros Documentos publicada en la Gaceta Oficial Nro. 39.795 de fecha 8 de noviembre
