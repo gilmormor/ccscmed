@@ -2,6 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Índices de rendimiento para nómina y honorarios.
@@ -25,6 +27,15 @@ use Illuminate\Support\Facades\DB;
  *
  * Antes de añadir un índice nuevo aquí, medir que aporte y que no encarezca la
  * carga sin contrapartida.
+ *
+ * ESQUEMA VARIABLE ENTRE AMBIENTES
+ * Este mismo código corre contra varios subdominios (ccscmeddemo, ccscmed,
+ * ccsc.lannube.com, ...), cada uno con su propia base y no necesariamente el
+ * mismo esquema. En ccsc.lannube.com nm_movhist no tiene columna mov_id, y el
+ * CREATE INDEX fallaba con "Key column doesn't exist", abortando el resto de
+ * la migración sin marcarla como ejecutada. Por eso cada índice verifica que
+ * TODAS sus columnas existan antes de crearse; si falta alguna, se omite (y
+ * queda anotado en el log) en vez de tumbar la migración entera.
  */
 return new class extends Migration
 {
@@ -73,15 +84,31 @@ return new class extends Migration
     public function up(): void
     {
         foreach ($this->indices as $tabla => $defs) {
+            if (!Schema::hasTable($tabla)) {
+                Log::warning("add_indexes_nomina_honorarios: tabla '$tabla' no existe en esta base, se omite.");
+                continue;
+            }
+
             foreach ($defs as $nombre => $columnas) {
                 if ($this->existeIndice($tabla, $nombre)) {
                     continue;
                 }
+
+                if (!$this->todasLasColumnasExisten($tabla, $columnas)) {
+                    Log::warning("add_indexes_nomina_honorarios: '$tabla' no tiene todas las "
+                               . "columnas de '$columnas' en esta base, se omite el índice '$nombre'.");
+                    continue;
+                }
+
                 DB::statement("CREATE INDEX `$nombre` ON `$tabla` ($columnas)");
             }
         }
 
         foreach ($this->obsoletos as $tabla => $nombres) {
+            if (!Schema::hasTable($tabla)) {
+                continue;
+            }
+
             foreach ($nombres as $nombre) {
                 if (!$this->existeIndice($tabla, $nombre)) {
                     continue;
@@ -94,6 +121,10 @@ return new class extends Migration
     public function down(): void
     {
         foreach ($this->indices as $tabla => $defs) {
+            if (!Schema::hasTable($tabla)) {
+                continue;
+            }
+
             foreach (array_keys($defs) as $nombre) {
                 if (!$this->existeIndice($tabla, $nombre)) {
                     continue;
@@ -106,5 +137,18 @@ return new class extends Migration
     private function existeIndice(string $tabla, string $nombre): bool
     {
         return count(DB::select("SHOW INDEX FROM `$tabla` WHERE Key_name = ?", [$nombre])) > 0;
+    }
+
+    /** Verifica que cada columna de una lista "col1, col2" exista en la tabla. */
+    private function todasLasColumnasExisten(string $tabla, string $columnas): bool
+    {
+        foreach (explode(',', $columnas) as $columna) {
+            $columna = trim($columna);
+            if (!Schema::hasColumn($tabla, $columna)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 };
