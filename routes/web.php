@@ -1478,6 +1478,9 @@ Route::get('dashboardhon/medicos-ingresos/excel', 'DashboardHonController@medico
 Route::get('dashboardhon/filtro-medicos',     'DashboardHonController@filtroMedicos')->name('dashboardhon_filtro_medicos');
 Route::get('dashboardhon/filtro-conceptos',   'DashboardHonController@filtroConceptos')->name('dashboardhon_filtro_conceptos');
 
+/*RUTAS SPG KEY*/
+Route::get('spgkey', 'SpgKeyController@index')->name('spgkey');
+
 /*RUTAS REPORTE RECIBO HONORARIOS*/
 Route::get('reportrechon/constanciaHonorarios', 'ReportRecHonController@constanciaHonorarios')->name('constanciaHonorarios');
 Route::get('reportrechon', 'ReportRecHonController@index')->name('reportrechon');
