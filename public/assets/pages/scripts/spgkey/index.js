@@ -18,6 +18,20 @@ $(document).ready(function () {
         window.location.href = '/';
     });
 
+    // Código1 y Código2 son numéricos: se bloquea la tecla antes de que
+    // aparezca en el campo, y además se filtra cualquier caracter que se
+    // cuele por pegado (Ctrl+V, arrastrar texto, etc.).
+    $('.spgkey-solo-numeros').on('keypress', function (e) {
+        if (!/[0-9]/.test(String.fromCharCode(e.which))) {
+            e.preventDefault();
+        }
+    }).on('input', function () {
+        var limpio = $(this).val().replace(/[^0-9]/g, '');
+        if (limpio !== $(this).val()) {
+            $(this).val(limpio);
+        }
+    });
+
 });
 
 function generarClave()

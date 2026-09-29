@@ -50,11 +50,13 @@ SPG Key
                         </div>
                         <div class="col-xs-6 col-sm-3">
                             <label for="spg_codigo1">Código1</label>
-                            <input type="number" id="spg_codigo1" class="form-control" min="1" step="1">
+                            <input type="text" id="spg_codigo1" class="form-control spgkey-solo-numeros"
+                                   inputmode="numeric" maxlength="10" autocomplete="off">
                         </div>
                         <div class="col-xs-6 col-sm-3">
                             <label for="spg_codigo2">Código2</label>
-                            <input type="number" id="spg_codigo2" class="form-control" min="1" step="1">
+                            <input type="text" id="spg_codigo2" class="form-control spgkey-solo-numeros"
+                                   inputmode="numeric" maxlength="10" autocomplete="off">
                         </div>
                     </div>
 
