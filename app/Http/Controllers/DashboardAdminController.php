@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Dashboard Administrativo — BI Nómina
@@ -17,11 +18,45 @@ class DashboardAdminController extends Controller
     /* ------------------------------------------------------------------
      * Fragmento FROM compartido por todos los métodos
      * ------------------------------------------------------------------ */
+    /* Algunas BD (p.ej. lannube_ccscreal) no tienen nm_movhismonext ni nm_movhist.mov_id:
+     * en ese caso Bs = mov_monto y USD = mov_monto / cot_valordolar. */
+    private function tieneMonExt(): bool
+    {
+        static $r = null;
+        if ($r === null) {
+            $r = Schema::hasTable('nm_movhismonext')
+                && Schema::hasColumn('nm_movhismonext', 'mov_id')
+                && Schema::hasColumn('nm_movhist', 'mov_id');
+        }
+        return $r;
+    }
+
+    private function bs(): string
+    {
+        return $this->tieneMonExt() ? 'nm_movhismonext.mme_montomone' : 'nm_movhist.mov_monto';
+    }
+
+    private function usd(): string
+    {
+        return $this->tieneMonExt()
+            ? 'nm_movhismonext.mme_montodl'
+            : 'IFNULL(nm_movhist.mov_monto / NULLIF(nm_control.cot_valordolar, 0), 0)';
+    }
+
+    private function tasa(): string
+    {
+        return $this->tieneMonExt() ? 'nm_movhismonext.mme_tasacambi' : 'nm_control.cot_valordolar';
+    }
+
     private function baseFrom(): string
     {
+        $ext = $this->tieneMonExt()
+            ? 'LEFT JOIN  nm_movhismonext ON nm_movhist.mov_id        = nm_movhismonext.mov_id'
+            : '';
+
         return "
             FROM nm_movhist
-            LEFT JOIN  nm_movhismonext ON nm_movhist.mov_id        = nm_movhismonext.mov_id
+            $ext
             INNER JOIN nm_control      ON nm_control.cot_numnom    = nm_movhist.mov_nummon
             INNER JOIN nm_empleados    ON nm_empleados.emp_ced     = nm_movhist.emp_ced
             INNER JOIN nm_conceptos    ON nm_conceptos.con_cod     = nm_movhist.mov_codcon
@@ -93,10 +128,10 @@ class DashboardAdminController extends Controller
 
         $row = DB::selectOne("
             SELECT
-                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN nm_movhismonext.mme_montomone ELSE 0 END) AS asig_bs,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='D' THEN nm_movhismonext.mme_montomone ELSE 0 END) AS ded_bs,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN nm_movhismonext.mme_montodl   ELSE 0 END) AS asig_usd,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='D' THEN nm_movhismonext.mme_montodl   ELSE 0 END) AS ded_usd,
+                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN " . $this->bs() . " ELSE 0 END) AS asig_bs,
+                SUM(CASE WHEN nm_movhist.mov_tipocon='D' THEN " . $this->bs() . " ELSE 0 END) AS ded_bs,
+                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN " . $this->usd() . "   ELSE 0 END) AS asig_usd,
+                SUM(CASE WHEN nm_movhist.mov_tipocon='D' THEN " . $this->usd() . "   ELSE 0 END) AS ded_usd,
                 COUNT(DISTINCT nm_movhist.emp_ced)    AS total_trab,
                 COUNT(*)                              AS total_mov,
                 COUNT(DISTINCT nm_movhist.mov_codcon) AS total_conceptos,
@@ -137,9 +172,9 @@ class DashboardAdminController extends Controller
             SELECT
                 DATE_FORMAT(nm_control.cot_fdesde,'%Y-%m')  AS mes_key,
                 DATE_FORMAT(nm_control.cot_fdesde,'%b %Y')  AS mes_label,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN nm_movhismonext.mme_montomone ELSE 0 END) AS asig_bs,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='D' THEN nm_movhismonext.mme_montomone ELSE 0 END) AS ded_bs,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN nm_movhismonext.mme_montodl   ELSE 0 END) AS asig_usd
+                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN " . $this->bs() . " ELSE 0 END) AS asig_bs,
+                SUM(CASE WHEN nm_movhist.mov_tipocon='D' THEN " . $this->bs() . " ELSE 0 END) AS ded_bs,
+                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN " . $this->usd() . "   ELSE 0 END) AS asig_usd
             " . $this->baseFrom() . $w . "
             GROUP BY mes_key, mes_label
             ORDER BY mes_key ASC
@@ -158,8 +193,8 @@ class DashboardAdminController extends Controller
         $rows = DB::select("
             SELECT
                 nm_movhist.mov_tipocon                     AS tipo,
-                SUM(nm_movhismonext.mme_montomone)         AS total_bs,
-                SUM(nm_movhismonext.mme_montodl)           AS total_usd,
+                SUM(" . $this->bs() . ")         AS total_bs,
+                SUM(" . $this->usd() . ")           AS total_usd,
                 COUNT(*)                                   AS cantidad
             " . $this->baseFrom() . $w . "
             GROUP BY nm_movhist.mov_tipocon
@@ -180,8 +215,8 @@ class DashboardAdminController extends Controller
                 nm_conceptos.con_desc                      AS concepto,
                 nm_movhist.mov_tipocon                     AS tipo,
                 COUNT(*)                                   AS frecuencia,
-                SUM(nm_movhismonext.mme_montomone)         AS total_bs,
-                SUM(nm_movhismonext.mme_montodl)           AS total_usd
+                SUM(" . $this->bs() . ")         AS total_bs,
+                SUM(" . $this->usd() . ")           AS total_usd
             " . $this->baseFrom() . $w . "
             GROUP BY nm_movhist.mov_codcon, nm_conceptos.con_desc, nm_movhist.mov_tipocon
             ORDER BY total_bs DESC
@@ -203,9 +238,9 @@ class DashboardAdminController extends Controller
                 nm_movhist.emp_ced,
                 nm_empleados.emp_nom,
                 nm_empleados.emp_ape,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN nm_movhismonext.mme_montomone ELSE 0 END) AS asig_bs,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='D' THEN nm_movhismonext.mme_montomone ELSE 0 END) AS ded_bs,
-                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN nm_movhismonext.mme_montodl   ELSE 0 END) AS asig_usd
+                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN " . $this->bs() . " ELSE 0 END) AS asig_bs,
+                SUM(CASE WHEN nm_movhist.mov_tipocon='D' THEN " . $this->bs() . " ELSE 0 END) AS ded_bs,
+                SUM(CASE WHEN nm_movhist.mov_tipocon='A' THEN " . $this->usd() . "   ELSE 0 END) AS asig_usd
             " . $this->baseFrom() . $w . "
             GROUP BY nm_movhist.emp_ced, nm_empleados.emp_nom, nm_empleados.emp_ape
             ORDER BY asig_bs DESC
@@ -226,9 +261,9 @@ class DashboardAdminController extends Controller
             SELECT
                 DATE_FORMAT(nm_control.cot_fdesde,'%Y-%m')  AS mes_key,
                 DATE_FORMAT(nm_control.cot_fdesde,'%b %Y')  AS mes_label,
-                SUM(nm_movhismonext.mme_montomone)           AS total_bs,
-                SUM(nm_movhismonext.mme_montodl)             AS total_usd,
-                AVG(NULLIF(nm_movhismonext.mme_tasacambi,0)) AS tasa_avg
+                SUM(" . $this->bs() . ")           AS total_bs,
+                SUM(" . $this->usd() . ")             AS total_usd,
+                AVG(NULLIF(" . $this->tasa() . ",0)) AS tasa_avg
             " . $this->baseFrom() . $w . "
             AND nm_movhist.mov_tipocon = 'A'
             GROUP BY mes_key, mes_label
@@ -289,9 +324,9 @@ class DashboardAdminController extends Controller
                 nm_conceptos.con_desc                                        AS concepto,
                 nm_movhist.mov_tipocon                                       AS tipo,
                 nm_movhist.mov_monto                                         AS mov_monto,
-                nm_movhismonext.mme_montomone                                AS monto_bs,
-                nm_movhismonext.mme_montodl                                  AS monto_usd,
-                nm_movhismonext.mme_tasacambi                                AS tasa,
+                " . $this->bs() . "                                AS monto_bs,
+                " . $this->usd() . "                                  AS monto_usd,
+                " . $this->tasa() . "                                AS tasa,
                 DATE_FORMAT(nm_control.cot_fdesde,'%Y%m%d')                 AS fecha_ord,
                 nm_movhist.mov_codcon                                        AS cod_con
             " . $this->baseFrom() . $w . "
@@ -315,8 +350,8 @@ class DashboardAdminController extends Controller
                 nm_movhist.mov_tipocon                     AS tipo,
                 COUNT(*)                                   AS frecuencia,
                 SUM(nm_movhist.mov_monto)                  AS total_monto,
-                SUM(nm_movhismonext.mme_montomone)         AS total_bsme,
-                SUM(nm_movhismonext.mme_montodl)           AS total_usd
+                SUM(" . $this->bs() . ")         AS total_bsme,
+                SUM(" . $this->usd() . ")           AS total_usd
             " . $this->baseFrom() . $w . "
             GROUP BY nm_movhist.mov_codcon, nm_conceptos.con_desc, nm_movhist.mov_tipocon
             ORDER BY total_monto DESC
