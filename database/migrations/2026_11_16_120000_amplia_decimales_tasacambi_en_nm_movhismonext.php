@@ -5,12 +5,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Las tasas de cambio de nm_movhismonext pasan a 4 decimales (FLOAT(12,4),
- * igual que quedó en la BD donde se hizo el cambio a mano).
+ * Las tasas de nm_movhismonext (mme_tasacambi y mme_tasacambiorig) pasan a
+ * DECIMAL(14,4): 4 decimales y valor exacto (FLOAT guarda aproximaciones y
+ * pierde el último decimal cuando la tasa supera los 1.000).
  *
  * nm_movhismonext no existe en todos los ambientes (p.ej. lannube_ccscreal),
  * por eso se omite si falta la tabla o la columna. Es idempotente: solo
- * altera las columnas que todavía no son FLOAT(12,4).
+ * altera las columnas que todavía no son DECIMAL(14,4).
  */
 return new class extends Migration
 {
@@ -26,17 +27,17 @@ return new class extends Migration
             if (!Schema::hasColumn('nm_movhismonext', $columna)) {
                 continue;
             }
-            if ($this->tipoActual($columna) === 'float(12,4)') {
+            if ($this->tipoActual($columna) === 'decimal(14,4)') {
                 continue;
             }
-            DB::statement("ALTER TABLE `nm_movhismonext` MODIFY `$columna` FLOAT(12,4) NULL");
+            DB::statement("ALTER TABLE `nm_movhismonext` MODIFY `$columna` DECIMAL(14,4) NULL");
         }
     }
 
     public function down(): void
     {
         // Sin reversión: se desconoce el tipo original en cada ambiente
-        // (float(6,2) en unos, decimal(14,2) en otros) y reducir decimales perdería datos.
+        // y reducir decimales perdería datos.
     }
 
     private function tipoActual(string $columna): ?string
